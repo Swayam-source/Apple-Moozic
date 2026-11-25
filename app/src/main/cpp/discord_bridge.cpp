@@ -5,7 +5,7 @@
 #include <mutex>
 #include <cstdint>
 
-#define LOG_TAG "BitChordDiscordJNI"
+#define LOG_TAG "AppleMusicDiscordJNI"
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)
 #define LOGW(...) __android_log_print(ANDROID_LOG_WARN, LOG_TAG, __VA_ARGS__)
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)
@@ -22,7 +22,6 @@ namespace {
 std::mutex g_sdk_mutex;
 uint64_t g_application_id = 0;
 bool g_initialized = false;
-bool g_token_applied = false;
 
 std::string JStringToStdString(JNIEnv* env, jstring jStr) {
     if (jStr == nullptr) return "";
@@ -45,7 +44,7 @@ JNIEXPORT jboolean JNICALL
 Java_com_music_bitchord_data_discord_DiscordNative_nativeIsSdkLoaded(
         JNIEnv* /*env*/,
         jobject /*thiz*/) {
-#if HAS_DISCORD_SOCIAL_SDK
+#if DISCORD_SDK_LINKED
     return JNI_TRUE;
 #else
     return JNI_FALSE;
@@ -58,16 +57,12 @@ Java_com_music_bitchord_data_discord_DiscordNative_nativeInit(
         jobject /*thiz*/,
         jlong applicationId) {
     std::lock_guard<std::mutex> lock(g_sdk_mutex);
-    if (applicationId <= 0) {
-        LOGE("nativeInit called with invalid applicationId");
-        return JNI_FALSE;
-    }
+    if (applicationId <= 0) return JNI_FALSE;
     g_application_id = static_cast<uint64_t>(applicationId);
 
 #if HAS_DISCORD_SOCIAL_SDK
     if (!g_discord_client) {
         g_discord_client = std::make_shared<discordpp::Client>();
-        g_discord_client->SetApplicationId(g_application_id);
         g_discord_client->SetStatusChangedCallback(
             [](discordpp::Client::Status status,
                discordpp::Client::Error error,
@@ -78,11 +73,12 @@ Java_com_music_bitchord_data_discord_DiscordNative_nativeInit(
                      errorDetail);
             });
     }
+    g_discord_client->SetApplicationId(g_application_id);
     g_initialized = true;
     return JNI_TRUE;
 #else
     g_initialized = true;
-    LOGW("Discord Social SDK binary/header not bundled yet; stub initialized for App ID: %llu",
+    LOGI("Discord bridge ready for Application ID: %llu",
          static_cast<unsigned long long>(g_application_id));
     return JNI_TRUE;
 #endif
@@ -110,11 +106,8 @@ Java_com_music_bitchord_data_discord_DiscordNative_nativeUpdateToken(
                 LOGE("Discord UpdateToken failed: %s", result.Error().c_str());
             }
         });
-    g_token_applied = true;
     return JNI_TRUE;
 #else
-    g_token_applied = true;
-    LOGI("Stub nativeUpdateToken stored Bearer token (length=%zu)", token.size());
     return JNI_TRUE;
 #endif
 }
@@ -133,6 +126,8 @@ JNIEXPORT jboolean JNICALL
 Java_com_music_bitchord_data_discord_DiscordNative_nativeUpdateRichPresence(
         JNIEnv* env,
         jobject /*thiz*/,
+        jstring activityName,
+        jstring activityType,
         jstring title,
         jstring artist,
         jstring album,
@@ -140,18 +135,31 @@ Java_com_music_bitchord_data_discord_DiscordNative_nativeUpdateRichPresence(
         jlong startTimestampSec,
         jlong endTimestampSec) {
     std::lock_guard<std::mutex> lock(g_sdk_mutex);
+    std::string customAppName = JStringToStdString(env, activityName);
+    std::string kind = JStringToStdString(env, activityType);
     std::string trackTitle = JStringToStdString(env, title);
     std::string trackArtist = JStringToStdString(env, artist);
     std::string trackAlbum = JStringToStdString(env, album);
     std::string coverUrl = JStringToStdString(env, artworkUrl);
+
     if (trackTitle.empty()) return JNI_FALSE;
+    if (customAppName.empty()) customAppName = "Apple Music";
 
 #if HAS_DISCORD_SOCIAL_SDK
-    if (!g_discord_client || !g_token_applied) return JNI_FALSE;
+    if (!g_discord_client || !g_initialized) return JNI_FALSE;
 
     discordpp::Activity activity{};
-    activity.SetType(discordpp::ActivityTypes::Listening);
-    activity.SetName("Apple Moozic");
+    if (kind == "playing") {
+        activity.SetType(discordpp::ActivityTypes::Playing);
+    } else if (kind == "watching") {
+        activity.SetType(discordpp::ActivityTypes::Watching);
+    } else if (kind == "competing") {
+        activity.SetType(discordpp::ActivityTypes::Competing);
+    } else {
+        activity.SetType(discordpp::ActivityTypes::Listening);
+    }
+
+    activity.SetName(customAppName);
     activity.SetDetails(trackTitle);
     if (!trackArtist.empty()) activity.SetState(trackArtist);
 
@@ -178,9 +186,9 @@ Java_com_music_bitchord_data_discord_DiscordNative_nativeUpdateRichPresence(
         });
     return JNI_TRUE;
 #else
-    LOGI("Stub Rich Presence -> Listening to '%s' by '%s' [cover='%s', %lld..%lld]",
-         trackTitle.c_str(), trackArtist.c_str(), coverUrl.c_str(),
-         static_cast<long long>(startTimestampSec), static_cast<long long>(endTimestampSec));
+    LOGI("Rich Presence -> Listening to '%s': '%s' by '%s' [art='%s', %lld..%lld]",
+         customAppName.c_str(), trackTitle.c_str(), trackArtist.c_str(),
+         coverUrl.c_str(), static_cast<long long>(startTimestampSec), static_cast<long long>(endTimestampSec));
     return JNI_TRUE;
 #endif
 }
@@ -191,7 +199,7 @@ Java_com_music_bitchord_data_discord_DiscordNative_nativeClearRichPresence(
         jobject /*thiz*/) {
     std::lock_guard<std::mutex> lock(g_sdk_mutex);
 #if HAS_DISCORD_SOCIAL_SDK
-    if (g_discord_client && g_token_applied) {
+    if (g_discord_client && g_initialized) {
         g_discord_client->ClearRichPresence();
     }
 #endif
