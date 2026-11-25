@@ -6,10 +6,6 @@ import com.music.bitchord.data.model.artworkAt
 import com.music.bitchord.data.model.youTubeThumbnailFallback
 import com.my.kizzy.rpc.KizzyRPC
 import com.my.kizzy.rpc.RpcImage
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
 import java.util.Locale
 
 class DiscordRPC(
@@ -23,8 +19,6 @@ class DiscordRPC(
     userAgent = SuperProperties.userAgent,
     superPropertiesBase64 = SuperProperties.superPropertiesBase64,
 ) {
-    private val cleanupScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-
     suspend fun updateSong(
         song: Song,
         currentPlaybackTimeMillis: Long,
@@ -114,15 +108,6 @@ class DiscordRPC(
         DiscordNative.clearRichPresence()
         if (!token.startsWith(DiscordAuthManager.OAUTH_TOKEN_PREFIX)) {
             runCatching { super.close() }
-        }
-    }
-
-    override fun closeRPC() {
-        cleanupScope.launch {
-            DiscordNative.clearRichPresence()
-        }
-        if (!token.startsWith(DiscordAuthManager.OAUTH_TOKEN_PREFIX)) {
-            runCatching { super.closeRPC() }
         }
     }
 
