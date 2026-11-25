@@ -113,7 +113,7 @@ object Innertube {
     private const val ANDROID_MUSIC_CLIENT_ID = "21"
     private const val ANDROID_MUSIC_VERSION = "7.21.50"
 
-    private const val TAG = "BitChord"
+    private const val TAG = "Apple Moozic"
 
     /** Session cookie captured by the login WebView; null = browse as guest. */
     var cookie: String? = null

@@ -1964,7 +1964,7 @@ fun SettingsScreen(
                     append("Developer")
                 }
                 append("  ")
-                withLink(LinkAnnotation.Url("https://discord.gg/pDdKfrdHY6", linkStyles)) {
+                withLink(LinkAnnotation.Url("", linkStyles)) {
                     append("Discord")
                 }
                 append("  ")
