@@ -16,10 +16,10 @@ data class ParsedJamInvite(
 /** Relays a Moozic web or scheme invite from [com.music.bitchord.MainActivity] to Compose. */
 object JamInviteLink {
 
-    const val ORIGIN = "https://bitchord.Swayam-source.in"
+    const val ORIGIN = "https://bitchord.pxper_-source.in"
 
     private const val EXTRA_CONSUMED = "bitchord.jamInviteConsumed"
-    private const val HOST = "bitchord.Swayam-source.in"
+    private const val HOST = "bitchord.pxper_-source.in"
     private const val CUSTOM_SCHEME = "bitchord"
     private const val CUSTOM_HOST = "party"
 
@@ -50,7 +50,7 @@ object JamInviteLink {
     /**
      * Parses an incoming invite:
      * 1. bitchord://party/<CODE>?server=<SERVER>
-     * 2. https://bitchord.Swayam-source.in/invite/<CODE>?server=<SERVER>
+     * 2. https://bitchord.pxper_-source.in/invite/<CODE>?server=<SERVER>
      */
     fun parseInvite(value: String?): ParsedJamInvite? {
         val uri = runCatching { URI(value ?: return null) }.getOrNull() ?: return null
@@ -67,7 +67,7 @@ object JamInviteLink {
             return ParsedJamInvite(code = code, serverUrl = server)
         }
 
-        // 2. Official web domain: https://bitchord.Swayam-source.in/invite/<CODE>
+        // 2. Official web domain: https://bitchord.pxper_-source.in/invite/<CODE>
         if (scheme == "https" && host == HOST) {
             val match = INVITE_PATH.matchEntire(uri.path.orEmpty()) ?: return null
             val code = match.groupValues[1].uppercase()

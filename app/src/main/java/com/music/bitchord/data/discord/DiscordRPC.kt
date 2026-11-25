@@ -82,7 +82,7 @@ class DiscordRPC(
 
     companion object {
         const val DEFAULT_APP_NAME = "Apple Music"
-        const val PROJECT_URL = "https://github.com/Swayam-source/Apple-Moozic"
+        const val PROJECT_URL = "https://github.com/pxper_-source/Apple-Moozic"
         const val DEFAULT_BUTTON_1 = "Listen on YouTube Music"
         const val DEFAULT_BUTTON_2 = "Apple Music"
         private const val ART_PX = 480

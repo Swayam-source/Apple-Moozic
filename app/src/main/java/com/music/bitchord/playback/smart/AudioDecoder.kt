@@ -5,7 +5,7 @@
  * only needs the fallback, since Moozic has no reason to carry a second
  * Opus decoder purely for background analysis.
  *
- * Copyright (C) 2026 Swayam
+ * Copyright (C) 2026 pxper_
  *
  * This program is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the

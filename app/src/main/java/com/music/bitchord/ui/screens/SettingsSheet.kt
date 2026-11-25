@@ -1956,11 +1956,11 @@ fun SettingsScreen(
                         textDecoration = TextDecoration.Underline,
                     ),
                 )
-                withLink(LinkAnnotation.Url("https://github.com/Swayam-source/Apple-Moozic", linkStyles)) {
+                withLink(LinkAnnotation.Url("https://github.com/pxper_-source/Apple-Moozic", linkStyles)) {
                     append("GitHub")
                 }
                 append("  ")
-                withLink(LinkAnnotation.Url("https://github.com/Swayam-source", linkStyles)) {
+                withLink(LinkAnnotation.Url("https://github.com/pxper_-source", linkStyles)) {
                     append("Developer")
                 }
                 append("  ")
@@ -1968,7 +1968,7 @@ fun SettingsScreen(
                     append("Discord")
                 }
                 append("  ")
-                withLink(LinkAnnotation.Url("https://bitchord.Swayam-source.in/", linkStyles)) {
+                withLink(LinkAnnotation.Url("https://bitchord.pxper_-source.in/", linkStyles)) {
                     append("Website")
                 }
                 append("\n~YouTube Music & Listen Together Backend")

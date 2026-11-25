@@ -3,7 +3,7 @@
  * TransitionPlanner.kt and WsolaPlanner.kt into one file.
  *
  * Copyright (C) 2026 SFG545 (original Orchard implementation)
- * Copyright (C) 2026 Swayam (Moozic adaptation)
+ * Copyright (C) 2026 pxper_ (Moozic adaptation)
  *
  * Orchard's original source is licensed under the GNU Affero General Public
  * License, version 3 or later. Per AGPLv3 section 13, this file is combined

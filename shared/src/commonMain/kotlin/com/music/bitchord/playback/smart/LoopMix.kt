@@ -3,7 +3,7 @@
  * Ported from the web player's playback/automix/engine/loopMix.ts (which
  * builds on AutoMix by David Finnegan, AGPL-3.0; see that folder's NOTICE.md).
  *
- * Copyright (C) 2026 Swayam
+ * Copyright (C) 2026 pxper_
  *
  * This program is free software: you can redistribute it and/or modify it
  * under the terms of the GNU Affero General Public License as published by

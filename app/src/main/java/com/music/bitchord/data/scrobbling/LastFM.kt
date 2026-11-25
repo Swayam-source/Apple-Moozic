@@ -86,7 +86,7 @@ object LastFM {
         extra: Map<String, String> = emptyMap(),
         format: String = "json",
     ) {
-        headers.append(HttpHeaders.UserAgent, "Moozic (https://github.com/Swayam-source/Apple-Moozic)")
+        headers.append(HttpHeaders.UserAgent, "Moozic (https://github.com/pxper_-source/Apple-Moozic)")
         val paramsForSig =
             mutableMapOf(
                 "method" to method,
