@@ -126,7 +126,7 @@ object Backup {
     @OptIn(ExperimentalSerializationApi::class)
     suspend fun readFrom(input: InputStream): Summary = withContext(Dispatchers.IO) {
         val file = runCatching { json.decodeFromStream(BackupFile.serializer(), input) }
-            .getOrElse { error("That doesn't look like a BitChord backup") }
+            .getOrElse { error("That doesn't look like a Moozic backup") }
         require(file.app == APP_TAG) { "That backup is from another app" }
         require(file.version <= SCHEMA_VERSION) {
             "That backup was written by a newer version of BitChord"

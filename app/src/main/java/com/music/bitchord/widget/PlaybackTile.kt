@@ -7,7 +7,7 @@ import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
 
 /**
- * The Quick Settings tile: plays or pauses whatever BitChord last had queued,
+ * The Quick Settings tile: plays or pauses whatever Moozic last had queued,
  * streamed or local, without opening the app.
  *
  * A tap is the widget's own play button — [MediaWidgetActions.ACTION_TOGGLE] —

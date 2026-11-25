@@ -205,7 +205,7 @@ private fun StationGrid(
 
 /**
  * One named mix, as a station: its artwork blurred down to colour alone, the
- * BitChord mark in the middle, and its name along the foot.
+ * Moozic mark in the middle, and its name along the foot.
  *
  * The blur is had twice over. The artwork is loaded tiny, so stretching it to
  * the tile already loses every edge — which is the whole effect on Android

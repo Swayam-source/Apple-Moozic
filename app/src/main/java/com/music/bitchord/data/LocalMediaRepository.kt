@@ -24,7 +24,7 @@ import java.util.Locale
 
 object LocalMediaRepository {
 
-    private const val TAG = "BitChord"
+    private const val TAG = "Moozic"
     private const val MIN_LOCAL_MUSIC_DURATION_MS = 30_000L
 
     // `mp4` only ever reaches this list as an audio row — MediaStore files a
@@ -151,7 +151,7 @@ object LocalMediaRepository {
                     }
                 }
             }
-        }.onFailure { Log.w(TAG, "Failed scanning Music/BitChord directory: ${it.message}") }
+        }.onFailure { Log.w(TAG, "Failed scanning Music/Moozic directory: ${it.message}") }
 
         val filled = appDownloads.map { song ->
             val uri = song.localUri ?: return@map song
@@ -200,7 +200,7 @@ object LocalMediaRepository {
 
         val songs = mutableListOf<Song>()
         // This scan runs over every audio file on the device, which includes
-        // whatever this app has downloaded into Music/BitChord alongside
+        // whatever this app has downloaded into Music/Moozic alongside
         // everything else — but by content URI, the only thing MediaStore
         // offers here, that download is indistinguishable from a file the
         // user copied on by hand. Reversing [Downloads.saved] hands a

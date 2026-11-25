@@ -30,7 +30,8 @@ import java.util.concurrent.TimeUnit
 
 object DiscordAuthManager {
     private const val TAG = "DiscordAuthManager"
-    private const val PREFS_NAME = "bitchord_discord_oauth2_secure"
+    private const val PREFS_NAME = "applemoozic_discord_sdk_secure"
+    private const val KEY_APP_ID = "discord_application_id"
     private const val KEY_ACCESS_TOKEN = "access_token"
     private const val KEY_REFRESH_TOKEN = "refresh_token"
     private const val KEY_EXPIRES_AT = "expires_at_ms"
@@ -42,6 +43,7 @@ object DiscordAuthManager {
     private const val USER_ME_URL = "https://discord.com/api/v10/users/@me"
     private const val SCOPES = "openid sdk.social_layer_presence"
 
+    const val SDK_TOKEN_PREFIX = "sdk:"
     const val OAUTH_TOKEN_PREFIX = "oauth2:"
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
@@ -68,7 +70,34 @@ object DiscordAuthManager {
         )
     }
 
+    fun getApplicationId(context: Context): String {
+        val saved = prefs(context).getString(KEY_APP_ID, null)?.trim().orEmpty()
+        if (saved.isNotEmpty()) return saved
+        return BuildConfig.DISCORD_CLIENT_ID.trim()
+    }
+
+    fun saveApplicationId(context: Context, rawAppId: String): Boolean {
+        val clean = rawAppId.trim()
+        val numericId = clean.toLongOrNull() ?: return false
+        if (numericId <= 0L) return false
+
+        prefs(context).edit().putString(KEY_APP_ID, clean).apply()
+        AppSettings.setDiscordToken("$SDK_TOKEN_PREFIX$clean")
+        AppSettings.setDiscordRpcEnabled(true)
+        AppSettings.setDiscordAccount("discord_sdk", "Discord App ($clean)", null)
+
+        scope.launch {
+            DiscordNative.initialize(numericId)
+        }
+        return true
+    }
+
+    fun hasOAuthSession(context: Context): Boolean {
+        return !prefs(context).getString(KEY_ACCESS_TOKEN, null).isNullOrBlank()
+    }
+
     fun launchOneTapAuthorize(context: Context) {
+        val appId = getApplicationId(context)
         val verifier = generateRandomUrlSafe(48)
         val challenge = sha256UrlSafe(verifier)
         val state = generateRandomUrlSafe(24)
@@ -79,7 +108,7 @@ object DiscordAuthManager {
             .apply()
 
         val uri = Uri.parse(AUTHORIZE_URL).buildUpon()
-            .appendQueryParameter("client_id", BuildConfig.DISCORD_CLIENT_ID)
+            .appendQueryParameter("client_id", appId)
             .appendQueryParameter("response_type", "code")
             .appendQueryParameter("redirect_uri", BuildConfig.DISCORD_REDIRECT_URI)
             .appendQueryParameter("scope", SCOPES)
@@ -125,6 +154,7 @@ object DiscordAuthManager {
             val sp = prefs(context)
             val expectedState = sp.getString(KEY_PENDING_STATE, null)
             val verifier = sp.getString(KEY_PENDING_VERIFIER, null) ?: return@withContext false
+            val appId = getApplicationId(context)
 
             if (!expectedState.isNullOrBlank() && returnedState != expectedState) {
                 Log.e(TAG, "OAuth2 PKCE state mismatch")
@@ -132,7 +162,7 @@ object DiscordAuthManager {
             }
 
             val body = FormBody.Builder()
-                .add("client_id", BuildConfig.DISCORD_CLIENT_ID)
+                .add("client_id", appId)
                 .add("grant_type", "authorization_code")
                 .add("code", code)
                 .add("redirect_uri", BuildConfig.DISCORD_REDIRECT_URI)
@@ -166,9 +196,10 @@ object DiscordAuthManager {
                         .remove(KEY_PENDING_STATE)
                         .apply()
 
-                    DiscordNative.initialize()
+                    DiscordNative.initialize(appId.toLongOrNull())
                     DiscordNative.updateToken(accessToken)
                     AppSettings.setDiscordToken("$OAUTH_TOKEN_PREFIX$accessToken")
+                    AppSettings.setDiscordRpcEnabled(true)
                     syncUserProfile(context, accessToken)
                     true
                 }
@@ -183,6 +214,7 @@ object DiscordAuthManager {
         val access = sp.getString(KEY_ACCESS_TOKEN, null) ?: return@withLock null
         val refresh = sp.getString(KEY_REFRESH_TOKEN, "") ?: ""
         val expiresAt = sp.getLong(KEY_EXPIRES_AT, 0L)
+        val appId = getApplicationId(context)
 
         if (System.currentTimeMillis() + 60_000L < expiresAt) {
             return@withLock access
@@ -190,7 +222,7 @@ object DiscordAuthManager {
         if (refresh.isBlank()) return@withLock null
 
         val body = FormBody.Builder()
-            .add("client_id", BuildConfig.DISCORD_CLIENT_ID)
+            .add("client_id", appId)
             .add("grant_type", "refresh_token")
             .add("refresh_token", refresh)
             .build()

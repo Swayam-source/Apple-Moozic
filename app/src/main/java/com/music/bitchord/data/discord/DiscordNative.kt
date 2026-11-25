@@ -25,7 +25,7 @@ object DiscordNative {
     private val sdkScope = CoroutineScope(SupervisorJob() + sdkDispatcher)
 
     private var nativeLibAvailable = false
-    private var isInitialized = false
+    private var activeApplicationId = 0L
     private var callbackPumpJob: Job? = null
 
     private val _isPresenceLive = MutableStateFlow(false)
@@ -46,16 +46,20 @@ object DiscordNative {
         return runCatching { nativeIsSdkLoaded() }.getOrDefault(false)
     }
 
-    suspend fun initialize(): Boolean = withContext(sdkDispatcher) {
+    suspend fun initialize(explicitAppId: Long? = null): Boolean = withContext(sdkDispatcher) {
         if (!nativeLibAvailable) return@withContext false
-        if (isInitialized) return@withContext true
 
-        val appId = BuildConfig.DISCORD_CLIENT_ID.trim().toLongOrNull() ?: 0L
+        val appId = explicitAppId
+            ?.takeIf { it > 0L }
+            ?: BuildConfig.DISCORD_CLIENT_ID.trim().toLongOrNull()
+            ?: 0L
+
         if (appId <= 0L) return@withContext false
+        if (activeApplicationId == appId) return@withContext true
 
         val ok = nativeInit(appId)
         if (ok) {
-            isInitialized = true
+            activeApplicationId = appId
             startCallbackPump()
         }
         ok
@@ -63,11 +67,13 @@ object DiscordNative {
 
     suspend fun updateToken(accessToken: String): Boolean = withContext(sdkDispatcher) {
         if (!nativeLibAvailable) return@withContext false
-        if (!isInitialized) initialize()
+        if (activeApplicationId <= 0L) initialize()
         nativeUpdateToken(accessToken)
     }
 
     suspend fun updateRichPresence(
+        activityName: String,
+        activityType: String,
         title: String,
         artist: String,
         album: String,
@@ -75,12 +81,14 @@ object DiscordNative {
         startTimestampSec: Long,
         endTimestampSec: Long
     ): Boolean = withContext(sdkDispatcher) {
-        if (!nativeLibAvailable || !isInitialized) {
+        if (!nativeLibAvailable || activeApplicationId <= 0L) {
             _isPresenceLive.value = false
             return@withContext false
         }
         val cover = artworkUrl?.takeIf { it.startsWith("http://") || it.startsWith("https://") } ?: ""
         val updated = nativeUpdateRichPresence(
+            activityName = activityName.ifBlank { "Apple Music" },
+            activityType = activityType.ifBlank { "listening" },
             title = title,
             artist = artist,
             album = album,
@@ -93,7 +101,7 @@ object DiscordNative {
     }
 
     suspend fun clearRichPresence() = withContext(sdkDispatcher) {
-        if (nativeLibAvailable && isInitialized) {
+        if (nativeLibAvailable && activeApplicationId > 0L) {
             nativeClearRichPresence()
         }
         _isPresenceLive.value = false
@@ -103,7 +111,7 @@ object DiscordNative {
         if (callbackPumpJob?.isActive == true) return
         callbackPumpJob = sdkScope.launch {
             while (isActive) {
-                if (nativeLibAvailable && isInitialized) {
+                if (nativeLibAvailable && activeApplicationId > 0L) {
                     nativeRunCallbacks()
                 }
                 delay(50L)
@@ -116,6 +124,8 @@ object DiscordNative {
     private external fun nativeUpdateToken(accessToken: String): Boolean
     private external fun nativeRunCallbacks()
     private external fun nativeUpdateRichPresence(
+        activityName: String,
+        activityType: String,
         title: String,
         artist: String,
         album: String,

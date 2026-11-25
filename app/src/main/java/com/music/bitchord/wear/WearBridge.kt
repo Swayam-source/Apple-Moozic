@@ -86,7 +86,7 @@ import com.music.bitchord.wear.WearProtocol as P
  *
  * Costs nothing on a phone without a watch. State is always remembered, but it
  * is only encoded, given artwork and handed to Play services once a watch with
- * the BitChord app on it is known to be reachable — and a phone with no Wear OS
+ * the Moozic app on it is known to be reachable — and a phone with no Wear OS
  * app at all answers that with an error, once, and is left alone after it.
  *
  * TV builds from these sources too, and carries a no-op file at this same path

@@ -64,7 +64,7 @@ import java.util.concurrent.TimeUnit
  */
 object PlaylistSync {
 
-    private const val TAG = "BitChord"
+    private const val TAG = "Moozic"
     private const val PERIODIC_WORK = "playlist_sync"
     private const val ONE_OFF_WORK = "playlist_sync_now"
     private const val LIKED_WORK = "liked_sync_soon"

@@ -28,7 +28,7 @@ import java.io.IOException
 import java.util.concurrent.TimeUnit
 
 /**
- * What BitChord asks of Google Drive — list its files, write one, read one,
+ * What Moozic asks of Google Drive — list its files, write one, read one,
  * delete one — as plain REST calls into the hidden `appDataFolder`.
  *
  * Every file is small: a device's manifest, or one month of one device's

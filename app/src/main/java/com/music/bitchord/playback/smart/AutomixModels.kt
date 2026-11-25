@@ -47,7 +47,7 @@ object AutomixModels {
      * disk they keep the plain names.
      */
     private const val RELEASE_URL =
-        "https://github.com/kushagrasinghx/BitChord/releases/latest/download/model_"
+        "https://github.com/Swayam-source/Apple-Moozic/releases/latest/download/model_"
 
     val BEAT = Model(
         BeatTracker.MODEL_ASSET,

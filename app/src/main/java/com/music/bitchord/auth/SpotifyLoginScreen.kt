@@ -100,7 +100,7 @@ fun SpotifyLoginScreen(
                 // The device's own mobile Chrome, minus the WebView markers. A
                 // desktop user agent served the desktop layout scaled into a
                 // phone, where part of the page fell off screen.
-                settings.userAgentString = browserUserAgent(settings.userAgentString)
+                settings.userAgentString = settings.userAgentString.replace("; wv", "").replace(Regex("""Version/\d+(\.\d+)*\s*"""), "").trim()
                 setBackgroundColor(0xFF121212.toInt())
                 CookieManager.getInstance().setAcceptCookie(true)
                 CookieManager.getInstance().setAcceptThirdPartyCookies(this, true)

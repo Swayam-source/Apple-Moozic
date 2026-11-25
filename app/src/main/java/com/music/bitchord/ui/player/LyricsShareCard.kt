@@ -67,7 +67,7 @@ internal suspend fun renderLyricsShareCard(
     card: LyricsShareRequest,
     /** The 1080×1920 story layout instead: see [layoutStory]. */
     story: Boolean = false,
-    /** The BitChord mark at the top right; without it the passage moves up into its room. */
+    /** The Moozic mark at the top right; without it the passage moves up into its room. */
     showLogo: Boolean = true,
     /** No backdrop: the card alone, to lay over a video of one. */
     transparent: Boolean = false,
@@ -676,7 +676,7 @@ private const val CARD_MARGIN = 72f
 private const val CARD_CONTENT_W = CARD_W - CARD_MARGIN * 2
 
 private const val LOGO_GAP = 20f
-private const val BRAND = "BitChord"
+private const val BRAND = "Moozic"
 
 /** Baseline of the mark at the top right, and just under it where the gap starts. */
 private const val HEADER_BASELINE = 132f

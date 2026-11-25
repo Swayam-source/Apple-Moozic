@@ -43,7 +43,7 @@ import java.util.concurrent.TimeUnit
 import com.music.bitchord.wear.WearProtocol as P
 
 /**
- * Settings → "BitChord for Wear OS": which watches have BitChord, whether it is
+ * Settings → "Moozic for Wear OS": which watches have BitChord, whether it is
  * this phone's build, and putting it there without a computer.
  *
  * The phone APK carries the watch APK of the same flavor and signing key
@@ -167,7 +167,7 @@ object WatchInstaller {
     private val installedAt = java.util.concurrent.ConcurrentHashMap<String, Long>()
     private const val SETTLE_MS = 60_000L
 
-    // ---- Updating a watch that has BitChord ----
+    // ---- Updating a watch that has Moozic ----
 
     fun sendUpdate(context: Context, nodeId: String) {
         val app = context.applicationContext
@@ -211,7 +211,7 @@ object WatchInstaller {
     }
 
     /**
-     * Brings BitChord to the front on the watch, which is where Android's
+     * Brings Moozic to the front on the watch, which is where Android's
      * install prompt can be shown: a background app may not open it itself,
      * and a Galaxy Watch gives the notification it falls back to no alert.
      */
@@ -415,6 +415,6 @@ object WatchInstaller {
 
         override fun getPrivateKey(): PrivateKey = key
         override fun getCertificate(): Certificate = cert
-        override fun getDeviceName(): String = "BitChord"
+        override fun getDeviceName(): String = "Moozic"
     }
 }

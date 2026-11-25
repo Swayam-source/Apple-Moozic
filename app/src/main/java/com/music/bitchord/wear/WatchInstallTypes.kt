@@ -1,7 +1,7 @@
 package com.music.bitchord.wear
 
 /**
- * What Settings → "BitChord for Wear OS" draws, kept apart from
+ * What Settings → "Moozic for Wear OS" draws, kept apart from
  * [WatchInstaller] so the TV build — which replaces that file with a stub —
  * still has the types.
  */
@@ -19,7 +19,7 @@ enum class WatchAppStatus {
     /** Asked; no answer yet. */
     CHECKING,
 
-    /** This build of BitChord (dev or prod) isn't on the watch. */
+    /** This build of Moozic (dev or prod) isn't on the watch. */
     NOT_INSTALLED,
 
     /** The watch has exactly the build this phone carries. */

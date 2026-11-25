@@ -1460,7 +1460,7 @@ class CrossfadeController(
         return if (seconds > 0) seconds * 1000L else 0L
     }
 
-    /** BitChord doesn't carry album metadata on [MediaMetadata] yet, so [TransitionTrackInfo.album] stays blank. */
+    /** Moozic doesn't carry album metadata on [MediaMetadata] yet, so [TransitionTrackInfo.album] stays blank. */
     private fun MediaItem.toTransitionInfo(durationMs: Long) = TransitionTrackInfo(
         id = mediaId,
         durationMs = durationMs,

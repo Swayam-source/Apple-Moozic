@@ -103,7 +103,7 @@ class AddonClient(rawBaseUrl: String, private val pickedQuality: String? = null)
             }
             if (!manifest.isPlayable) {
                 val declared = manifest.resources.joinToString(", ")
-                throw AddonException("This addon declares $declared — BitChord needs search")
+                throw AddonException("This addon declares $declared — Moozic needs search")
             }
             if (manifest.requiresBitChordAuth) authRequired = true
             manifest
@@ -283,7 +283,7 @@ class AddonClient(rawBaseUrl: String, private val pickedQuality: String? = null)
      *
      * Without it an addon holding an Atmos mix has no way to know it may serve
      * one, so it takes its default branch and sends stereo. That is the whole
-     * of why BitChord never heard Atmos from an addon: not a detection bug —
+     * of why Moozic never heard Atmos from an addon: not a detection bug —
      * [AddonStream.isDolbyAtmos] reads every spelling an addon sends — but a
      * question that was never asked.
      *
@@ -392,7 +392,7 @@ class AddonClient(rawBaseUrl: String, private val pickedQuality: String? = null)
             val wait = client.newCall(request).execute().use { response ->
                 val authChallenge = response.takeIf { it.code == 401 }
                     ?.header("WWW-Authenticate")
-                    ?.takeIf { it.trimStart().startsWith("BitChord", ignoreCase = true) }
+                    ?.takeIf { it.trimStart().startsWith("Moozic", ignoreCase = true) }
                 when {
                     response.isSuccessful ->
                         return@withContext response.body?.string()?.takeIf { it.isNotBlank() }
@@ -441,7 +441,7 @@ class AddonClient(rawBaseUrl: String, private val pickedQuality: String? = null)
         val parsed = url.toHttpUrlOrNull() ?: throw AddonException("Invalid addon URL")
         val loopback = parsed.host == "localhost" || parsed.host == "127.0.0.1" || parsed.host == "::1"
         if (!parsed.isHttps && !loopback) {
-            throw AddonException("This addon asks for BitChord verification but isn't using HTTPS")
+            throw AddonException("This addon asks for Moozic verification but isn't using HTTPS")
         }
         return AddonAuth.headersFor(parsed.host, rejectedToken)
     }
@@ -497,7 +497,7 @@ class AddonClient(rawBaseUrl: String, private val pickedQuality: String? = null)
     private fun keyOf(vararg parts: String) = parts.joinToString("|") { "${it.length}:$it" }
 
     companion object {
-        private const val TAG = "BitChord"
+        private const val TAG = "Moozic"
 
         /** The tiers [AddonSource][com.music.bitchord.data.sources.AddonSource] asks in. */
         const val TIER_LOSSLESS = "LOSSLESS"

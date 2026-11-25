@@ -49,7 +49,7 @@ data class AddonManifest(
      *
      * Read mostly for its *defaults*. The protocol has the host render a form
      * for these and send whatever the user picked back as query parameters on
-     * every request; BitChord draws that form for `quality` alone — see
+     * every request; Moozic draws that form for `quality` alone — see
      * [qualityOptions] — and sends the declared defaults for the rest. That is
      * explicitly enough — the spec says an addon "that never reads a setting
      * still behaves correctly", and the default is what the reference host
@@ -73,7 +73,7 @@ data class AddonManifest(
      */
     @SerialName("checkValidLossless") val checkValidLossless: JsonElement? = null,
     /**
-     * `bitchordAuth`: the addon only serves the genuine BitChord app, so every
+     * `bitchordAuth`: the addon only serves the genuine Moozic app, so every
      * request has to carry [AddonAuth]'s token and proof. Absent means nothing
      * is sent. An addon that leaves it out but answers `401` with
      * `WWW-Authenticate: BitChord` is handled the same way, one round trip
