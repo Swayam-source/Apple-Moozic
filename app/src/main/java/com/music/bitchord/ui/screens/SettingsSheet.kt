@@ -1009,7 +1009,7 @@ fun SettingsScreen(
                 }
             }
             // The system panel is not listed here as well. A device with a
-            // Dolby or Dirac panel has something Moozic cannot reproduce and
+            // Dolby or Dirac panel has something BitChord cannot reproduce and
             // keeps its row — but one level in, at the foot of the equaliser
             // screen, rather than as a second equaliser entry alongside ours.
             val equalizerTitle = stringResource(R.string.equalizer)
@@ -1956,19 +1956,19 @@ fun SettingsScreen(
                         textDecoration = TextDecoration.Underline,
                     ),
                 )
-                withLink(LinkAnnotation.Url("https://github.com/pxper_-source/Apple-Moozic", linkStyles)) {
+                withLink(LinkAnnotation.Url("https://github.com/kushagrasinghx/BitChord", linkStyles)) {
                     append("GitHub")
                 }
                 append("  ")
-                withLink(LinkAnnotation.Url("https://github.com/pxper_-source", linkStyles)) {
+                withLink(LinkAnnotation.Url("https://github.com/kushagrasinghx", linkStyles)) {
                     append("Developer")
                 }
                 append("  ")
-                withLink(LinkAnnotation.Url("", linkStyles)) {
+                withLink(LinkAnnotation.Url("https://discord.gg/pDdKfrdHY6", linkStyles)) {
                     append("Discord")
                 }
                 append("  ")
-                withLink(LinkAnnotation.Url("https://bitchord.pxper_-source.in/", linkStyles)) {
+                withLink(LinkAnnotation.Url("https://bitchord.kushagrasingh.in/", linkStyles)) {
                     append("Website")
                 }
                 append("\n~YouTube Music & Listen Together Backend")

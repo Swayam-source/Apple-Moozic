@@ -481,7 +481,7 @@ internal suspend fun saveVideoToGallery(context: Context, video: File, label: St
                 }
             } else {
                 @Suppress("DEPRECATION")
-                val dir = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES), "Moozic")
+                val dir = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES), "BitChord")
                 dir.mkdirs()
                 video.copyTo(File(dir, name), overwrite = true)
             }
