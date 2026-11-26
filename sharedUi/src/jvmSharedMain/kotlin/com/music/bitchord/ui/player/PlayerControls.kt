@@ -1436,24 +1436,24 @@ private fun rememberOutputGlyph(): OutputGlyph {
     val watch by PlayerPlatform.host.watchOutput.collectAsStateWithLifecycle()
     val active = rememberAudioOutputs().firstOrNull { it.isActive }
     return when {
-        cast.connectedName != null -> OutputGlyph(Icons.Rounded.DirectionsCar)
-        watch.active -> OutputGlyph(Icons.Rounded.DirectionsCar)
+        cast.connectedName != null -> OutputGlyph(BitChordIcons.AirPlay, PILL_OUTPUT_AIRPLAY_SIZE)
+        watch.active -> OutputGlyph(BitChordIcons.AirPlay, PILL_OUTPUT_AIRPLAY_SIZE)
         else -> when (active?.kind) {
             // No active row is the phone too — the caption under the pill
             // says "This phone" in the same case. AirPlay rather than a phone:
             // on the phone itself the button's job is to send it elsewhere.
-            null, AudioOutputKind.PHONE -> OutputGlyph(Icons.Rounded.DirectionsCar)
+            null, AudioOutputKind.PHONE -> OutputGlyph(BitChordIcons.AirPlay, PILL_OUTPUT_AIRPLAY_SIZE)
             AudioOutputKind.BLUETOOTH -> when (active.form) {
-                BluetoothForm.BUDS -> OutputGlyph(Icons.Rounded.DirectionsCar)
-                BluetoothForm.SPEAKER -> OutputGlyph(Icons.Rounded.DirectionsCar)
-                BluetoothForm.CAR -> OutputGlyph(Icons.Rounded.DirectionsCar)
+                BluetoothForm.BUDS -> OutputGlyph(BitChordIcons.AirPlay, PILL_OUTPUT_AIRPLAY_SIZE)
+                BluetoothForm.SPEAKER -> OutputGlyph(BitChordIcons.AirPlay, PILL_OUTPUT_AIRPLAY_SIZE)
+                BluetoothForm.CAR -> OutputGlyph(BitChordIcons.AirPlay, PILL_OUTPUT_AIRPLAY_SIZE)
                 // Headphones doubles as the neutral "some audio device" glyph:
                 // a device that won't say what it is gets that, not a guess.
-                BluetoothForm.HEADPHONES, BluetoothForm.UNKNOWN -> OutputGlyph(Icons.Rounded.DirectionsCar)
+                BluetoothForm.HEADPHONES, BluetoothForm.UNKNOWN -> OutputGlyph(BitChordIcons.AirPlay, PILL_OUTPUT_AIRPLAY_SIZE)
             }
-            AudioOutputKind.WIRED, AudioOutputKind.USB -> OutputGlyph(Icons.Rounded.DirectionsCar)
-            AudioOutputKind.HDMI -> OutputGlyph(Icons.Rounded.DirectionsCar)
-            AudioOutputKind.OTHER -> OutputGlyph(Icons.Rounded.DirectionsCar)
+            AudioOutputKind.WIRED, AudioOutputKind.USB -> OutputGlyph(BitChordIcons.AirPlay, PILL_OUTPUT_AIRPLAY_SIZE)
+            AudioOutputKind.HDMI -> OutputGlyph(BitChordIcons.AirPlay, PILL_OUTPUT_AIRPLAY_SIZE)
+            AudioOutputKind.OTHER -> OutputGlyph(BitChordIcons.AirPlay, PILL_OUTPUT_AIRPLAY_SIZE)
         }
     }
 }
