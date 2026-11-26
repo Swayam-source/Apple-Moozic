@@ -21,7 +21,7 @@
  * with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.music.zen.playback.smart
+package com.music.bitchord.playback.smart
 
 import android.content.Context
 import android.media.MediaDataSource
@@ -32,15 +32,15 @@ import android.os.Process
 import android.os.SystemClock
 import android.util.Log
 import androidx.media3.common.util.UnstableApi
-import com.music.zen.data.YtMusicRepository
-import com.music.zen.data.listentogether.ListenTogether
-import com.music.zen.data.model.SearchFilter
-import com.music.zen.data.model.SearchResult
-import com.music.zen.data.settings.AppSettings
-import com.music.zen.data.settings.AutomixPerformanceMode
-import com.music.zen.data.sources.SourceResolver
-import com.music.zen.data.sources.TrackMatcher
-import com.music.zen.playback.AudioCache
+import com.music.bitchord.data.YtMusicRepository
+import com.music.bitchord.data.listentogether.ListenTogether
+import com.music.bitchord.data.model.SearchFilter
+import com.music.bitchord.data.model.SearchResult
+import com.music.bitchord.data.settings.AppSettings
+import com.music.bitchord.data.settings.AutomixPerformanceMode
+import com.music.bitchord.data.sources.SourceResolver
+import com.music.bitchord.data.sources.TrackMatcher
+import com.music.bitchord.playback.AudioCache
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -90,7 +90,7 @@ class TrackAnalyzer(private val context: Context, private val cache: AudioCache)
     /**
      * Whether analysis is switched off entirely right now.
      *
-     * A party never mixes — [com.music.zen.playback.CrossfadeController]
+     * A party never mixes — [com.music.bitchord.playback.CrossfadeController]
      * refuses to plan a transition while one is running, because every member
      * would start the next track at a moment their own copy of the audio
      * decided on. Measuring for a transition that cannot happen is then pure
@@ -224,7 +224,7 @@ class TrackAnalyzer(private val context: Context, private val cache: AudioCache)
     private fun discardsOf(key: String): Int = discarded[key] ?: 0
 
     private val executor = Executors.newSingleThreadExecutor { runnable ->
-        Thread(runnable, "zen-smart-analysis").apply {
+        Thread(runnable, "bitchord-smart-analysis").apply {
             isDaemon = true
             priority = Thread.NORM_PRIORITY
         }
@@ -894,7 +894,7 @@ class TrackAnalyzer(private val context: Context, private val cache: AudioCache)
         return null
     }
 
-    private suspend fun findYouTubeMatch(target: TrackMatcher.Target): com.music.zen.data.model.Song? {
+    private suspend fun findYouTubeMatch(target: TrackMatcher.Target): com.music.bitchord.data.model.Song? {
         if (target.title.isBlank()) return null
         for (query in TrackMatcher.queries(target)) {
             val candidates = YtMusicRepository.search(query, SearchFilter.SONGS)
@@ -1478,7 +1478,7 @@ class TrackAnalyzer(private val context: Context, private val cache: AudioCache)
         fromSeconds: Double,
         toSeconds: Double,
         sampleRate: Int,
-    ): com.music.zen.playback.loopmix.LoopRegion? {
+    ): com.music.bitchord.playback.loopmix.LoopRegion? {
         if (uri.getQueryParameter("v") == null && uri.authority == "source") return null
         val began = SystemClock.elapsedRealtime()
         val copy = runCatching { copyToRead(trackId, uri, durationSeconds) }.getOrNull() ?: return null
@@ -1502,7 +1502,7 @@ class TrackAnalyzer(private val context: Context, private val cache: AudioCache)
                 "got ${"%.3f".format(Locale.ROOT, start)}s + ${"%.2f".format(Locale.ROOT, left.size / rate)}s " +
                 "at ${stereo.sampleRate.toInt()}->$sampleRate Hz in ${SystemClock.elapsedRealtime() - began}ms",
         )
-        return com.music.zen.playback.loopmix.LoopRegion(left, right, start)
+        return com.music.bitchord.playback.loopmix.LoopRegion(left, right, start)
     }
 
     /**
@@ -1559,7 +1559,7 @@ class TrackAnalyzer(private val context: Context, private val cache: AudioCache)
     }
 
     private companion object {
-        const val TAG = "ZenTrackAnalyzer"
+        const val TAG = "BitChordTrackAnalyzer"
 
         /**
          * What an unmeasured instant reads as. Below the policy's VOCAL_ACTIVE_THRESHOLD by

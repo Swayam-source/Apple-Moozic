@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: LGPL-3.0-only
  */
-package com.music.zen.playback.audio.bitperfect
+package com.music.bitchord.playback.audio.bitperfect
 
 import android.media.AudioDeviceCallback
 import android.media.AudioDeviceInfo
@@ -19,7 +19,7 @@ import java.nio.ByteBuffer
 /** JNI over `exclusive_output.cpp`. Handles are opaque ids, never pointers. */
 internal object ExclusiveNative {
     init {
-        System.loadLibrary("zen_exclusive")
+        System.loadLibrary("bitchord_exclusive")
     }
 
     external fun open(rate: Int, channels: Int, bits: Int, device: Int): Long

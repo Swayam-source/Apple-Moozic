@@ -1,7 +1,7 @@
-package com.music.zen.data.jiosaavn
+package com.music.bitchord.data.jiosaavn
 
 import android.util.Base64
-import com.music.zen.data.TrackLog
+import com.music.bitchord.data.TrackLog
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.HttpTimeout
@@ -173,7 +173,7 @@ object JioSaavnService {
      * the CDN has no 320 rendition to serve for a track that hasn't got one —
      * and the old code did it anyway *and* then reported a flat 320 upstream.
      * A 96kbps stream advertised as 320 clears
-     * [SourceResolver.worthSwapping][com.music.zen.data.sources.SourceResolver]
+     * [SourceResolver.worthSwapping][com.music.bitchord.data.sources.SourceResolver]
      * against YouTube's 160kbps Opus, so the listener was swapped down to a
      * third of the bitrate on a line that claimed twice YouTube's.
      */

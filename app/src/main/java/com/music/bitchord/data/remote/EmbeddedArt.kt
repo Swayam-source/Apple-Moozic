@@ -1,4 +1,4 @@
-package com.music.zen.data.remote
+package com.music.bitchord.data.remote
 
 /**
  * Cover pictures embedded in audio files, read through bounded ranged

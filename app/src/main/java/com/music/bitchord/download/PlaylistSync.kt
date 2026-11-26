@@ -1,4 +1,4 @@
-package com.music.zen.download
+package com.music.bitchord.download
 
 import android.Manifest
 import android.app.Application
@@ -25,13 +25,13 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
-import com.music.zen.R
-import com.music.zen.data.DebugLog as Log
-import com.music.zen.data.LikeState
-import com.music.zen.data.YtMusicRepository
-import com.music.zen.data.model.LikeStatus
-import com.music.zen.data.model.Song
-import com.music.zen.data.settings.AppSettings
+import com.music.bitchord.R
+import com.music.bitchord.data.DebugLog as Log
+import com.music.bitchord.data.LikeState
+import com.music.bitchord.data.YtMusicRepository
+import com.music.bitchord.data.model.LikeStatus
+import com.music.bitchord.data.model.Song
+import com.music.bitchord.data.settings.AppSettings
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -68,7 +68,7 @@ object PlaylistSync {
     private const val PERIODIC_WORK = "playlist_sync"
     private const val ONE_OFF_WORK = "playlist_sync_now"
     private const val LIKED_WORK = "liked_sync_soon"
-    private const val PREFS = "zen_playlist_sync"
+    private const val PREFS = "bitchord_playlist_sync"
     private const val KEY_LAST_CHECK = "last_complete_check"
     private const val CHANNEL_ID = "playlist_updates"
     internal const val KEY_APPROVED = "approved"

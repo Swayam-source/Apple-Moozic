@@ -1,4 +1,4 @@
-package com.music.zen.ui.player
+package com.music.bitchord.ui.player
 
 import androidx.compose.ui.graphics.ImageBitmap
 

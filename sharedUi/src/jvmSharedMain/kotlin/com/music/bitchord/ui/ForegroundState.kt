@@ -1,4 +1,4 @@
-package com.music.zen.ui
+package com.music.bitchord.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -30,7 +30,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
  * animating for either.
  *
  * Playback itself is not gated on this and must not be — audio comes from
- * [com.music.zen.playback.PlaybackService], which is a foreground service
+ * [com.music.bitchord.playback.PlaybackService], which is a foreground service
  * precisely so that it goes on running when this does not.
  */
 @Composable

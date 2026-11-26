@@ -1,7 +1,7 @@
-package com.music.zen.data.canvas
+package com.music.bitchord.data.canvas
 
-import com.music.zen.data.DebugLog as Log
-import com.music.zen.data.Http
+import com.music.bitchord.data.DebugLog as Log
+import com.music.bitchord.data.Http
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

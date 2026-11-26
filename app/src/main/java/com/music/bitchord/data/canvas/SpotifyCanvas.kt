@@ -1,8 +1,8 @@
-package com.music.zen.data.canvas
+package com.music.bitchord.data.canvas
 
-import com.music.zen.data.DebugLog as Log
-import com.music.zen.data.Http
-import com.music.zen.data.settings.AppSettings
+import com.music.bitchord.data.DebugLog as Log
+import com.music.bitchord.data.Http
+import com.music.bitchord.data.settings.AppSettings
 import com.google.protobuf.CodedInputStream
 import com.google.protobuf.CodedOutputStream
 import kotlinx.serialization.json.Json

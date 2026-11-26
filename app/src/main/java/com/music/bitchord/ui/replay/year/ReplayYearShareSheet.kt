@@ -1,4 +1,4 @@
-package com.music.zen.ui.replay.year
+package com.music.bitchord.ui.replay.year
 
 import android.content.Intent
 import android.graphics.Bitmap
@@ -46,11 +46,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.music.zen.R
-import com.music.zen.ui.replay.ShareAction
-import com.music.zen.ui.replay.cacheForSharing
-import com.music.zen.ui.replay.saveToGallery
-import com.music.zen.ui.replay.sendIntent
+import com.music.bitchord.R
+import com.music.bitchord.ui.replay.ShareAction
+import com.music.bitchord.ui.replay.cacheForSharing
+import com.music.bitchord.ui.replay.saveToGallery
+import com.music.bitchord.ui.replay.sendIntent
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 

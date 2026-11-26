@@ -1,8 +1,8 @@
-package com.music.zen
+package com.music.bitchord
 
-import com.music.zen.data.lyrics.LyricLine
-import com.music.zen.data.lyrics.LyricSyllable
-import com.music.zen.data.lyrics.LyricWord
+import com.music.bitchord.data.lyrics.LyricLine
+import com.music.bitchord.data.lyrics.LyricSyllable
+import com.music.bitchord.data.lyrics.LyricWord
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue

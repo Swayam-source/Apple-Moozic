@@ -1,4 +1,4 @@
-package com.music.zen.ui.theme
+package com.music.bitchord.ui.theme
 
 import android.app.Activity
 import android.content.Context

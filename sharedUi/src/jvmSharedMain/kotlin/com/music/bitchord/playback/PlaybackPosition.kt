@@ -1,4 +1,4 @@
-package com.music.zen.playback
+package com.music.bitchord.playback
 
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue

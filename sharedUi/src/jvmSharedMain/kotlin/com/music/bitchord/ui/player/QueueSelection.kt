@@ -1,4 +1,4 @@
-package com.music.zen.ui.player
+package com.music.bitchord.ui.player
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
@@ -44,10 +44,10 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
-import com.music.zen.data.model.QueueEntryIdentity
-import com.music.zen.data.model.Song
-import com.music.zen.sharedui.resources.*
-import com.music.zen.ui.icons.ZenIcons
+import com.music.bitchord.data.model.QueueEntryIdentity
+import com.music.bitchord.data.model.Song
+import com.music.bitchord.sharedui.resources.*
+import com.music.bitchord.ui.icons.BitChordIcons
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.chrisbanes.haze.HazeState
 import kotlinx.coroutines.launch
@@ -172,14 +172,14 @@ internal fun QueueSelectionBar(
         ) {
             // Capped so the three actions stay grouped on tablets and unfolded foldables.
             Row(Modifier.widthIn(max = 520.dp).fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                BulkActionButton(ZenIcons.Plus, stringResource(Res.string.queue_add_to_playlist), enabled) {
+                BulkActionButton(BitChordIcons.Plus, stringResource(Res.string.queue_add_to_playlist), enabled) {
                     run { onAction(songs, QueueBulkAction.PLAYLIST) }
                 }
                 BulkActionButton(Icons.Rounded.Delete, stringResource(Res.string.queue_selection_remove), enabled) {
                     val identities = selectedQueueEntryIdentities(selected, timeline)
                     run { onRemoveSelected(identities); true }
                 }
-                BulkActionButton(ZenIcons.Download, stringResource(Res.string.queue_download), enabled) {
+                BulkActionButton(BitChordIcons.Download, stringResource(Res.string.queue_download), enabled) {
                     run { onAction(songs, QueueBulkAction.DOWNLOAD) }
                 }
             }

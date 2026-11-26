@@ -1,4 +1,4 @@
-package com.music.zen.wear
+package com.music.bitchord.wear
 
 /**
  * The Moozic watch app as one of this phone's outputs, for the output sheet.

@@ -1,6 +1,6 @@
-package com.music.zen.ui.screens
+package com.music.bitchord.ui.screens
 
-import com.music.zen.ui.icons.SfIcons
+import com.music.bitchord.ui.icons.SfIcons
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -42,13 +42,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.music.zen.R
-import com.music.zen.ui.components.PillTextField
-import com.music.zen.wear.WatchAppStatus
-import com.music.zen.wear.WatchEntry
-import com.music.zen.wear.WatchInstaller
-import com.music.zen.wear.WatchPairingState
-import com.music.zen.wear.WatchUpdateState
+import com.music.bitchord.R
+import com.music.bitchord.ui.components.PillTextField
+import com.music.bitchord.wear.WatchAppStatus
+import com.music.bitchord.wear.WatchEntry
+import com.music.bitchord.wear.WatchInstaller
+import com.music.bitchord.wear.WatchPairingState
+import com.music.bitchord.wear.WatchUpdateState
 
 /**
  * Settings' way in: one row, with what is true of the watches right now on the
@@ -76,8 +76,8 @@ internal fun WearOsSettingsRow(onClick: () -> Unit) {
 }
 
 /**
- * Settings → Zen for Wear OS, a page of its own: every watch paired with
- * this phone, whether it has this build of Zen, and the one action that
+ * Settings → BitChord for Wear OS, a page of its own: every watch paired with
+ * this phone, whether it has this build of BitChord, and the one action that
  * makes it so. Install switches the page to the steps for it; Back steps out of
  * them before it leaves the page.
  */

@@ -1,4 +1,4 @@
-package com.music.zen.data.innertube.potoken
+package com.music.bitchord.data.innertube.potoken
 
 import android.content.Context
 import android.os.Handler
@@ -10,8 +10,8 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.annotation.MainThread
 import androidx.collection.ArrayMap
-import com.music.zen.data.Http
-import com.music.zen.BuildConfig
+import com.music.bitchord.data.Http
+import com.music.bitchord.BuildConfig
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
@@ -26,7 +26,7 @@ import kotlinx.coroutines.withTimeout
 import okhttp3.Headers.Companion.toHeaders
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody.Companion.toRequestBody
-import com.music.zen.data.TrackLog
+import com.music.bitchord.data.TrackLog
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 import java.util.Collections
@@ -34,7 +34,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
-import com.music.zen.data.web.QuietWebChromeClient
+import com.music.bitchord.data.web.QuietWebChromeClient
 
 class PoTokenWebView private constructor(
     context: Context,

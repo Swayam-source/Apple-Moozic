@@ -1,14 +1,14 @@
-package com.music.zen.playback
+package com.music.bitchord.playback
 
-import com.music.zen.data.NerdStats
-import com.music.zen.data.TrackLog
-import com.music.zen.data.YtMusicRepository
-import com.music.zen.data.listentogether.ListenTogether
-import com.music.zen.data.settings.AppSettings
-import com.music.zen.data.sources.SourceResolver
-import com.music.zen.data.sources.SourceStream
-import com.music.zen.data.sources.StreamFormat
-import com.music.zen.data.sources.TrackMatcher
+import com.music.bitchord.data.NerdStats
+import com.music.bitchord.data.TrackLog
+import com.music.bitchord.data.YtMusicRepository
+import com.music.bitchord.data.listentogether.ListenTogether
+import com.music.bitchord.data.settings.AppSettings
+import com.music.bitchord.data.sources.SourceResolver
+import com.music.bitchord.data.sources.SourceStream
+import com.music.bitchord.data.sources.StreamFormat
+import com.music.bitchord.data.sources.TrackMatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Deferred
@@ -155,7 +155,7 @@ object DirectSourceGate {
      */
     fun isStreamReady(item: androidx.media3.common.MediaItem): Boolean {
         val uri = item.localConfiguration?.uri ?: return true
-        if (uri.scheme != "zen") return true
+        if (uri.scheme != "bitchord") return true
         val now = android.os.SystemClock.elapsedRealtime()
         readyCheck?.let { (id, ready, at) ->
             if (id == item.mediaId && (ready || now - at < READY_RECHECK_MS)) return ready

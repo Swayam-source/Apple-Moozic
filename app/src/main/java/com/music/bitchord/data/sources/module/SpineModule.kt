@@ -1,4 +1,4 @@
-package com.music.zen.data.sources.module
+package com.music.bitchord.data.sources.module
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

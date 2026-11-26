@@ -1,7 +1,7 @@
-package com.music.zen.ui.player
+package com.music.bitchord.ui.player
 
-import com.music.zen.data.model.QueueTier
-import com.music.zen.data.model.Song
+import com.music.bitchord.data.model.QueueTier
+import com.music.bitchord.data.model.Song
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test

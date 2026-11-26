@@ -1,4 +1,4 @@
-package com.music.zen.ui.player
+package com.music.bitchord.ui.player
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,13 +9,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.music.zen.data.lyrics.LyricLine
-import com.music.zen.data.lyrics.LyricsSource
-import com.music.zen.data.model.Song
-import com.music.zen.playback.PlaybackPosition
-import com.music.zen.sharedui.resources.*
-import com.music.zen.ui.LyricsProviderState
-import com.music.zen.ui.haptics.rememberHaptics
+import com.music.bitchord.data.lyrics.LyricLine
+import com.music.bitchord.data.lyrics.LyricsSource
+import com.music.bitchord.data.model.Song
+import com.music.bitchord.playback.PlaybackPosition
+import com.music.bitchord.sharedui.resources.*
+import com.music.bitchord.ui.LyricsProviderState
+import com.music.bitchord.ui.haptics.rememberHaptics
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.hazeSource
 import org.jetbrains.compose.resources.stringArrayResource

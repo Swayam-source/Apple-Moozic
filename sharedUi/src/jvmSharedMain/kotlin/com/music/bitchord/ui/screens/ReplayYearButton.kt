@@ -1,4 +1,4 @@
-package com.music.zen.ui.screens
+package com.music.bitchord.ui.screens
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
@@ -43,8 +43,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.music.zen.ui.player.PlayerSettings
-import com.music.zen.ui.player.rememberArtworkColors
+import com.music.bitchord.ui.player.PlayerSettings
+import com.music.bitchord.ui.player.rememberArtworkColors
 import kotlinx.coroutines.delay
 import kotlin.math.abs
 import kotlin.math.max

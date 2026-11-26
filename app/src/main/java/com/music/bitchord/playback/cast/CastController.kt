@@ -1,4 +1,4 @@
-package com.music.zen.playback.cast
+package com.music.bitchord.playback.cast
 
 import android.content.Context
 import android.util.Log
@@ -27,7 +27,7 @@ import java.util.concurrent.Executors
  * Everything here is main-thread, like the router it wraps.
  */
 object CastController {
-    private const val TAG = "ZenCast"
+    private const val TAG = "BitChordCast"
 
     data class Device(
         val id: String,

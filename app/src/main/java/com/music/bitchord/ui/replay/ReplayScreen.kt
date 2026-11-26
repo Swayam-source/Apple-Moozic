@@ -1,4 +1,4 @@
-package com.music.zen.ui.replay
+package com.music.bitchord.ui.replay
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
@@ -54,18 +54,18 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
-import com.music.zen.R
-import com.music.zen.data.model.ROW_ART_PX
-import com.music.zen.data.model.Song
-import com.music.zen.data.model.artworkAt
-import com.music.zen.data.stats.ArtistFacts
-import com.music.zen.data.stats.ReplayPeriod
-import com.music.zen.data.stats.ReplaySummary
-import com.music.zen.ui.components.PAGE_GUTTER
-import com.music.zen.ui.icons.ZenIcons
-import com.music.zen.ui.player.MeshGradientBackground
-import com.music.zen.ui.player.rememberArtworkColors
-import com.music.zen.ui.theme.AccentRed
+import com.music.bitchord.R
+import com.music.bitchord.data.model.ROW_ART_PX
+import com.music.bitchord.data.model.Song
+import com.music.bitchord.data.model.artworkAt
+import com.music.bitchord.data.stats.ArtistFacts
+import com.music.bitchord.data.stats.ReplayPeriod
+import com.music.bitchord.data.stats.ReplaySummary
+import com.music.bitchord.ui.components.PAGE_GUTTER
+import com.music.bitchord.ui.icons.BitChordIcons
+import com.music.bitchord.ui.player.MeshGradientBackground
+import com.music.bitchord.ui.player.rememberArtworkColors
+import com.music.bitchord.ui.theme.AccentRed
 
 /** Whether the Replay page is being shown in dark mode (vs light). */
 @Composable
@@ -193,7 +193,7 @@ fun ReplayScreen(
                         )
                     }
                     item("open") {
-                        ReplayActionRow(ZenIcons.Play, stringResource(R.string.play_your_replay), dark) {
+                        ReplayActionRow(BitChordIcons.Play, stringResource(R.string.play_your_replay), dark) {
                             onOpenStory(ReplayStoryPage.INTRO)
                         }
                     }
@@ -291,7 +291,7 @@ private fun Heading(state: ReplayState, onPeriodChange: (ReplayPeriod) -> Unit, 
  * The four stretches a Replay can cover.
  *
  * Weeks and months rather than a date range, because that is the granularity the
- * listening is actually kept at — see [com.music.zen.data.stats.ListeningStats].
+ * listening is actually kept at — see [com.music.bitchord.data.stats.ListeningStats].
  * A "last 30 days" chip would have to be answered from monthly totals, which
  * would make it a lie for the first thirty days of every month.
  */
@@ -430,7 +430,7 @@ private fun ReplayActionRow(icon: ImageVector, label: String, dark: Boolean, onC
             modifier = Modifier.weight(1f),
         )
         Icon(
-            imageVector = ZenIcons.ChevronRight,
+            imageVector = BitChordIcons.ChevronRight,
             contentDescription = null,
             tint = textColor.copy(alpha = 0.5f),
             modifier = Modifier.size(16.dp),
@@ -616,7 +616,7 @@ private fun EmptyReplay(period: ReplayPeriod, dark: Boolean) {
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Icon(
-            imageVector = ZenIcons.Clock,
+            imageVector = BitChordIcons.Clock,
             contentDescription = null,
             tint = emptyVariant,
             modifier = Modifier.size(44.dp),

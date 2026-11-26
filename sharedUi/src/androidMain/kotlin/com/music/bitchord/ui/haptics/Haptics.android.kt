@@ -1,4 +1,4 @@
-package com.music.zen.ui.haptics
+package com.music.bitchord.ui.haptics
 
 import android.content.Context
 import android.database.ContentObserver

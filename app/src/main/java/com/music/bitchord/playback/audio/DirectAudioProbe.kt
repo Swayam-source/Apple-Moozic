@@ -8,7 +8,7 @@
  *      http://www.apache.org/licenses/LICENSE-2.0
  */
 
-package com.music.zen.playback.audio
+package com.music.bitchord.playback.audio
 
 import android.media.AudioAttributes
 import android.media.AudioDeviceInfo

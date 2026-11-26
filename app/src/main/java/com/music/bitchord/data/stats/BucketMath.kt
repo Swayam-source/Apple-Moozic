@@ -1,4 +1,4 @@
-package com.music.zen.data.stats
+package com.music.bitchord.data.stats
 
 import kotlinx.serialization.json.Json
 import java.security.MessageDigest

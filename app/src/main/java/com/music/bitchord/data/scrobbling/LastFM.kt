@@ -1,4 +1,4 @@
-package com.music.zen.data.scrobbling
+package com.music.bitchord.data.scrobbling
 
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp

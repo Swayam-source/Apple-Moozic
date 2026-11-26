@@ -1,16 +1,16 @@
-package com.music.zen.playback
+package com.music.bitchord.playback
 
 import android.net.Uri
 import android.util.Log
-import com.music.zen.data.TrackLog
+import com.music.bitchord.data.TrackLog
 import androidx.media3.common.C
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.DataSource
 import androidx.media3.datasource.DataSpec
 import androidx.media3.datasource.HttpDataSource
 import androidx.media3.datasource.TransferListener
-import com.music.zen.data.innertube.PlayerClient
-import com.music.zen.data.innertube.StreamResolver
+import com.music.bitchord.data.innertube.PlayerClient
+import com.music.bitchord.data.innertube.StreamResolver
 import java.io.InterruptedIOException
 
 /**

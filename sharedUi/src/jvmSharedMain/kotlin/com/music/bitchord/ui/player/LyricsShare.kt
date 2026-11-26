@@ -1,4 +1,4 @@
-package com.music.zen.ui.player
+package com.music.bitchord.ui.player
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -34,15 +34,15 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.music.zen.data.lyrics.LyricLine
-import com.music.zen.data.model.Song
-import com.music.zen.sharedui.resources.Res
-import com.music.zen.sharedui.resources.cancel
-import com.music.zen.sharedui.resources.lyrics_share_pick_limit
-import com.music.zen.sharedui.resources.share
-import com.music.zen.ui.haptics.Haptic
-import com.music.zen.ui.haptics.Haptics
-import com.music.zen.ui.haptics.rememberHaptics
+import com.music.bitchord.data.lyrics.LyricLine
+import com.music.bitchord.data.model.Song
+import com.music.bitchord.sharedui.resources.Res
+import com.music.bitchord.sharedui.resources.cancel
+import com.music.bitchord.sharedui.resources.lyrics_share_pick_limit
+import com.music.bitchord.sharedui.resources.share
+import com.music.bitchord.ui.haptics.Haptic
+import com.music.bitchord.ui.haptics.Haptics
+import com.music.bitchord.ui.haptics.rememberHaptics
 import org.jetbrains.compose.resources.stringResource
 
 /**

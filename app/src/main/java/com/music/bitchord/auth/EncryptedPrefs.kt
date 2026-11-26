@@ -1,10 +1,10 @@
-package com.music.zen.auth
+package com.music.bitchord.auth
 
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
-import com.music.zen.data.DebugLog as Log
+import com.music.bitchord.data.DebugLog as Log
 
 /**
  * Encrypted preferences that repair themselves when their keyset stops

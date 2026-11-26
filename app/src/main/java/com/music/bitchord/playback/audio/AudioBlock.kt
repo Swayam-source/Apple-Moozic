@@ -1,4 +1,4 @@
-package com.music.zen.playback.audio
+package com.music.bitchord.playback.audio
 
 /**
  * Reusable, audio-thread-owned memory block holding interleaved Float32 PCM samples.

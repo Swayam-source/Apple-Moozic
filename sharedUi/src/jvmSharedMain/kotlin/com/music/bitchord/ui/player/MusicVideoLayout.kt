@@ -1,4 +1,4 @@
-package com.music.zen.ui.player
+package com.music.bitchord.ui.player
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
@@ -33,11 +33,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.MaterialTheme
-import com.music.zen.sharedui.resources.Res
-import com.music.zen.sharedui.resources.video_quality
-import com.music.zen.sharedui.resources.video_quality_auto
-import com.music.zen.ui.haptics.Haptic
-import com.music.zen.ui.haptics.rememberHaptics
+import com.music.bitchord.sharedui.resources.Res
+import com.music.bitchord.sharedui.resources.video_quality
+import com.music.bitchord.sharedui.resources.video_quality_auto
+import com.music.bitchord.ui.haptics.Haptic
+import com.music.bitchord.ui.haptics.rememberHaptics
 import dev.chrisbanes.haze.HazeState
 import org.jetbrains.compose.resources.stringResource
 import androidx.compose.runtime.Composable
@@ -60,8 +60,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
-import com.music.zen.data.model.Song
-import com.music.zen.ui.theme.HideSystemBars
+import com.music.bitchord.data.model.Song
+import com.music.bitchord.ui.theme.HideSystemBars
 import kotlinx.coroutines.delay
 
 /** How long the controls stay over a playing video untouched. */

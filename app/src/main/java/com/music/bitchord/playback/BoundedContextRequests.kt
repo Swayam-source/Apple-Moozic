@@ -1,6 +1,6 @@
-package com.music.zen.playback
+package com.music.bitchord.playback
 
-import com.music.zen.data.model.Song
+import com.music.bitchord.data.model.Song
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

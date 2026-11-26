@@ -1,4 +1,4 @@
-package com.music.zen.playback.audio
+package com.music.bitchord.playback.audio
 
 /**
  * Supported raw PCM sample encodings for audio stream input decoding and output formatting.

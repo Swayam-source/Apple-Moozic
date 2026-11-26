@@ -1,4 +1,4 @@
-package com.music.zen.playback.cast
+package com.music.bitchord.playback.cast
 
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem

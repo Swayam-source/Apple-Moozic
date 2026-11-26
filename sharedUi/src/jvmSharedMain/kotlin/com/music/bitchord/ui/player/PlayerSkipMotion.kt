@@ -1,4 +1,4 @@
-package com.music.zen.ui.player
+package com.music.bitchord.ui.player
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationState
@@ -33,10 +33,10 @@ import androidx.compose.ui.graphics.vector.PathNode
 import androidx.compose.ui.graphics.vector.VectorPath
 import androidx.compose.ui.graphics.vector.toPath
 import androidx.compose.ui.unit.Dp
-import com.music.zen.sharedui.resources.Res
-import com.music.zen.sharedui.resources.ic_player_next
-import com.music.zen.sharedui.resources.ic_player_previous
-import com.music.zen.ui.rememberIsForeground
+import com.music.bitchord.sharedui.resources.Res
+import com.music.bitchord.sharedui.resources.ic_player_next
+import com.music.bitchord.sharedui.resources.ic_player_previous
+import com.music.bitchord.ui.rememberIsForeground
 import kotlinx.coroutines.flow.first
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.vectorResource

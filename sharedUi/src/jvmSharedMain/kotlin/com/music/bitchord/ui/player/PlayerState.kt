@@ -1,8 +1,8 @@
-package com.music.zen.ui.player
+package com.music.bitchord.ui.player
 
 import kotlinx.coroutines.flow.first
 import androidx.compose.runtime.snapshotFlow
-import com.music.zen.playback.PlaybackPosition
+import com.music.bitchord.playback.PlaybackPosition
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
@@ -25,11 +25,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImagePainter
 import coil3.memory.MemoryCache
 import coil3.request.ImageRequest
-import com.music.zen.data.canvas.CanvasArtwork
-import com.music.zen.data.canvas.CanvasSource
-import com.music.zen.data.model.PLAYER_ART_MEMORY_CACHE_KEY_EXTRA
-import com.music.zen.data.model.Song
-import com.music.zen.data.model.artworkAt
+import com.music.bitchord.data.canvas.CanvasArtwork
+import com.music.bitchord.data.canvas.CanvasSource
+import com.music.bitchord.data.model.PLAYER_ART_MEMORY_CACHE_KEY_EXTRA
+import com.music.bitchord.data.model.Song
+import com.music.bitchord.data.model.artworkAt
 import kotlin.math.abs
 import kotlin.math.roundToInt
 import kotlinx.coroutines.CoroutineScope

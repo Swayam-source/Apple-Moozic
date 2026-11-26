@@ -1,7 +1,7 @@
-package com.music.zen.auth
+package com.music.bitchord.auth
 
 import android.webkit.CookieManager
-import com.music.zen.data.DebugLog as Log
+import com.music.bitchord.data.DebugLog as Log
 
 /** What the in-app browser is being opened for. */
 enum class WebSessionMode {

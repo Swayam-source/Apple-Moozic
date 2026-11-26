@@ -1,15 +1,15 @@
-package com.music.zen.ui
+package com.music.bitchord.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.music.zen.data.AppleCatalogue
-import com.music.zen.data.YtMusicRepository
-import com.music.zen.data.canvas.AppleArtistArtRepository
-import com.music.zen.data.canvas.CanvasArtwork
-import com.music.zen.data.canvas.CanvasRepository
-import com.music.zen.data.settings.AppSettings
-import com.music.zen.download.Downloads
+import com.music.bitchord.data.AppleCatalogue
+import com.music.bitchord.data.YtMusicRepository
+import com.music.bitchord.data.canvas.AppleArtistArtRepository
+import com.music.bitchord.data.canvas.CanvasArtwork
+import com.music.bitchord.data.canvas.CanvasRepository
+import com.music.bitchord.data.settings.AppSettings
+import com.music.bitchord.download.Downloads
 
 /** The shared pages' settings and downloads, answered from the phone's own stores. */
 object AndroidAppUiHost : AppUiHost {

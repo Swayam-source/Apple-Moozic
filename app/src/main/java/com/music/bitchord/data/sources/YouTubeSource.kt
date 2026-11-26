@@ -1,10 +1,10 @@
-package com.music.zen.data.sources
+package com.music.bitchord.data.sources
 
-import com.music.zen.data.YtMusicRepository
-import com.music.zen.data.innertube.StreamResolver
-import com.music.zen.data.model.SearchFilter
-import com.music.zen.data.model.SearchResult
-import com.music.zen.data.model.Song
+import com.music.bitchord.data.YtMusicRepository
+import com.music.bitchord.data.innertube.StreamResolver
+import com.music.bitchord.data.model.SearchFilter
+import com.music.bitchord.data.model.SearchResult
+import com.music.bitchord.data.model.Song
 
 /**
  * YouTube Music, wrapped so it can be ordered alongside everything else.

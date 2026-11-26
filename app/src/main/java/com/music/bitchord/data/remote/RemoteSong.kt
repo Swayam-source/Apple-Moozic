@@ -1,7 +1,7 @@
-package com.music.zen.data.remote
+package com.music.bitchord.data.remote
 
-import com.music.zen.data.model.PlaybackSourceType
-import com.music.zen.data.model.Song
+import com.music.bitchord.data.model.PlaybackSourceType
+import com.music.bitchord.data.model.Song
 
 /**
  * What every remote file library names a track: `Artist - Title`, or just

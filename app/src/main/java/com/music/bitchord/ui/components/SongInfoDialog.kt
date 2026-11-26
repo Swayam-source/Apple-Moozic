@@ -1,4 +1,4 @@
-package com.music.zen.ui.components
+package com.music.bitchord.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -23,11 +23,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.music.zen.R
-import com.music.zen.data.SongInfo
-import com.music.zen.data.SongInfoRepository
-import com.music.zen.data.compactCount
-import com.music.zen.data.model.Song
+import com.music.bitchord.R
+import com.music.bitchord.data.SongInfo
+import com.music.bitchord.data.SongInfoRepository
+import com.music.bitchord.data.compactCount
+import com.music.bitchord.data.model.Song
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
 

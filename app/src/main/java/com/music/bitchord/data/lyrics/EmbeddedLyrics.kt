@@ -1,8 +1,8 @@
-package com.music.zen.data.lyrics
+package com.music.bitchord.data.lyrics
 
 import android.content.Context
 import android.net.Uri
-import com.music.zen.data.DebugLog as Log
+import com.music.bitchord.data.DebugLog as Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream

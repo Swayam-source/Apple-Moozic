@@ -1,6 +1,6 @@
-package com.music.zen.ui.player
+package com.music.bitchord.ui.player
 
-import com.music.zen.data.lyrics.LyricLine
+import com.music.bitchord.data.lyrics.LyricLine
 
 /** Keep every unfinished vocal visible, including overlaps spanning more than two rows. */
 internal fun activeLyricRows(lines: List<LyricLine>, positionMs: Long): List<Int> {

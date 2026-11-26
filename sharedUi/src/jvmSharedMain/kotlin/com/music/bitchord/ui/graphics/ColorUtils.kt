@@ -1,4 +1,4 @@
-package com.music.zen.ui.graphics
+package com.music.bitchord.ui.graphics
 
 import kotlin.math.abs
 import kotlin.math.max

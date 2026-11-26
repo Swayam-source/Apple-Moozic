@@ -8,18 +8,18 @@
  *      http://www.apache.org/licenses/LICENSE-2.0
  */
 
-package com.music.zen.playback
+package com.music.bitchord.playback
 
 import android.media.AudioDeviceInfo
 import android.media.AudioFormat
 import android.media.AudioManager
-import com.music.zen.data.settings.OutputPcmMode
-import com.music.zen.playback.audio.DirectAudioProbe
-import com.music.zen.playback.audio.FallbackReason
-import com.music.zen.playback.audio.OutputNegotiationResult
-import com.music.zen.playback.audio.PcmEncoding
-import com.music.zen.playback.audio.TransportType
-import com.music.zen.playback.audio.bluetooth.BluetoothTelemetry
+import com.music.bitchord.data.settings.OutputPcmMode
+import com.music.bitchord.playback.audio.DirectAudioProbe
+import com.music.bitchord.playback.audio.FallbackReason
+import com.music.bitchord.playback.audio.OutputNegotiationResult
+import com.music.bitchord.playback.audio.PcmEncoding
+import com.music.bitchord.playback.audio.TransportType
+import com.music.bitchord.playback.audio.bluetooth.BluetoothTelemetry
 import kotlinx.coroutines.flow.MutableStateFlow
 
 /**

@@ -1,10 +1,10 @@
-package com.music.zen.data.sources.addon
+package com.music.bitchord.data.sources.addon
 
-import com.music.zen.data.Http
-import com.music.zen.data.TrackLog
-import com.music.zen.data.settings.AppSettings
-import com.music.zen.data.sources.DeviceCodecs
-import com.music.zen.data.sources.module.SharedCalls
+import com.music.bitchord.data.Http
+import com.music.bitchord.data.TrackLog
+import com.music.bitchord.data.settings.AppSettings
+import com.music.bitchord.data.sources.DeviceCodecs
+import com.music.bitchord.data.sources.module.SharedCalls
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit
  * One addon server, and every question this app knows how to ask it.
  *
  * Three endpoints, all GETs returning JSON, none of them executing anything on
- * this side. Compare [ModuleManager][com.music.zen.data.sources.module.ModuleManager],
+ * this side. Compare [ModuleManager][com.music.bitchord.data.sources.module.ModuleManager],
  * which has to fetch an index, download a JavaScript file per entry and stand
  * up a QuickJS interpreter to ask the same two questions — the whole of that
  * apparatus is what this protocol replaces with a URL.
@@ -73,8 +73,8 @@ class AddonClient(rawBaseUrl: String, private val pickedQuality: String? = null)
      * Whether this addon only answers the genuine app, so every request has to
      * carry [AddonAuth]'s token and proof.
      *
-     * Learned rather than configured: the manifest declares `zenAuth`, or
-     * a request comes back `401` with `WWW-Authenticate: Zen`. Until then
+     * Learned rather than configured: the manifest declares `bitchordAuth`, or
+     * a request comes back `401` with `WWW-Authenticate: BitChord`. Until then
      * nothing is sent, so an addon that never asked never sees a credential.
      */
     @Volatile
@@ -105,7 +105,7 @@ class AddonClient(rawBaseUrl: String, private val pickedQuality: String? = null)
                 val declared = manifest.resources.joinToString(", ")
                 throw AddonException("This addon declares $declared — Moozic needs search")
             }
-            if (manifest.requiresZenAuth) authRequired = true
+            if (manifest.requiresBitChordAuth) authRequired = true
             manifest
         }.recoverCatching { failure ->
             // A manifest 404 is not "no such track", it is "no addon here" —
@@ -295,7 +295,7 @@ class AddonClient(rawBaseUrl: String, private val pickedQuality: String? = null)
      *    Atmos-capable addon into a miss. `auto` is try-Atmos-then-stereo.
      *  - **It is asked for, not asserted.** Both gates are the same two the
      *    playback side enforces in
-     *    [ModuleSource.unplayable][com.music.zen.data.sources.ModuleSource.unplayable],
+     *    [ModuleSource.unplayable][com.music.bitchord.data.sources.ModuleSource.unplayable],
      *    so an addon is only ever offered Atmos when an Atmos answer would
      *    actually be accepted. With either gate shut the parameter is absent
      *    entirely and the addon's own default — stereo — stands.
@@ -369,7 +369,7 @@ class AddonClient(rawBaseUrl: String, private val pickedQuality: String? = null)
      * is precisely the miss the caller is equipped to handle and not something
      * to log as a fault.
      *
-     * A `401` carrying `WWW-Authenticate: Zen` is the addon asking for
+     * A `401` carrying `WWW-Authenticate: BitChord` is the addon asking for
      * [AddonAuth]. The request is sent again at once with credentials. If an
      * addon reports the token `expired` or `invalid_token`, one fresh token is
      * fetched and the request tried once more. Any other refusal is final and
@@ -418,7 +418,7 @@ class AddonClient(rawBaseUrl: String, private val pickedQuality: String? = null)
                     // sends people to re-paste a URL that was always correct.
                     response.code >= 500 -> throw AddonUnavailable("HTTP ${response.code}")
                     response.code != 429 -> throw AddonException("HTTP ${response.code}")
-                    attempt >= MAX_RETRIES -> throw AddonUnavailable("This addon is rate limiting Zen")
+                    attempt >= MAX_RETRIES -> throw AddonUnavailable("This addon is rate limiting BitChord")
                     else -> retryAfterMs(response.header("Retry-After"), attempt)
                 }
             }
@@ -499,7 +499,7 @@ class AddonClient(rawBaseUrl: String, private val pickedQuality: String? = null)
     companion object {
         private const val TAG = "Moozic"
 
-        /** The tiers [AddonSource][com.music.zen.data.sources.AddonSource] asks in. */
+        /** The tiers [AddonSource][com.music.bitchord.data.sources.AddonSource] asks in. */
         const val TIER_LOSSLESS = "LOSSLESS"
         const val TIER_HIGH = "HIGH"
         const val TIER_LOW = "LOW"
@@ -587,12 +587,12 @@ class AddonClient(rawBaseUrl: String, private val pickedQuality: String? = null)
         /** [body]'s "send again now": an auth handshake, not back-pressure. */
         private const val RETRY_NOW = -1L
 
-        /** The `error="..."` parameter of a `WWW-Authenticate: Zen` challenge. */
+        /** The `error="..."` parameter of a `WWW-Authenticate: BitChord` challenge. */
         private val AUTH_ERROR = Regex("""error="([^"]*)"""")
         private const val BACKOFF_BASE_MS = 500L
         private const val BACKOFF_CAP_MS = 8_000L
 
-        private val USER_AGENT = "Zen/v${com.music.zen.BuildConfig.VERSION_NAME}"
+        private val USER_AGENT = "BitChord/v${com.music.bitchord.BuildConfig.VERSION_NAME}"
 
         /**
          * What [probeSearch] asks for. Deliberately an ordinary word rather
@@ -633,7 +633,7 @@ class AddonClient(rawBaseUrl: String, private val pickedQuality: String? = null)
  * Something about this addon or its URL that trying again will not fix — a
  * document that is not a manifest, an addon that cannot stream, a token that
  * is no longer accepted. Surfaced as
- * [SourceHealth.Rejected][com.music.zen.data.sources.SourceHealth.Rejected],
+ * [SourceHealth.Rejected][com.music.bitchord.data.sources.SourceHealth.Rejected],
  * with a line fit to show a user.
  */
 class AddonException(message: String) : Exception(message)
@@ -642,7 +642,7 @@ class AddonException(message: String) : Exception(message)
  * The addon is momentarily not answering — down, overloaded, rate limiting.
  * Worth keeping switched on and worth asking again on the next track, which is
  * the whole distinction
- * [SourceHealth][com.music.zen.data.sources.SourceHealth] draws.
+ * [SourceHealth][com.music.bitchord.data.sources.SourceHealth] draws.
  */
 class AddonUnavailable(message: String) : Exception(message)
 

@@ -1,6 +1,6 @@
-package com.music.zen.ui.components
+package com.music.bitchord.ui.components
 
-import com.music.zen.R
+import com.music.bitchord.R
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -52,21 +52,21 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
-import com.music.zen.data.model.ROW_ART_PX
-import com.music.zen.data.model.Song
-import com.music.zen.data.model.artworkAt
-import com.music.zen.data.settings.AppSettings
-import com.music.zen.ui.components.thumbnailBorder
-import com.music.zen.ui.haptics.Haptic
-import com.music.zen.ui.haptics.rememberHaptics
-import com.music.zen.playback.MusicOnlyPlayback
-import com.music.zen.ui.player.PlayerDock
-import com.music.zen.ui.player.PlayerSkipGlyph
-import com.music.zen.ui.player.PlayerSkipMotion
-import com.music.zen.ui.player.rememberPlayerSkipMotion
-import com.music.zen.ui.player.PlayerPlayPauseGlyph
-import com.music.zen.ui.player.rememberPlayerPlayPauseMotion
-import com.music.zen.ui.player.AndroidMusicVideo
+import com.music.bitchord.data.model.ROW_ART_PX
+import com.music.bitchord.data.model.Song
+import com.music.bitchord.data.model.artworkAt
+import com.music.bitchord.data.settings.AppSettings
+import com.music.bitchord.ui.components.thumbnailBorder
+import com.music.bitchord.ui.haptics.Haptic
+import com.music.bitchord.ui.haptics.rememberHaptics
+import com.music.bitchord.playback.MusicOnlyPlayback
+import com.music.bitchord.ui.player.PlayerDock
+import com.music.bitchord.ui.player.PlayerSkipGlyph
+import com.music.bitchord.ui.player.PlayerSkipMotion
+import com.music.bitchord.ui.player.rememberPlayerSkipMotion
+import com.music.bitchord.ui.player.PlayerPlayPauseGlyph
+import com.music.bitchord.ui.player.rememberPlayerPlayPauseMotion
+import com.music.bitchord.ui.player.AndroidMusicVideo
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.animation.core.animateDpAsState
@@ -359,7 +359,7 @@ fun MiniPlayer(
     onNext: () -> Unit,
     onPrevious: () -> Unit,
     onExpand: () -> Unit,
-    /** @see com.music.zen.data.listentogether.ListenTogether.State.controlsLocked */
+    /** @see com.music.bitchord.data.listentogether.ListenTogether.State.controlsLocked */
     controlsLocked: Boolean = false,
     onBlockedControl: () -> Unit = {},
     /** Where the player's artwork lands when it closes into this bar. */

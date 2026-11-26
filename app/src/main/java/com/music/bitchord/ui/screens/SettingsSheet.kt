@@ -1,7 +1,7 @@
-package com.music.zen.ui.screens
+package com.music.bitchord.ui.screens
 
-import com.music.zen.ui.icons.SfIcons
-import com.music.zen.wear.WatchInstaller
+import com.music.bitchord.ui.icons.SfIcons
+import com.music.bitchord.wear.WatchInstaller
 import android.content.Context
 import androidx.annotation.StringRes
 import android.content.Intent
@@ -83,7 +83,7 @@ import androidx.compose.material.icons.rounded.Wifi
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatDelegate
-import com.music.zen.data.lyrics.translationLanguageName
+import com.music.bitchord.data.lyrics.translationLanguageName
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -92,7 +92,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
-import com.music.zen.ui.components.IosSwitch
+import com.music.bitchord.ui.components.IosSwitch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -131,7 +131,7 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.viewinterop.AndroidView
-import com.music.zen.AppIcon
+import com.music.bitchord.AppIcon
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
@@ -146,36 +146,36 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.SingletonImageLoader
 import coil3.compose.AsyncImage
-import com.music.zen.ui.components.PillSegmentedControl
-import com.music.zen.ui.components.isGlassSupported
-import com.music.zen.ui.components.languageDisplayNameRes
-import com.music.zen.ui.components.MessageState
-import com.music.zen.ui.components.SearchField
-import com.music.zen.ui.components.thumbnailBorder
-import com.music.zen.ui.performance.resolvePerformanceRefreshRate
-import com.music.zen.ui.performance.supportedPerformanceRefreshRates
-import com.music.zen.data.model.Account
-import com.music.zen.data.LocalMediaRepository
-import com.music.zen.data.NerdStats
-import com.music.zen.data.scrobbling.LastFM
-import com.music.zen.data.listentogether.ListenTogether
-import com.music.zen.data.settings.AppSettings
-import com.music.zen.data.settings.OutputPcmMode
-import com.music.zen.data.settings.BitPerfectMode
-import com.music.zen.playback.AudioOutputStatus
-import com.music.zen.playback.audio.bitperfect.BitPerfectOutput
-import com.music.zen.data.settings.AutomixPerformanceMode
-import com.music.zen.playback.smart.AutomixModels
-import com.music.zen.R
-import com.music.zen.data.sources.DeviceCodecs
-import com.music.zen.data.settings.AudioQuality
-import com.music.zen.data.settings.DownloadQuality
-import com.music.zen.data.settings.ThemeMode
-import com.music.zen.data.settings.AppFont
-import com.music.zen.data.settings.PlayerTheme
-import com.music.zen.data.stats.Backup
-import com.music.zen.playback.AudioCache
-import com.music.zen.ui.player.fullBleedArtworkAvailable
+import com.music.bitchord.ui.components.PillSegmentedControl
+import com.music.bitchord.ui.components.isGlassSupported
+import com.music.bitchord.ui.components.languageDisplayNameRes
+import com.music.bitchord.ui.components.MessageState
+import com.music.bitchord.ui.components.SearchField
+import com.music.bitchord.ui.components.thumbnailBorder
+import com.music.bitchord.ui.performance.resolvePerformanceRefreshRate
+import com.music.bitchord.ui.performance.supportedPerformanceRefreshRates
+import com.music.bitchord.data.model.Account
+import com.music.bitchord.data.LocalMediaRepository
+import com.music.bitchord.data.NerdStats
+import com.music.bitchord.data.scrobbling.LastFM
+import com.music.bitchord.data.listentogether.ListenTogether
+import com.music.bitchord.data.settings.AppSettings
+import com.music.bitchord.data.settings.OutputPcmMode
+import com.music.bitchord.data.settings.BitPerfectMode
+import com.music.bitchord.playback.AudioOutputStatus
+import com.music.bitchord.playback.audio.bitperfect.BitPerfectOutput
+import com.music.bitchord.data.settings.AutomixPerformanceMode
+import com.music.bitchord.playback.smart.AutomixModels
+import com.music.bitchord.R
+import com.music.bitchord.data.sources.DeviceCodecs
+import com.music.bitchord.data.settings.AudioQuality
+import com.music.bitchord.data.settings.DownloadQuality
+import com.music.bitchord.data.settings.ThemeMode
+import com.music.bitchord.data.settings.AppFont
+import com.music.bitchord.data.settings.PlayerTheme
+import com.music.bitchord.data.stats.Backup
+import com.music.bitchord.playback.AudioCache
+import com.music.bitchord.ui.player.fullBleedArtworkAvailable
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 import java.util.Locale
@@ -516,7 +516,7 @@ fun SettingsScreen(
             // it switched the *module source* on and off, not lossless. Sources
             // above lists that as the module's own row now. Lossless itself is no
             // longer a setting at all — see
-            // [SourceResolver.requestForNow][com.music.zen.data.sources.SourceResolver.requestForNow].
+            // [SourceResolver.requestForNow][com.music.bitchord.data.sources.SourceResolver.requestForNow].
             SearchableSettingsGroup(search, header = stringResource(R.string.audio_quality)) {
                 val sourceTitle = stringResource(R.string.source)
                 val sourceSubtitle = stringResource(R.string.sources_subtitle)
@@ -570,7 +570,7 @@ fun SettingsScreen(
                 //
                 // Greyed rather than hidden where the device can't decode E-AC-3.
                 // A missing row reads as a feature the app doesn't have; a disabled
-                // one with a reason under it is the difference between "Zen
+                // one with a reason under it is the difference between "BitChord
                 // has no Atmos" and "this phone has no Dolby decoder", and only the
                 // second is true. The stored preference is left untouched either
                 // way — see [AppSettings.dolbyAtmos].
@@ -647,7 +647,7 @@ fun SettingsScreen(
                     title = exportDownloadsTitle,
                     checked = exportDownloads,
                     onCheckedChange = AppSettings::setExportDownloads,
-                    subtitle = "Music/Zen".takeIf { exportDownloads },
+                    subtitle = "Music/BitChord".takeIf { exportDownloads },
                 )
             }
             val syncPlaylistsTitle = stringResource(R.string.sync_downloaded_playlists)
@@ -1009,7 +1009,7 @@ fun SettingsScreen(
                 }
             }
             // The system panel is not listed here as well. A device with a
-            // Dolby or Dirac panel has something Zen cannot reproduce and
+            // Dolby or Dirac panel has something BitChord cannot reproduce and
             // keeps its row — but one level in, at the foot of the equaliser
             // screen, rather than as a second equaliser entry alongside ours.
             val equalizerTitle = stringResource(R.string.equalizer)

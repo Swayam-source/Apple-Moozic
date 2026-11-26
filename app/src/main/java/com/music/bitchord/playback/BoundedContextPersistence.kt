@@ -1,11 +1,11 @@
-package com.music.zen.playback
+package com.music.bitchord.playback
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.music.zen.data.model.ArtistRef
-import com.music.zen.data.model.PlaybackSourceType
-import com.music.zen.data.model.QueueTier
-import com.music.zen.data.model.Song
+import com.music.bitchord.data.model.ArtistRef
+import com.music.bitchord.data.model.PlaybackSourceType
+import com.music.bitchord.data.model.QueueTier
+import com.music.bitchord.data.model.Song
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -657,7 +657,7 @@ object BoundedContextPersistence {
     private const val MAX_PHYSICAL_ENTRIES = 100_000
     private const val MAX_HISTORY = 25
     private const val MAX_CONTEXT_UPCOMING = 25
-    private const val PREFS_NAME = "zen_bounded_context"
+    private const val PREFS_NAME = "bitchord_bounded_context"
     private const val KEY_STATE = "state"
     private const val KEY_CURRENT_ENTRY_ID = "current_entry_id"
     private const val KEY_POSITION = "position"

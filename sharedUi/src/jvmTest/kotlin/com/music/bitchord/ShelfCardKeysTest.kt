@@ -1,7 +1,7 @@
-package com.music.zen
+package com.music.bitchord
 
-import com.music.zen.data.model.ShelfItem
-import com.music.zen.ui.screens.shelfCardKeys
+import com.music.bitchord.data.model.ShelfItem
+import com.music.bitchord.ui.screens.shelfCardKeys
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

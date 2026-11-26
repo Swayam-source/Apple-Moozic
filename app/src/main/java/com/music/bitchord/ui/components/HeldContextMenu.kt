@@ -1,4 +1,4 @@
-package com.music.zen.ui.components
+package com.music.bitchord.ui.components
 
 import android.provider.Settings
 import androidx.activity.compose.BackHandler
@@ -48,10 +48,10 @@ import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.music.zen.data.settings.AppSettings
-import com.music.zen.ui.player.PlayerBackHandler
-import com.music.zen.ui.player.additiveChrome
-import com.music.zen.ui.utils.containSheetGestures
+import com.music.bitchord.data.settings.AppSettings
+import com.music.bitchord.ui.player.PlayerBackHandler
+import com.music.bitchord.ui.player.additiveChrome
+import com.music.bitchord.ui.utils.containSheetGestures
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
 import dev.chrisbanes.haze.materials.HazeMaterials

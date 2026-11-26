@@ -1,4 +1,4 @@
-package com.music.zen.ui.components
+package com.music.bitchord.ui.components
 
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown

@@ -1,4 +1,4 @@
-package com.music.zen.data.scrobbling
+package com.music.bitchord.data.scrobbling
 
 /**
  * Returns the first credited artist for services that do not handle joint

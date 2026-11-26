@@ -1,4 +1,4 @@
-package com.music.zen.auth
+package com.music.bitchord.auth
 
 import android.annotation.SuppressLint
 import android.webkit.CookieManager
@@ -14,13 +14,13 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
-import com.music.zen.data.DebugLog as Log
+import com.music.bitchord.data.DebugLog as Log
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.jsonObject
-import com.music.zen.data.web.QuietWebChromeClient
+import com.music.bitchord.data.web.QuietWebChromeClient
 
 private const val MUSIC_ORIGIN = "https://music.youtube.com"
 

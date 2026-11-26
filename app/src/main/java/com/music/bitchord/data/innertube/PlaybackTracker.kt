@@ -1,7 +1,7 @@
-package com.music.zen.data.innertube
+package com.music.bitchord.data.innertube
 
-import com.music.zen.data.TrackLog
-import com.music.zen.data.settings.AppSettings
+import com.music.bitchord.data.TrackLog
+import com.music.bitchord.data.settings.AppSettings
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

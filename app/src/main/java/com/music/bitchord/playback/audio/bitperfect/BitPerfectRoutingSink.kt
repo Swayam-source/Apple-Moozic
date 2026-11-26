@@ -7,7 +7,7 @@
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  */
-package com.music.zen.playback.audio.bitperfect
+package com.music.bitchord.playback.audio.bitperfect
 
 import android.media.AudioDeviceInfo
 import android.util.Log

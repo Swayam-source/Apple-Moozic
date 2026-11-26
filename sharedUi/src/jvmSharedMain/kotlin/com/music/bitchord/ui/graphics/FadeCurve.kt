@@ -1,4 +1,4 @@
-package com.music.zen.ui.graphics
+package com.music.bitchord.ui.graphics
 
 /**
  * Smootherstep, `6t⁵ − 15t⁴ + 10t³`, for a fade across `t` in 0..1.

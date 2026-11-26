@@ -15,7 +15,7 @@
  * with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.music.zen.playback.smart
+package com.music.bitchord.playback.smart
 
 import android.media.MediaDataSource
 import kotlin.math.PI

@@ -33,7 +33,7 @@ import org.junit.Test
  * The addon protocol, end to end, against a real HTTP server.
  *
  * Everything here is about the seam between somebody else's server and this
- * app: what Zen puts on the wire, and what it does with what comes back.
+ * app: what BitChord puts on the wire, and what it does with what comes back.
  * That is not a seam a hand-rolled fake can test honestly — a fake client
  * would encode the same assumptions the code under test makes, and the bugs
  * worth catching here all live in the gap between an assumption and an actual
@@ -198,7 +198,7 @@ class AddonSourceTest {
         route("/manifest.json", outdatedManifest())
         route("/search", json("""{"tracks":[{"id":"t1","title":"S","artist":"A"}]}"""))
         route("/stream/t1", json("""{"url":"https://cdn/a.flac"}"""))
-        AddonAuth.refuseForTest("Zen couldn't verify this device: The bootloader is unlocked")
+        AddonAuth.refuseForTest("BitChord couldn't verify this device: The bootloader is unlocked")
         val source = source()
 
         assertEquals(1, source.search("S", 10, false, null).size)
@@ -224,14 +224,14 @@ class AddonSourceTest {
     fun `a device the auth service refuses is reported in its words`() = runBlocking {
         route("/manifest.json", manifest())
         AddonAuth.testHeaders = { _, _ ->
-            throw AddonException("Zen couldn't verify this device: The bootloader is unlocked")
+            throw AddonException("BitChord couldn't verify this device: The bootloader is unlocked")
         }
 
         val health = source().health()
 
         assertTrue("expected Rejected, got $health", health is SourceHealth.Rejected)
         assertEquals(
-            "Zen couldn't verify this device: The bootloader is unlocked",
+            "BitChord couldn't verify this device: The bootloader is unlocked",
             (health as SourceHealth.Rejected).reason,
         )
     }
@@ -239,7 +239,7 @@ class AddonSourceTest {
     @Test
     fun `an auth service that can't be reached reads as unreachable`() = runBlocking {
         route("/manifest.json", manifest())
-        AddonAuth.testHeaders = { _, _ -> throw AddonUnavailable("Couldn't reach Zen's addon verification service") }
+        AddonAuth.testHeaders = { _, _ -> throw AddonUnavailable("Couldn't reach BitChord's addon verification service") }
 
         assertTrue(source().health() is SourceHealth.Unreachable)
     }
@@ -250,7 +250,7 @@ class AddonSourceTest {
         route("/manifest.json", manifest())
         route("/search", json("""{"tracks":[{"id":"t1","title":"S","artist":"A"}]}"""))
         route("/stream/t1", json("""{"url":"https://cdn/a.flac"}"""))
-        AddonAuth.refuseForTest("Zen couldn't verify this device: revoked")
+        AddonAuth.refuseForTest("BitChord couldn't verify this device: revoked")
         val source = source()
 
         assertTrue(source.search("S", 10, false, null).isEmpty())

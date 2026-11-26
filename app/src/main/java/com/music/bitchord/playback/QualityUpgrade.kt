@@ -1,14 +1,14 @@
-package com.music.zen.playback
+package com.music.bitchord.playback
 
 import android.net.Uri
 import android.util.Log
-import com.music.zen.data.TrackLog
-import com.music.zen.data.NerdStats
-import com.music.zen.data.sources.SourceResolver
-import com.music.zen.data.sources.SourceStream
-import com.music.zen.data.sources.StreamFormat
-import com.music.zen.data.sources.StreamRequest
-import com.music.zen.data.sources.TrackMatcher
+import com.music.bitchord.data.TrackLog
+import com.music.bitchord.data.NerdStats
+import com.music.bitchord.data.sources.SourceResolver
+import com.music.bitchord.data.sources.SourceStream
+import com.music.bitchord.data.sources.StreamFormat
+import com.music.bitchord.data.sources.StreamRequest
+import com.music.bitchord.data.sources.TrackMatcher
 import kotlinx.coroutines.Deferred
 import java.util.concurrent.ConcurrentHashMap
 
@@ -37,7 +37,7 @@ import java.util.concurrent.ConcurrentHashMap
  *
  * ### How the swap reaches the player
  *
- * The queue holds `zen://watch?v=…` URIs that
+ * The queue holds `bitchord://watch?v=…` URIs that
  * [PlaybackService][PlaybackService]'s resolving data source turns into real
  * URLs at open time. An upgrade re-points that indirection rather than
  * touching the queue: the stream is parked in [forced], the item is replaced
@@ -110,7 +110,7 @@ object QualityUpgrade {
 
     /**
      * Tracks whose upgraded stream is being *proved* rather than played — see
-     * [PlaybackService][com.music.zen.playback.PlaybackService]'s
+     * [PlaybackService][com.music.bitchord.playback.PlaybackService]'s
      * audition.
      *
      * An audition reaches its bytes through the same resolving data source the
@@ -246,7 +246,7 @@ object QualityUpgrade {
     /**
      * Stops offering [mediaId] any further upgrades this session — its last
      * one is what killed it. Called from the recovery path; see
-     * [PlaybackService][com.music.zen.playback.PlaybackService].
+     * [PlaybackService][com.music.bitchord.playback.PlaybackService].
      */
     fun refuseUpgrades(mediaId: String) {
         refused += mediaId
@@ -316,7 +316,7 @@ object QualityUpgrade {
      *
      * @param playingMime what the *decoder* says about the bytes it is being
      *   fed, and it must be this track's — see
-     *   [PlaybackService.audioFormatFor][com.music.zen.playback.PlaybackService].
+     *   [PlaybackService.audioFormatFor][com.music.bitchord.playback.PlaybackService].
      *   The one thing worth not doing here is hunting a lossless copy of a
      *   track that is already playing one, which is exactly what a cache entry
      *   written by a previous session's successful upgrade holds.
@@ -608,11 +608,11 @@ object QualityUpgrade {
      * Whether [mediaId] is *known* to be playing YouTube's own copy, so the
      * player menu should offer to upgrade it rather than to revert it.
      *
-     * The menu used to read this off [OriginalVersion][com.music.zen.playback.OriginalVersion]'s
+     * The menu used to read this off [OriginalVersion][com.music.bitchord.playback.OriginalVersion]'s
      * pin alone, which only a listener's own revert ever sets. An upgrade that
      * is found, swapped in and then fails to prove itself puts the track back
      * on the stream it came from — see the revert path in
-     * [PlaybackService][com.music.zen.playback.PlaybackService] — and
+     * [PlaybackService][com.music.bitchord.playback.PlaybackService] — and
      * nothing pins anything, so the menu went on offering "Revert to original"
      * for a track already playing YouTube's Opus. The row did nothing, and the
      * one row that would have helped was the one it was standing in front of.
@@ -696,7 +696,7 @@ object QualityUpgrade {
     /**
      * Re-opens the upgrade question for [mediaId] because the listener asked
      * it — the player menu's "Upgrade quality", see
-     * [PlaybackService.upgradeQualityNow][com.music.zen.playback.PlaybackService].
+     * [PlaybackService.upgradeQualityNow][com.music.bitchord.playback.PlaybackService].
      *
      * Both sets this clears hold a *no*: asked and answered, or broke on its
      * last swap. Each is the right answer for the automatic path, which has no

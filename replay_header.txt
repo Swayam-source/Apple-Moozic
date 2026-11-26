@@ -1,0 +1,135 @@
+     1	package com.music.bitchord.ui.replay
+     2	
+     3	import android.content.Context
+     4	import android.graphics.Bitmap
+     5	import android.graphics.BitmapShader
+     6	import android.graphics.Canvas
+     7	import android.graphics.Color
+     8	import android.graphics.Matrix
+     9	import android.graphics.Paint
+    10	import android.graphics.RadialGradient
+    11	import android.graphics.RectF
+    12	import android.graphics.Shader
+    13	import android.graphics.Typeface
+    14	import androidx.core.content.res.ResourcesCompat
+    15	import androidx.core.graphics.ColorUtils
+    16	import androidx.palette.graphics.Palette
+    17	import coil3.SingletonImageLoader
+    18	import coil3.request.ImageRequest
+    19	import coil3.request.SuccessResult
+    20	import coil3.request.allowHardware
+    21	import coil3.toBitmap
+    22	import com.music.bitchord.R
+    23	import com.music.bitchord.data.model.CARD_ART_PX
+    24	import com.music.bitchord.data.model.artworkAt
+    25	import com.music.bitchord.data.stats.ReplaySummary
+    26	import kotlinx.coroutines.Dispatchers
+    27	import kotlinx.coroutines.async
+    28	import kotlinx.coroutines.coroutineScope
+    29	import kotlinx.coroutines.withContext
+    30	import java.util.Locale
+    31	
+    32	/**
+    33	 * The Replay as one picture, drawn to a bitmap you can send.
+    34	 *
+    35	 * ## Why this is drawn rather than screenshotted
+    36	 *
+    37	 * The obvious way to share a story card is to capture the one on screen. It is
+    38	 * also the wrong picture: a story card is one fact, and the thing people
+    39	 * actually want to send is the whole year — the minutes *and* the five songs
+    40	 * *and* the five artists. A screenshot would also carry the status bar, the
+    41	 * progress segments and whatever letterboxing that particular phone needed, so
+    42	 * the same Replay would come out looking different on every device.
+    43	 *
+    44	 * ## Why it isn't Compose
+    45	 *
+    46	 * Composing offscreen means laying out a composition that is not attached to a
+    47	 * window and then reading pixels back out of it, which on this app's minimum SDK
+    48	 * is a set of caveats about hardware bitmaps and layer support rather than an
+    49	 * API. A canvas is a canvas on every version, and the layout below is fixed —
+    50	 * nothing here reflows, so nothing here needs a layout system.
+    51	 *
+    52	 * The size is 1080 × 1920: exactly the 9:16 the story cards are held to (see
+    53	 * `StoryFrame`), so what gets shared is the shape of what was being looked at,
+    54	 * and it is the size every messaging app and story surface expects.
+    55	 */
+    56	suspend fun renderReplayPoster(
+    57	    context: Context,
+    58	    summary: ReplaySummary,
+    59	    holder: String,
+    60	    memberSince: String?,
+    61	    /**
+    62	     * Which story card to draw, or null for the whole Replay.
+    63	     *
+    64	     * A card's share button sends the card. That is not the same picture as the
+    65	     * summary and should not be: somebody taps share on the genre card because
+    66	     * the genre surprised them, and receiving a table of every chart instead is
+    67	     * a different message. The Replay page's own button is where "all of it"
+    68	     * lives.
+    69	     */
+    70	    page: ReplayStoryPage? = null,
+    71	): Bitmap = coroutineScope {
+    72	    // The artwork this needs is a dozen small fetches that are all in Coil's
+    73	    // disk cache already — the page they came from has been on screen. Started
+    74	    // together rather than in a loop so a cold cache costs one round trip
+    75	    // rather than twelve.
+    76	    val songs = summary.songRows(POSTER_ROWS)
+    77	    val artists = summary.artistRows(POSTER_ROWS)
+    78	    val albums = summary.albumRows(POSTER_ALBUMS)
+    79	    val covers = (songs + artists + albums)
+    80	        .mapNotNull { it.artworkUrl }
+    81	        .distinct()
+    82	        .associateWith { url -> async(Dispatchers.IO) { loadBitmap(context, url) } }
+    83	        .mapValues { it.value.await() }
+    84	
+    85	    withContext(Dispatchers.Default) {
+    86	        val lit = page?.let { summary.storyArtwork(it) }
+    87	            ?: songs.firstOrNull()?.artworkUrl
+    88	        val bitmap = Bitmap.createBitmap(POSTER_W, POSTER_H, Bitmap.Config.ARGB_8888)
+    89	        val canvas = Canvas(bitmap)
+    90	        val type = Fonts(context)
+    91	
+    92	        // The same cover and the same turn of the colour wheel the card on
+    93	        // screen was drawn with, so the picture is recognisably that card.
+    94	        drawBackdrop(canvas, covers[lit], page?.let(::storyHue) ?: 0f)
+    95	        var y = drawHeader(canvas, context, type, summary, holder, memberSince)
+    96	        if (page == null) {
+    97	            y = drawTotals(canvas, context, type, summary, y)
+    98	            y = drawColumns(canvas, context, type, songs, artists, covers, y)
+    99	            y = drawAlbums(canvas, context, type, albums, covers, y)
+   100	            drawGenres(canvas, context, type, summary, y)
+   101	        } else {
+   102	            y = drawRuns(canvas, type, summary.storyHeadline(context, page), MARGIN, y, CONTENT_W)
+   103	            drawCard(canvas, context, type, summary, page, covers, y + 56f)
+   104	        }
+   105	        drawFooter(canvas, context, type)
+   106	        bitmap
+   107	    }
+   108	}
+   109	
+   110	// ── One story card ──────────────────────────────────────────────────────────
+   111	
+   112	/**
+   113	 * The body of [page], under its headline.
+   114	 *
+   115	 * Deliberately not a pixel copy of the composable — a card on screen fills its
+   116	 * height with weighted spacers and this cannot, since it has no measurement pass
+   117	 * to spend. What it copies is the *content*: the same sentence, the same hero,
+   118	 * the same four runners-up, in the same order. Somebody who sends a card and
+   119	 * somebody who saw it are looking at the same facts.
+   120	 */
+   121	private fun drawCard(
+   122	    canvas: Canvas,
+   123	    context: Context,
+   124	    type: Fonts,
+   125	    summary: ReplaySummary,
+   126	    page: ReplayStoryPage,
+   127	    covers: Map<String, Bitmap?>,
+   128	    top: Float,
+   129	) {
+   130	    when (page) {
+   131	        ReplayStoryPage.INTRO, ReplayStoryPage.MINUTES ->
+   132	            drawCollage(canvas, summary, covers, top)
+   133	        ReplayStoryPage.SONGS ->
+   134	            drawLeaderboard(canvas, context, type, summary.songRows(CARD_ROWS), covers, top, false)
+   135	        ReplayStoryPage.ARTISTS ->

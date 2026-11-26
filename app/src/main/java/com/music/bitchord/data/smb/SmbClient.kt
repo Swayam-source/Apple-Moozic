@@ -1,4 +1,4 @@
-package com.music.zen.data.smb
+package com.music.bitchord.data.smb
 
 import com.hierynomus.msdtyp.AccessMask
 import com.hierynomus.msfscc.FileAttributes

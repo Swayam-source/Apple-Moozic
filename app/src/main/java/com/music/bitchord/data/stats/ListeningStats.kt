@@ -1,8 +1,8 @@
-package com.music.zen.data.stats
+package com.music.bitchord.data.stats
 
 import android.content.Context
 import android.util.Log
-import com.music.zen.data.model.Song
+import com.music.bitchord.data.model.Song
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -955,7 +955,7 @@ object ListeningStats {
         RegexOption.IGNORE_CASE,
     )
 
-    private const val TAG = "ZenListening"
+    private const val TAG = "BitChordListening"
     private const val DIRECTORY = "listening"
 
     /** How far down the artist chart a page opening will send lookups for. */

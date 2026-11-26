@@ -1,4 +1,4 @@
-package com.music.zen.data.presence
+package com.music.bitchord.data.presence
 
 import android.app.Application
 import android.content.Context

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2026 Zen Project
+ * Copyright (C) 2026 BitChord Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -7,7 +7,7 @@
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  */
-package com.music.zen.ui.components
+package com.music.bitchord.ui.components
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.Spring
@@ -57,13 +57,13 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.window.DialogWindowProvider
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.music.zen.data.settings.AppSettings
-import com.music.zen.playback.audio.bitperfect.DacVolume
+import com.music.bitchord.data.settings.AppSettings
+import com.music.bitchord.playback.audio.bitperfect.DacVolume
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
 import dev.chrisbanes.haze.materials.HazeMaterials
-import com.music.zen.playback.cast.CastController
-import com.music.zen.wear.WearBridge
+import com.music.bitchord.playback.cast.CastController
+import com.music.bitchord.wear.WearBridge
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow

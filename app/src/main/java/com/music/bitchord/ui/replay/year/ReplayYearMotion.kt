@@ -1,4 +1,4 @@
-package com.music.zen.ui.replay.year
+package com.music.bitchord.ui.replay.year
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -22,8 +22,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.music.zen.ui.haptics.Haptic
-import com.music.zen.ui.replay.HeadlineRun
+import com.music.bitchord.ui.haptics.Haptic
+import com.music.bitchord.ui.replay.HeadlineRun
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.exp

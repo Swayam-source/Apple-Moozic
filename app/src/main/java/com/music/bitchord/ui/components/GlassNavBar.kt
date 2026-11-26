@@ -1,13 +1,13 @@
 /*
  * The bar's structure and its inline/expanded behaviour are
  * EchoMusicApp/Echo-Music's AppFloatingNavBar + FloatingMiniPlayer (GPL-3.0),
- * over the FloatingTabBar vendored in [com.music.zen.ui.components.floatingtabbar].
- * Zen's own tabs, song model, transport and haptics are wired through it in
+ * over the FloatingTabBar vendored in [com.music.bitchord.ui.components.floatingtabbar].
+ * BitChord's own tabs, song model, transport and haptics are wired through it in
  * place of Echo's Screens routing and PlayerConnection.
  */
 @file:OptIn(ExperimentalSharedTransitionApi::class)
 
-package com.music.zen.ui.components
+package com.music.bitchord.ui.components
 
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
@@ -54,20 +54,20 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.music.zen.R
-import com.music.zen.data.model.Song
-import com.music.zen.data.settings.AppSettings
-import com.music.zen.ui.components.floatingtabbar.FloatingTabBar
-import com.music.zen.ui.components.floatingtabbar.FloatingTabBarDefaults
-import com.music.zen.ui.components.floatingtabbar.FloatingTabBarScrollConnection
-import com.music.zen.ui.haptics.Haptic
-import com.music.zen.ui.haptics.rememberHaptics
-import com.music.zen.playback.MusicOnlyPlayback
-import com.music.zen.ui.player.PlayerDock
-import com.music.zen.ui.player.rememberPlayerSkipMotion
-import com.music.zen.ui.player.PlayerPlayPauseGlyph
-import com.music.zen.ui.player.rememberPlayerPlayPauseMotion
-import com.music.zen.ui.player.AndroidMusicVideo
+import com.music.bitchord.R
+import com.music.bitchord.data.model.Song
+import com.music.bitchord.data.settings.AppSettings
+import com.music.bitchord.ui.components.floatingtabbar.FloatingTabBar
+import com.music.bitchord.ui.components.floatingtabbar.FloatingTabBarDefaults
+import com.music.bitchord.ui.components.floatingtabbar.FloatingTabBarScrollConnection
+import com.music.bitchord.ui.haptics.Haptic
+import com.music.bitchord.ui.haptics.rememberHaptics
+import com.music.bitchord.playback.MusicOnlyPlayback
+import com.music.bitchord.ui.player.PlayerDock
+import com.music.bitchord.ui.player.rememberPlayerSkipMotion
+import com.music.bitchord.ui.player.PlayerPlayPauseGlyph
+import com.music.bitchord.ui.player.rememberPlayerPlayPauseMotion
+import com.music.bitchord.ui.player.AndroidMusicVideo
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.fillMaxSize
 
@@ -103,7 +103,7 @@ fun GlassNavBar(
     onNext: () -> Unit,
     onPrevious: () -> Unit,
     onExpand: () -> Unit,
-    /** @see com.music.zen.data.listentogether.ListenTogether.State.controlsLocked */
+    /** @see com.music.bitchord.data.listentogether.ListenTogether.State.controlsLocked */
     controlsLocked: Boolean = false,
     onBlockedControl: () -> Unit = {},
     /** Where the player's artwork lands when it closes into this bar. */
@@ -134,7 +134,7 @@ fun GlassNavBar(
     val currentOnTabSelected by rememberUpdatedState(onTabSelected)
 
     // Search is the odd one out when collapsed: a circle of its own at the end
-    // of the row. It is the last tab in Zen's order, which is where the
+    // of the row. It is the last tab in BitChord's order, which is where the
     // shape wants it anyway. Expanded, it is folded back into the pill.
     val standaloneIndex = tabs.lastIndex
 

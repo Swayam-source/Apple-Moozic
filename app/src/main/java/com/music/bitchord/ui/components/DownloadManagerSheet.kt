@@ -1,4 +1,4 @@
-package com.music.zen.ui.components
+package com.music.bitchord.ui.components
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.AnimatedVisibility
@@ -56,14 +56,14 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
-import com.music.zen.R
-import com.music.zen.data.model.ROW_ART_PX
-import com.music.zen.data.model.artworkAt
-import com.music.zen.download.DownloadProgress
-import com.music.zen.download.DownloadSession
-import com.music.zen.download.Downloads
-import com.music.zen.ui.haptics.Haptic
-import com.music.zen.ui.haptics.rememberHaptics
+import com.music.bitchord.R
+import com.music.bitchord.data.model.ROW_ART_PX
+import com.music.bitchord.data.model.artworkAt
+import com.music.bitchord.download.DownloadProgress
+import com.music.bitchord.download.DownloadSession
+import com.music.bitchord.download.Downloads
+import com.music.bitchord.ui.haptics.Haptic
+import com.music.bitchord.ui.haptics.rememberHaptics
 
 /**
  * The download indicator in the top bar, beside the account photo.
@@ -393,7 +393,7 @@ private fun DownloadManagerRow(
                         },
                     )
                 }
-                is DownloadProgress.Done -> RowStatus(stringResource(R.string.saved_to_zen_folder))
+                is DownloadProgress.Done -> RowStatus(stringResource(R.string.saved_to_bitchord_folder))
                 is DownloadProgress.Failed ->
                     RowStatus(progress.reason, MaterialTheme.colorScheme.error)
             }

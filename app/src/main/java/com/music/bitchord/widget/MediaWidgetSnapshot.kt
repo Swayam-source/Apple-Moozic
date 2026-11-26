@@ -1,4 +1,4 @@
-package com.music.zen.widget
+package com.music.bitchord.widget
 
 import android.content.Context
 
@@ -9,9 +9,9 @@ import android.content.Context
  * screen while the process is dead, after a reboot, and in the seconds before a
  * launcher's first update reaches us — none of which a
  * [MediaController][androidx.media3.session.MediaController] can serve, since
- * connecting one means starting [PlaybackService][com.music.zen.playback.PlaybackService]
+ * connecting one means starting [PlaybackService][com.music.bitchord.playback.PlaybackService]
  * just to find out what to draw. So the service writes here whenever the answer
- * changes ([publishWidgetState][com.music.zen.playback.PlaybackService]) and
+ * changes ([publishWidgetState][com.music.bitchord.playback.PlaybackService]) and
  * the widget only ever reads a file.
  */
 internal data class MediaWidgetSnapshot(
@@ -98,7 +98,7 @@ internal data class MediaWidgetSnapshot(
 
         /** Where the snapshot lives; the Quick Settings tile watches it for changes. */
         fun prefs(context: Context) =
-            context.getSharedPreferences("zen_widget", Context.MODE_PRIVATE)
+            context.getSharedPreferences("bitchord_widget", Context.MODE_PRIVATE)
 
         private const val KEY_MEDIA_ID = "media_id"
         private const val KEY_TITLE = "title"

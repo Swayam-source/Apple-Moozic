@@ -1,6 +1,6 @@
-package com.music.zen.playback
+package com.music.bitchord.playback
 
-import com.music.zen.data.settings.OutputPcmMode
+import com.music.bitchord.data.settings.OutputPcmMode
 
 /**
  * Decides whether Media3 may open a PCM-float AudioTrack.

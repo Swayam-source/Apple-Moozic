@@ -1,4 +1,4 @@
-package com.music.zen.playback
+package com.music.bitchord.playback
 
 import android.app.PendingIntent
 import android.content.Context
@@ -14,7 +14,7 @@ import android.widget.Toast
 import android.os.Bundle
 import android.os.Handler
 import android.os.SystemClock
-import com.music.zen.data.TelemetryProvenance
+import com.music.bitchord.data.TelemetryProvenance
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import android.util.Log
@@ -76,90 +76,90 @@ import com.google.common.collect.ImmutableList
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 import kotlinx.coroutines.guava.future
-import com.music.zen.playback.audio.DspChain
-import com.music.zen.playback.cast.CastController
-import com.music.zen.playback.cast.CastPlayback
-import com.music.zen.playback.cast.CastSink
-import com.music.zen.playback.cast.RemoteSpeaker
-import com.music.zen.playback.cast.Speakers
-import com.music.zen.playback.cast.CastStream
-import com.music.zen.playback.audio.PrecisionAudioSink
-import com.music.zen.playback.dsd.DsdExtractorsFactory
-import com.music.zen.playback.audio.DirectAudioProbe
-import com.music.zen.playback.audio.OutputNegotiator
-import com.music.zen.playback.audio.PcmEncoding
-import com.music.zen.playback.audio.SourceDescriptor
-import com.music.zen.playback.audio.bitperfect.BitPerfectAudioSink
-import com.music.zen.playback.audio.bitperfect.BitPerfectOutput
-import com.music.zen.playback.audio.bitperfect.BitPerfectRoutingSink
-import com.music.zen.playback.audio.bitperfect.DacVolume
-import com.music.zen.playback.audio.bitperfect.usb.UsbDirectDevices
-import com.music.zen.playback.audio.bluetooth.BluetoothAudioTracker
-import com.music.zen.playback.audio.bluetooth.BluetoothTelemetry
-import com.music.zen.MainActivity
-import com.music.zen.data.listentogether.ListenTogether
-import com.music.zen.data.listentogether.partyQueueIndexOf
-import com.music.zen.data.listentogether.partyUpcomingAfter
-import com.music.zen.R
-import com.music.zen.data.LocalMediaRepository
-import com.music.zen.data.OfflinePlaylists
-import com.music.zen.data.canvas.CanvasRepository
-import com.music.zen.data.innertube.InnertubeParser
-import com.music.zen.data.YtMusicRepository
-import com.music.zen.data.lyrics.EmbeddedLyrics
-import com.music.zen.data.lyrics.LyricLine
-import com.music.zen.data.lyrics.LyricsRepository
-import com.music.zen.data.lyrics.LyricsSource
-import com.music.zen.data.model.NOTIFICATION_ART_PX
-import com.music.zen.data.model.PlaybackSourceType
-import com.music.zen.data.model.QueueEntryIdentity
-import com.music.zen.data.model.SearchFilter
-import com.music.zen.data.model.SearchResult
-import com.music.zen.data.model.BrowseItem
-import com.music.zen.data.model.ShelfItem
-import com.music.zen.data.model.artworkAt
-import com.music.zen.data.model.QueueTier
-import com.music.zen.data.sources.SourceRegistry
-import com.music.zen.download.Downloads
+import com.music.bitchord.playback.audio.DspChain
+import com.music.bitchord.playback.cast.CastController
+import com.music.bitchord.playback.cast.CastPlayback
+import com.music.bitchord.playback.cast.CastSink
+import com.music.bitchord.playback.cast.RemoteSpeaker
+import com.music.bitchord.playback.cast.Speakers
+import com.music.bitchord.playback.cast.CastStream
+import com.music.bitchord.playback.audio.PrecisionAudioSink
+import com.music.bitchord.playback.dsd.DsdExtractorsFactory
+import com.music.bitchord.playback.audio.DirectAudioProbe
+import com.music.bitchord.playback.audio.OutputNegotiator
+import com.music.bitchord.playback.audio.PcmEncoding
+import com.music.bitchord.playback.audio.SourceDescriptor
+import com.music.bitchord.playback.audio.bitperfect.BitPerfectAudioSink
+import com.music.bitchord.playback.audio.bitperfect.BitPerfectOutput
+import com.music.bitchord.playback.audio.bitperfect.BitPerfectRoutingSink
+import com.music.bitchord.playback.audio.bitperfect.DacVolume
+import com.music.bitchord.playback.audio.bitperfect.usb.UsbDirectDevices
+import com.music.bitchord.playback.audio.bluetooth.BluetoothAudioTracker
+import com.music.bitchord.playback.audio.bluetooth.BluetoothTelemetry
+import com.music.bitchord.MainActivity
+import com.music.bitchord.data.listentogether.ListenTogether
+import com.music.bitchord.data.listentogether.partyQueueIndexOf
+import com.music.bitchord.data.listentogether.partyUpcomingAfter
+import com.music.bitchord.R
+import com.music.bitchord.data.LocalMediaRepository
+import com.music.bitchord.data.OfflinePlaylists
+import com.music.bitchord.data.canvas.CanvasRepository
+import com.music.bitchord.data.innertube.InnertubeParser
+import com.music.bitchord.data.YtMusicRepository
+import com.music.bitchord.data.lyrics.EmbeddedLyrics
+import com.music.bitchord.data.lyrics.LyricLine
+import com.music.bitchord.data.lyrics.LyricsRepository
+import com.music.bitchord.data.lyrics.LyricsSource
+import com.music.bitchord.data.model.NOTIFICATION_ART_PX
+import com.music.bitchord.data.model.PlaybackSourceType
+import com.music.bitchord.data.model.QueueEntryIdentity
+import com.music.bitchord.data.model.SearchFilter
+import com.music.bitchord.data.model.SearchResult
+import com.music.bitchord.data.model.BrowseItem
+import com.music.bitchord.data.model.ShelfItem
+import com.music.bitchord.data.model.artworkAt
+import com.music.bitchord.data.model.QueueTier
+import com.music.bitchord.data.sources.SourceRegistry
+import com.music.bitchord.download.Downloads
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArraySet
 import java.util.concurrent.atomic.AtomicLong
-import com.music.zen.data.Http
-import com.music.zen.auth.SignedIn
-import com.music.zen.data.LikeState
-import com.music.zen.data.NerdStats
-import com.music.zen.data.TrackLog
-import com.music.zen.data.discord.DiscordRPC
-import com.music.zen.data.discord.discordAudioQualityLine
-import com.music.zen.data.innertube.PlaybackTracker
-import com.music.zen.data.stats.ListeningRecorder
-import com.music.zen.data.innertube.PlayerClient
-import com.music.zen.data.innertube.StreamResolver
-import com.music.zen.data.model.LikeStatus
-import com.music.zen.data.model.Song
-import com.music.zen.data.model.isUnresolvedSpotify
-import com.music.zen.data.remote.RemoteArtworkStore
-import com.music.zen.data.scrobbling.LastFM
-import com.music.zen.data.scrobbling.ListenBrainzManager
-import com.music.zen.data.scrobbling.ScrobbleManager
-import com.music.zen.data.settings.AppSettings
-import com.music.zen.data.settings.AudioQuality
-import com.music.zen.data.settings.BitPerfectMode
-import com.music.zen.data.settings.permits
-import com.music.zen.data.settings.EqualizerMode
-import com.music.zen.data.settings.OutputPcmMode
-import com.music.zen.data.sources.SourceKind
-import com.music.zen.data.sources.SourceResolver
-import com.music.zen.data.sources.SourceStream
-import com.music.zen.data.sources.StreamFormat
-import com.music.zen.data.sources.TrackMatcher
-import com.music.zen.playback.smart.AutomixAnalysisSource
-import com.music.zen.playback.smart.VersionAudioAligner
-import com.music.zen.ui.player.discardBlockedAutoMixAmbient
-import com.music.zen.ui.player.prefetchAutoMixArtwork
-import com.music.zen.widget.MediaWidget
-import com.music.zen.widget.MediaWidgetSnapshot
-import com.music.zen.wear.WearBridge
+import com.music.bitchord.data.Http
+import com.music.bitchord.auth.SignedIn
+import com.music.bitchord.data.LikeState
+import com.music.bitchord.data.NerdStats
+import com.music.bitchord.data.TrackLog
+import com.music.bitchord.data.discord.DiscordRPC
+import com.music.bitchord.data.discord.discordAudioQualityLine
+import com.music.bitchord.data.innertube.PlaybackTracker
+import com.music.bitchord.data.stats.ListeningRecorder
+import com.music.bitchord.data.innertube.PlayerClient
+import com.music.bitchord.data.innertube.StreamResolver
+import com.music.bitchord.data.model.LikeStatus
+import com.music.bitchord.data.model.Song
+import com.music.bitchord.data.model.isUnresolvedSpotify
+import com.music.bitchord.data.remote.RemoteArtworkStore
+import com.music.bitchord.data.scrobbling.LastFM
+import com.music.bitchord.data.scrobbling.ListenBrainzManager
+import com.music.bitchord.data.scrobbling.ScrobbleManager
+import com.music.bitchord.data.settings.AppSettings
+import com.music.bitchord.data.settings.AudioQuality
+import com.music.bitchord.data.settings.BitPerfectMode
+import com.music.bitchord.data.settings.permits
+import com.music.bitchord.data.settings.EqualizerMode
+import com.music.bitchord.data.settings.OutputPcmMode
+import com.music.bitchord.data.sources.SourceKind
+import com.music.bitchord.data.sources.SourceResolver
+import com.music.bitchord.data.sources.SourceStream
+import com.music.bitchord.data.sources.StreamFormat
+import com.music.bitchord.data.sources.TrackMatcher
+import com.music.bitchord.playback.smart.AutomixAnalysisSource
+import com.music.bitchord.playback.smart.VersionAudioAligner
+import com.music.bitchord.ui.player.discardBlockedAutoMixAmbient
+import com.music.bitchord.ui.player.prefetchAutoMixArtwork
+import com.music.bitchord.widget.MediaWidget
+import com.music.bitchord.widget.MediaWidgetSnapshot
+import com.music.bitchord.wear.WearBridge
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
@@ -200,45 +200,45 @@ import java.util.UUID
 
 
 /** Session command used by both the player UI and the media notification. */
-const val ACTION_TOGGLE_AUTOPLAY = "com.music.zen.action.TOGGLE_AUTOPLAY"
+const val ACTION_TOGGLE_AUTOPLAY = "com.music.bitchord.action.TOGGLE_AUTOPLAY"
 
 /** Backoff before each retry of a failed bounded continuation page. */
 private val BOUNDED_CONTINUATION_RETRIES_MS = longArrayOf(2_000L, 5_000L, 15_000L)
 
 /** Session command used by album/playlist playback to install a bounded context. */
-const val ACTION_START_BOUNDED_CONTEXT = "com.music.zen.action.START_BOUNDED_CONTEXT"
-const val ACTION_CLEAR_BOUNDED_CONTEXT = "com.music.zen.action.CLEAR_BOUNDED_CONTEXT"
-const val EXTRA_BOUNDED_CONTEXT_SONGS = "zen.boundedContext.songs"
-const val EXTRA_BOUNDED_CONTEXT_START_INDEX = "zen.boundedContext.startIndex"
-const val EXTRA_BOUNDED_CONTEXT_SOURCE_TITLE = "zen.boundedContext.sourceTitle"
-const val EXTRA_BOUNDED_CONTEXT_SOURCE_TYPE = "zen.boundedContext.sourceType"
-const val EXTRA_BOUNDED_CONTEXT_SOURCE_ID = "zen.boundedContext.sourceId"
-const val EXTRA_BOUNDED_CONTEXT_CONTINUATION = "zen.boundedContext.continuation"
+const val ACTION_START_BOUNDED_CONTEXT = "com.music.bitchord.action.START_BOUNDED_CONTEXT"
+const val ACTION_CLEAR_BOUNDED_CONTEXT = "com.music.bitchord.action.CLEAR_BOUNDED_CONTEXT"
+const val EXTRA_BOUNDED_CONTEXT_SONGS = "bitchord.boundedContext.songs"
+const val EXTRA_BOUNDED_CONTEXT_START_INDEX = "bitchord.boundedContext.startIndex"
+const val EXTRA_BOUNDED_CONTEXT_SOURCE_TITLE = "bitchord.boundedContext.sourceTitle"
+const val EXTRA_BOUNDED_CONTEXT_SOURCE_TYPE = "bitchord.boundedContext.sourceType"
+const val EXTRA_BOUNDED_CONTEXT_SOURCE_ID = "bitchord.boundedContext.sourceId"
+const val EXTRA_BOUNDED_CONTEXT_CONTINUATION = "bitchord.boundedContext.continuation"
 
 /** Session command used to smoothly swap the current track's version (film vs release). */
-const val ACTION_SWAP_VERSION = "com.music.zen.action.SWAP_VERSION"
-const val EXTRA_SWAP_MEDIA_ITEM = "zen.swap.media_item"
+const val ACTION_SWAP_VERSION = "com.music.bitchord.action.SWAP_VERSION"
+const val EXTRA_SWAP_MEDIA_ITEM = "bitchord.swap.media_item"
 
 /** Session command used by the media notification's and the 4×1 widget's Favorite button. */
 /** How long the service may stay in the foreground, paused, while the watch plays. */
 private const val WATCH_SESSION_FOREGROUND_MS = 6 * 60 * 60 * 1000L
 
-const val ACTION_TOGGLE_FAVORITE = "com.music.zen.action.TOGGLE_FAVORITE"
+const val ACTION_TOGGLE_FAVORITE = "com.music.bitchord.action.TOGGLE_FAVORITE"
 
 /** Session command used by the media notification's and the 4×1 widget's Shuffle button. */
-const val ACTION_TOGGLE_SHUFFLE = "com.music.zen.action.TOGGLE_SHUFFLE"
+const val ACTION_TOGGLE_SHUFFLE = "com.music.bitchord.action.TOGGLE_SHUFFLE"
 
 /** Session actions exposed to Android Auto for the track that is playing. */
-const val ACTION_START_STATION = "com.music.zen.action.START_STATION"
-const val ACTION_REVERT_TO_ORIGINAL = "com.music.zen.action.REVERT_TO_ORIGINAL"
-const val ACTION_SWAP_TO_VERSION = "com.music.zen.action.SWAP_TO_VERSION"
+const val ACTION_START_STATION = "com.music.bitchord.action.START_STATION"
+const val ACTION_REVERT_TO_ORIGINAL = "com.music.bitchord.action.REVERT_TO_ORIGINAL"
+const val ACTION_SWAP_TO_VERSION = "com.music.bitchord.action.SWAP_TO_VERSION"
 
 /** Session commands bracketing an explicit radio queue replacement. */
-const val ACTION_BEGIN_RADIO_QUEUE = "com.music.zen.action.BEGIN_RADIO_QUEUE"
-const val ACTION_COMMIT_RADIO_QUEUE = "com.music.zen.action.COMMIT_RADIO_QUEUE"
+const val ACTION_BEGIN_RADIO_QUEUE = "com.music.bitchord.action.BEGIN_RADIO_QUEUE"
+const val ACTION_COMMIT_RADIO_QUEUE = "com.music.bitchord.action.COMMIT_RADIO_QUEUE"
 
 /** Session command behind the player menu's "Upgrade quality". */
-const val ACTION_UPGRADE_QUALITY = "com.music.zen.action.UPGRADE_QUALITY"
+const val ACTION_UPGRADE_QUALITY = "com.music.bitchord.action.UPGRADE_QUALITY"
 
 /**
  * App-side gate for explicit quality retries.
@@ -270,27 +270,27 @@ internal class ManualUpgradeThrottle(private val cooldownMs: Long) {
  * party publish those moves would otherwise trigger one at a time, so a jam
  * hears about the reorder once, when the row is dropped, not mid-drag.
  */
-const val ACTION_QUEUE_DRAG = "com.music.zen.action.QUEUE_DRAG"
-const val EXTRA_QUEUE_DRAG_ACTIVE = "zen.queueDrag.active"
+const val ACTION_QUEUE_DRAG = "com.music.bitchord.action.QUEUE_DRAG"
+const val EXTRA_QUEUE_DRAG_ACTIVE = "bitchord.queueDrag.active"
 
 /** Move an existing queue occurrence without resolving or copying its media source. */
-const val ACTION_QUEUE_MOVE_TO_USER = "com.music.zen.action.QUEUE_MOVE_TO_USER"
-const val EXTRA_QUEUE_MOVE_INDEX = "zen.queueMove.index"
-const val EXTRA_QUEUE_MOVE_ENTRY = "zen.queueMove.entry"
-const val EXTRA_QUEUE_MOVE_MEDIA = "zen.queueMove.media"
+const val ACTION_QUEUE_MOVE_TO_USER = "com.music.bitchord.action.QUEUE_MOVE_TO_USER"
+const val EXTRA_QUEUE_MOVE_INDEX = "bitchord.queueMove.index"
+const val EXTRA_QUEUE_MOVE_ENTRY = "bitchord.queueMove.entry"
+const val EXTRA_QUEUE_MOVE_MEDIA = "bitchord.queueMove.media"
 
 /**
  * Play a history row again from the queue screen, keeping later history as
  * history. Takes the same index/entry/media extras as [ACTION_QUEUE_MOVE_TO_USER].
  */
-const val ACTION_QUEUE_REPLAY_HISTORY = "com.music.zen.action.QUEUE_REPLAY_HISTORY"
+const val ACTION_QUEUE_REPLAY_HISTORY = "com.music.bitchord.action.QUEUE_REPLAY_HISTORY"
 
 /** A full first page for an explicitly requested station. */
 private const val INITIAL_STATION_TRACKS = 24
 
 /**
  * How long a version switch will sit on a not-yet-downloaded opening before
- * it gives up on the head — [com.music.zen.playback.AudioCache.awaitAnalysisHead]
+ * it gives up on the head — [com.music.bitchord.playback.AudioCache.awaitAnalysisHead]
  * both starts the fetch and waits on it, so this is the wait a listener sees
  * with the bar running. Shared by the two heads, which are fetched in
  * parallel, so it bounds the pair rather than being paid twice.
@@ -321,7 +321,7 @@ private fun Song.canStartStation(): Boolean =
  * notification, lockscreen/Bluetooth controls, and Android Auto surface for
  * free; UI processes attach with a MediaController.
  *
- * Queue items carry a `zen://watch?v=<videoId>` URI. The actual stream
+ * Queue items carry a `bitchord://watch?v=<videoId>` URI. The actual stream
  * URL is resolved lazily by [ResolvingDataSource] the moment ExoPlayer opens
  * the item — stream URLs expire after a few hours, so resolving at play time
  * (on Media3's loader thread, hence runBlocking is safe) keeps queues valid.
@@ -423,7 +423,7 @@ class PlaybackService : MediaLibraryService() {
         songs: List<Song>,
         source: QueueSource,
         continuation: String? = null,
-        cookie: String? = com.music.zen.data.innertube.Innertube.cookie,
+        cookie: String? = com.music.bitchord.data.innertube.Innertube.cookie,
     ): List<MediaItem> {
         if (songs.isEmpty()) return emptyList()
         val context = AutoBrowseContext(YtMusicRepository.SongPage(songs, continuation), cookie, source)
@@ -451,7 +451,7 @@ class PlaybackService : MediaLibraryService() {
     private val LIKED_CACHE_TTL_MS = 60_000L
 
     private suspend fun cachedLikedSongs(): List<Song> = likedMutex.withLock {
-        val cookie = com.music.zen.data.innertube.Innertube.cookie
+        val cookie = com.music.bitchord.data.innertube.Innertube.cookie
         if (cookie == null) {
             cachedLiked = null
             cachedLikedPage = null
@@ -495,12 +495,12 @@ class PlaybackService : MediaLibraryService() {
         songs
     }
 
-    private var cachedHome: Pair<Long, com.music.zen.data.model.HomeFeed>? = null
+    private var cachedHome: Pair<Long, com.music.bitchord.data.model.HomeFeed>? = null
     private val homeMutex = Mutex()
     private val HOME_CACHE_TTL_MS = 60_000L
     private val HOME_NETWORK_TIMEOUT_MS = 2_500L
 
-    private suspend fun cachedHomeFeed(): com.music.zen.data.model.HomeFeed? = homeMutex.withLock {
+    private suspend fun cachedHomeFeed(): com.music.bitchord.data.model.HomeFeed? = homeMutex.withLock {
         cachedHome?.let { (at, feed) ->
             if (SystemClock.elapsedRealtime() - at < HOME_CACHE_TTL_MS) return feed
         }
@@ -538,7 +538,7 @@ class PlaybackService : MediaLibraryService() {
     }
 
     private suspend fun cachedPlaylistCards(): List<ShelfItem> = playlistsMutex.withLock {
-        val cookie = com.music.zen.data.innertube.Innertube.cookie
+        val cookie = com.music.bitchord.data.innertube.Innertube.cookie
         if (cookie == null) {
             cachedPlaylistCards = null
             cachedPlaylistCookie = null
@@ -561,14 +561,14 @@ class PlaybackService : MediaLibraryService() {
     private fun snapshotRecents(): List<Song> = cachedRecents?.second.orEmpty()
     private fun snapshotQuickPicks(): List<Song> = cachedQuickPicks?.second.orEmpty()
     private fun snapshotLiked(): List<Song> {
-        val cookie = com.music.zen.data.innertube.Innertube.cookie
+        val cookie = com.music.bitchord.data.innertube.Innertube.cookie
         return if (cookie != null && cookie == cachedLikedCookie) cachedLiked?.second.orEmpty() else emptyList()
     }
     private fun snapshotPlaylistCards(): List<ShelfItem> {
-        val cookie = com.music.zen.data.innertube.Innertube.cookie
+        val cookie = com.music.bitchord.data.innertube.Innertube.cookie
         return if (cookie != null && cookie == cachedPlaylistCookie) cachedPlaylistCards?.second.orEmpty() else emptyList()
     }
-    private fun snapshotHome(): com.music.zen.data.model.HomeFeed? = cachedHome?.second
+    private fun snapshotHome(): com.music.bitchord.data.model.HomeFeed? = cachedHome?.second
 
     private fun isFresh(at: Long, ttlMs: Long): Boolean =
         SystemClock.elapsedRealtime() - at < ttlMs
@@ -709,8 +709,8 @@ class PlaybackService : MediaLibraryService() {
     private fun spareLoudness(): LoudnessProcessor =
         if (activeFilter === transitionFilterA) loudnessB else loudnessA
 
-    /** Automix's DSP analyzer — see [com.music.zen.playback.smart.TrackAnalyzer]. */
-    private val trackAnalyzer = com.music.zen.playback.smart.TrackAnalyzer(this, AudioCache)
+    /** Automix's DSP analyzer — see [com.music.bitchord.playback.smart.TrackAnalyzer]. */
+    private val trackAnalyzer = com.music.bitchord.playback.smart.TrackAnalyzer(this, AudioCache)
 
     /** Shared with the crossfade's tail player, so both read the same disk cache. */
     private var mediaSourceFactory: DefaultMediaSourceFactory? = null
@@ -942,7 +942,7 @@ class PlaybackService : MediaLibraryService() {
      * replacement mix afterwards is the obvious thing to do and the wrong one:
      * the track that was queued next has usually been analysed for the
      * transition into it by then (see
-     * [com.music.zen.playback.smart.TrackAnalyzer]), and a different track
+     * [com.music.bitchord.playback.smart.TrackAnalyzer]), and a different track
      * in its place means that several-second decode is spent again, on a song
      * that is now much closer than it was. Turning repeat on and back off
      * should leave the queue where it found it.
@@ -1430,8 +1430,8 @@ class PlaybackService : MediaLibraryService() {
     override fun onCreate() {
         super.onCreate()
 
-        if (com.music.zen.data.innertube.Innertube.cookie == null) {
-            com.music.zen.data.innertube.Innertube.cookie = com.music.zen.auth.AuthStore(this).cookie
+        if (com.music.bitchord.data.innertube.Innertube.cookie == null) {
+            com.music.bitchord.data.innertube.Innertube.cookie = com.music.bitchord.auth.AuthStore(this).cookie
         }
 
         // First, because everything below assumes it is standing up fresh and
@@ -1874,7 +1874,7 @@ class PlaybackService : MediaLibraryService() {
             // is made in one place for every branch of it, and made from what
             // the resolver *returned* rather than from what each branch meant
             // to return. Nothing above this line knows what is really on the
-            // end of a `zen://` URI and nothing below it knows which
+            // end of a `bitchord://` URI and nothing below it knows which
             // track's bytes it is fetching; this is the seam where both are in
             // hand. See [StreamContainer].
             streamResolver.resolveDataSpec(dataSpec).also { resolved ->
@@ -2074,7 +2074,7 @@ class PlaybackService : MediaLibraryService() {
             // local files whose videoId is a content:// URI that cannot resolve.
             val fallback = if (uri.scheme == "content" || uri.scheme == "file") {
                 item.mediaId.takeIf { it.isNotBlank() }?.let { vid ->
-                    if (Downloads.saved.value.containsKey(vid)) "zen://watch?v=$vid" else null
+                    if (Downloads.saved.value.containsKey(vid)) "bitchord://watch?v=$vid" else null
                 }
             } else null
             if (fallback != null) {
@@ -5024,8 +5024,8 @@ class PlaybackService : MediaLibraryService() {
      * manifest through a progressive source — [StreamContainer] has the full
      * account of why one cannot be played that way and how it happens anyway.
      * The live path now declines to substitute one at all, but that is only the
-     * `zen://watch?v=…` half: a track queued from a module's own search
-     * results plays through `zen://source?…`, is resolved by that module
+     * `bitchord://watch?v=…` half: a track queued from a module's own search
+     * results plays through `bitchord://source?…`, is resolved by that module
      * and by nothing else, and has no YouTube copy to start on. For those there
      * is no choice to make in advance, and this is the only place that can see
      * what actually came back.
@@ -5171,7 +5171,7 @@ class PlaybackService : MediaLibraryService() {
      * correct end state rather than a failure to recover: the error stays on the
      * player, which is what puts a message in front of the listener — see
      * `rememberPlayerState` in
-     * [PlayerConnection][com.music.zen.playback.PlayerConnection].
+     * [PlayerConnection][com.music.bitchord.playback.PlayerConnection].
      */
     private fun skipPastUnplayable(mediaId: String, reason: String) {
         val exoPlayer = player ?: return
@@ -5452,7 +5452,7 @@ class PlaybackService : MediaLibraryService() {
         } ?: return false
         val mime = format.sampleMimeType ?: return false
         val videoId = uri.getQueryParameter("v") ?: return false
-        val downloaded = com.music.zen.download.Downloads.savedUri(this, videoId) != null
+        val downloaded = com.music.bitchord.download.Downloads.savedUri(this, videoId) != null
         if (downloaded) return false
         val target = SourceResolver.targetIn(uri)
         val expectedSec = target.durationSec
@@ -5757,7 +5757,7 @@ class PlaybackService : MediaLibraryService() {
             // Which in a party it cannot be: the transition there is the plain
             // one everybody moves through together, and nothing is analysed for
             // it — see [CrossfadeController] and
-            // [com.music.zen.playback.smart.TrackAnalyzer]. This is the one
+            // [com.music.bitchord.playback.smart.TrackAnalyzer]. This is the one
             // fetch Automix makes that neither of those two gates, and a
             // megabyte pulled for an analysis that will not run is a megabyte
             // taken off the connection the party is syncing over.
@@ -5935,7 +5935,7 @@ class PlaybackService : MediaLibraryService() {
 
     /**
      * Tells Media3 the type of a stream found behind one of our virtual
-     * `zen://` playback URIs.
+     * `bitchord://` playback URIs.
      *
      * The resolver replaces that URI with the real URL only after
      * [DefaultMediaSourceFactory] has selected a source implementation. A
@@ -6269,7 +6269,7 @@ class PlaybackService : MediaLibraryService() {
         // A manifest cannot be substituted here, however good it is. This
         // function runs on the loader thread, *inside* the open of a media
         // source that was built minutes ago from an extensionless
-        // `zen://` URI — so the source is already progressive and cannot
+        // `bitchord://` URI — so the source is already progressive and cannot
         // be told otherwise, and handing it a manifest is a track that fails
         // at 0ms rather than a track that plays lossless. See [StreamContainer]
         // for the log of exactly that.
@@ -6596,7 +6596,7 @@ class PlaybackService : MediaLibraryService() {
             if (!name.isNullOrBlank()) return name
         }
 
-        // 5. Virtual zen://source?s=... playback URI
+        // 5. Virtual bitchord://source?s=... playback URI
         if (uri?.authority == "source") {
             val configId = uri.getQueryParameter("s")
             val name = configId?.let { SourceRegistry.config(it)?.displayName }
@@ -7270,7 +7270,7 @@ class PlaybackService : MediaLibraryService() {
         // A track picked from an addon is that addon's or nothing, an upgrade
         // was auditioned before it was swapped in, and a revert is YouTube's
         // own audio — none of them is a substitute to measure.
-        if (uri.scheme != "zen" || uri.authority == "source") return
+        if (uri.scheme != "bitchord" || uri.authority == "source") return
         if (QualityUpgrade.cacheTag(uri) != null) return
         val key = uri.toString()
         if (key == lengthCheckedUri) return
@@ -8183,7 +8183,7 @@ class PlaybackService : MediaLibraryService() {
     /**
      * The linear gain [LoudnessProcessor] applies to [mediaId]: YouTube's own
      * normalization figure — see
-     * [com.music.zen.data.innertube.StreamResolver.loudnessDbFor] —
+     * [com.music.bitchord.data.innertube.StreamResolver.loudnessDbFor] —
      * bounded the way the platform effect this replaced was, or exactly 1 when
      * nothing is known yet or the setting is off.
      *
@@ -9705,7 +9705,7 @@ class PlaybackService : MediaLibraryService() {
                     )
                 }
                 MEDIA_LIKED_ID -> {
-                    if (com.music.zen.data.innertube.Innertube.cookie == null) {
+                    if (com.music.bitchord.data.innertube.Innertube.cookie == null) {
                         listOf(createLoginPromptItem())
                     } else {
                         val snapshot = snapshotLiked()
@@ -9723,7 +9723,7 @@ class PlaybackService : MediaLibraryService() {
                         if (songs.isNotEmpty()) {
                             likedMutex.withLock {
                                 val page = cachedLikedPage
-                                if (cachedLikedCookie != com.music.zen.data.innertube.Innertube.cookie) emptyList()
+                                if (cachedLikedCookie != com.music.bitchord.data.innertube.Innertube.cookie) emptyList()
                                 else autoBrowseItems(
                                     page?.songs ?: songs,
                                     QueueSource(getString(R.string.auto_liked), PlaybackSourceType.BROWSE, YtMusicRepository.LIKED_MUSIC),
@@ -9754,7 +9754,7 @@ class PlaybackService : MediaLibraryService() {
                     )
                 }
                 MEDIA_PLAYLISTS_ID -> {
-                    if (com.music.zen.data.innertube.Innertube.cookie == null) {
+                    if (com.music.bitchord.data.innertube.Innertube.cookie == null) {
                         listOf(createLoginPromptItem())
                     } else {
                         val snapshot = snapshotPlaylistCards()
@@ -9793,7 +9793,7 @@ class PlaybackService : MediaLibraryService() {
                         parentId.startsWith("playlist:") || parentId.startsWith("browse:") -> {
                             val id = parentId.substringAfter(':')
                             val browseId = if (parentId.startsWith("playlist:")) "VL$id" else id
-                            val cookie = com.music.zen.data.innertube.Innertube.cookie
+                            val cookie = com.music.bitchord.data.innertube.Innertube.cookie
                             val songPage = withTimeoutOrNull(2500L) {
                                 YtMusicRepository.browseSongs(browseId).getOrNull()
                                     ?: if (browseId != id) YtMusicRepository.browseSongs(id).getOrNull() else null
@@ -10018,7 +10018,7 @@ class PlaybackService : MediaLibraryService() {
                 }
                 val bounded = withContext(Dispatchers.Main) {
                     if (context.cookie != null) {
-                        check(context.cookie == com.music.zen.data.innertube.Innertube.cookie) {
+                        check(context.cookie == com.music.bitchord.data.innertube.Innertube.cookie) {
                             "Account changed; reopen the folder"
                         }
                     }
@@ -10075,7 +10075,7 @@ class PlaybackService : MediaLibraryService() {
             val context = synchronized(autoBrowseContexts) { autoBrowseContexts[parts[1]] }
             if (context == null) throw ExpiredBrowseContextException()
             if (context.cookie != null) {
-                require(context.cookie == com.music.zen.data.innertube.Innertube.cookie) {
+                require(context.cookie == com.music.bitchord.data.innertube.Innertube.cookie) {
                     "Account changed; reopen the folder"
                 }
             }
@@ -10486,8 +10486,8 @@ class PlaybackService : MediaLibraryService() {
         /** Length of a FLAC STREAMINFO block, which the format fixes at 34 bytes. */
         const val STREAM_INFO_BYTES = 34
 
-        const val CHANNEL_ID = "zen_playback"
-        const val SESSION_ID = "ZenPlayback"
+        const val CHANNEL_ID = "bitchord_playback"
+        const val SESSION_ID = "BitChordPlayback"
 
         /** How often played-seconds are sampled off the player. */
         const val PROGRESS_SAMPLE_MS = 5_000L

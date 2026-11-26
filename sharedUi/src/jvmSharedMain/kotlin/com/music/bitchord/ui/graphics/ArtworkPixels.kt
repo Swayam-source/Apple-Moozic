@@ -1,4 +1,4 @@
-package com.music.zen.ui.graphics
+package com.music.bitchord.ui.graphics
 
 import androidx.compose.ui.graphics.ImageBitmap
 import coil3.Image

@@ -1,4 +1,4 @@
-package com.music.zen.playback
+package com.music.bitchord.playback
 
 /**
  * Pending logical edits for a bounded context queue.

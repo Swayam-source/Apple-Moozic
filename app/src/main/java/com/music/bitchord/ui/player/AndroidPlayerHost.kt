@@ -1,6 +1,6 @@
-package com.music.zen.ui.player
+package com.music.bitchord.ui.player
 
-import com.music.zen.wear.WearBridge
+import com.music.bitchord.wear.WearBridge
 import android.content.Context
 import android.database.ContentObserver
 import android.media.AudioManager
@@ -15,26 +15,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.music.zen.data.canvas.CanvasArtwork
-import com.music.zen.data.canvas.CanvasRepository
-import com.music.zen.data.listentogether.ListenTogether
-import com.music.zen.data.lyrics.LyricLine
-import com.music.zen.data.lyrics.LyricsTranslation
-import com.music.zen.data.model.Song
-import com.music.zen.data.settings.AppSettings
-import com.music.zen.data.settings.LastPlayerScreen
-import com.music.zen.playback.MusicOnlyPlayback
-import com.music.zen.playback.AudioOutputStatus
-import com.music.zen.playback.AudioRouting
-import com.music.zen.playback.AutoMixVisualFeed
-import com.music.zen.playback.audio.bitperfect.BitPerfectOutput
-import com.music.zen.playback.audio.bitperfect.DacVolume
-import com.music.zen.playback.cast.CastController
-import com.music.zen.ui.components.backdrop.backdrops.SnapshotBackdrop
-import com.music.zen.ui.components.backdrop.backdrops.rememberSnapshotBackdrop
-import com.music.zen.ui.components.backdrop.backdrops.snapshotBackdropSource
-import com.music.zen.ui.components.isGlassSupported
-import com.music.zen.ui.components.menuBackdropFrost
+import com.music.bitchord.data.canvas.CanvasArtwork
+import com.music.bitchord.data.canvas.CanvasRepository
+import com.music.bitchord.data.listentogether.ListenTogether
+import com.music.bitchord.data.lyrics.LyricLine
+import com.music.bitchord.data.lyrics.LyricsTranslation
+import com.music.bitchord.data.model.Song
+import com.music.bitchord.data.settings.AppSettings
+import com.music.bitchord.data.settings.LastPlayerScreen
+import com.music.bitchord.playback.MusicOnlyPlayback
+import com.music.bitchord.playback.AudioOutputStatus
+import com.music.bitchord.playback.AudioRouting
+import com.music.bitchord.playback.AutoMixVisualFeed
+import com.music.bitchord.playback.audio.bitperfect.BitPerfectOutput
+import com.music.bitchord.playback.audio.bitperfect.DacVolume
+import com.music.bitchord.playback.cast.CastController
+import com.music.bitchord.ui.components.backdrop.backdrops.SnapshotBackdrop
+import com.music.bitchord.ui.components.backdrop.backdrops.rememberSnapshotBackdrop
+import com.music.bitchord.ui.components.backdrop.backdrops.snapshotBackdropSource
+import com.music.bitchord.ui.components.isGlassSupported
+import com.music.bitchord.ui.components.menuBackdropFrost
 import dev.chrisbanes.haze.HazeState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -130,8 +130,8 @@ class AndroidPlayerHost(context: Context) : PlayerHost {
     override suspend fun canvasFor(song: Song): CanvasArtwork? = CanvasRepository.canvasFor(song)
 
     override suspend fun bestPartMs(song: Song): Long? =
-        com.music.zen.ui.replay.year.BestParts.startFor(app, song)
-            .takeIf { it.source != com.music.zen.ui.replay.year.BestPartStart.Source.FALLBACK }
+        com.music.bitchord.ui.replay.year.BestParts.startFor(app, song)
+            .takeIf { it.source != com.music.bitchord.ui.replay.year.BestPartStart.Source.FALLBACK }
             ?.startMs
 
     @Composable
@@ -153,7 +153,7 @@ class AndroidPlayerHost(context: Context) : PlayerHost {
 
     @Composable
     override fun rememberRemoteArtworkUrl(song: Song?): String? =
-        com.music.zen.ui.components.rememberRemoteArtworkUrl(song)
+        com.music.bitchord.ui.components.rememberRemoteArtworkUrl(song)
 
     // Lazy, all three: the player is not the first thing the process does, and
     // none of these objects should be woken for a launch that never opens it.
@@ -246,11 +246,11 @@ class AndroidPlayerHost(context: Context) : PlayerHost {
 
     @Composable
     override fun CastDialog(hazeState: HazeState, onDismiss: () -> Unit) =
-        com.music.zen.ui.components.CastDialog(hazeState = hazeState, onDismiss = onDismiss)
+        com.music.bitchord.ui.components.CastDialog(hazeState = hazeState, onDismiss = onDismiss)
 
     @Composable
     override fun AudioPipelineDialog(hazeState: HazeState, isPlaying: Boolean, onDismiss: () -> Unit) =
-        com.music.zen.ui.components.AudioPipelineDialog(
+        com.music.bitchord.ui.components.AudioPipelineDialog(
             hazeState = hazeState,
             onDismiss = onDismiss,
             isPlaying = isPlaying,

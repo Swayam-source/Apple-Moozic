@@ -1,10 +1,10 @@
-package com.music.zen.playback.smart
+package com.music.bitchord.playback.smart
 
 import android.content.Context
 import android.os.SystemClock
 import android.util.Log
-import com.music.zen.data.Http
-import com.music.zen.data.settings.AppSettings
+import com.music.bitchord.data.Http
+import com.music.bitchord.data.settings.AppSettings
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

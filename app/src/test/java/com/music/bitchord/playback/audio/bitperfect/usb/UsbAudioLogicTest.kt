@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2026 Zen Project
+ * Copyright (C) 2026 BitChord Project
  *
  * Adapted from Mornye (https://github.com/mornyeapp/Mornye),
  * rust_backend/crates/mobile/src/usb_audio/{descriptors,volume}.rs tests,

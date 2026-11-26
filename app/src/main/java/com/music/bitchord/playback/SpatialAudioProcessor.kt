@@ -1,12 +1,12 @@
-package com.music.zen.playback
+package com.music.bitchord.playback
 
 import androidx.media3.common.C
 import androidx.media3.common.audio.AudioProcessor
 import androidx.media3.common.audio.BaseAudioProcessor
 import androidx.media3.common.util.UnstableApi
-import com.music.zen.playback.audio.AudioBlock
-import com.music.zen.playback.audio.FloatAudioProcessor
-import com.music.zen.playback.audio.PcmBoundary
+import com.music.bitchord.playback.audio.AudioBlock
+import com.music.bitchord.playback.audio.FloatAudioProcessor
+import com.music.bitchord.playback.audio.PcmBoundary
 import java.nio.ByteOrder
 import kotlin.math.abs
 import kotlin.math.roundToInt

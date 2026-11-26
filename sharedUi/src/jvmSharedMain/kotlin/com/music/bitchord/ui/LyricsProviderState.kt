@@ -1,4 +1,4 @@
-package com.music.zen.ui
+package com.music.bitchord.ui
 
 /** What the current track's provider picker already knows without another request. */
 enum class LyricsProviderState {

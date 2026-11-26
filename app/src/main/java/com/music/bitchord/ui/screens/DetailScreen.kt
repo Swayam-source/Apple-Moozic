@@ -1,8 +1,8 @@
-package com.music.zen.ui.screens
+package com.music.bitchord.ui.screens
 
-import com.music.zen.ui.components.trackArtSize
+import com.music.bitchord.ui.components.trackArtSize
 import android.os.Build
-import com.music.zen.R
+import com.music.bitchord.R
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.animateContentSize
@@ -14,10 +14,10 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
-import com.music.zen.ui.components.liquidGlassRim
-import com.music.zen.ui.components.continuous
-import com.music.zen.ui.components.FadingText
-import com.music.zen.ui.components.longPressMenuClickable
+import com.music.bitchord.ui.components.liquidGlassRim
+import com.music.bitchord.ui.components.continuous
+import com.music.bitchord.ui.components.FadingText
+import com.music.bitchord.ui.components.longPressMenuClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -53,7 +53,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Check
-import com.music.zen.data.model.LibraryState
+import com.music.bitchord.data.model.LibraryState
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Download
 import androidx.compose.material.icons.rounded.GraphicEq
@@ -126,65 +126,65 @@ import androidx.compose.ui.layout.layout
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.material.icons.automirrored.rounded.QueueMusic
 import androidx.compose.material.icons.rounded.Album
-import com.music.zen.data.LocalGroups
-import com.music.zen.data.OfflinePlaylists
-import com.music.zen.data.matchesSearch
-import com.music.zen.data.sortedForLibrary
-import com.music.zen.data.useTrackTags
-import com.music.zen.ui.components.CoverPlaceholder
-import com.music.zen.data.canvas.AppleArtistArt
-import com.music.zen.data.DebugLog as Log
-import com.music.zen.data.canvas.AppleArtistArtRepository
-import com.music.zen.data.canvas.appleCatalogue
-import com.music.zen.data.canvas.ArtistSignature
-import com.music.zen.data.canvas.ArtistSignatureRepository
-import com.music.zen.data.canvas.SignatureInkTransformation
-import com.music.zen.data.canvas.keyColors
+import com.music.bitchord.data.LocalGroups
+import com.music.bitchord.data.OfflinePlaylists
+import com.music.bitchord.data.matchesSearch
+import com.music.bitchord.data.sortedForLibrary
+import com.music.bitchord.data.useTrackTags
+import com.music.bitchord.ui.components.CoverPlaceholder
+import com.music.bitchord.data.canvas.AppleArtistArt
+import com.music.bitchord.data.DebugLog as Log
+import com.music.bitchord.data.canvas.AppleArtistArtRepository
+import com.music.bitchord.data.canvas.appleCatalogue
+import com.music.bitchord.data.canvas.ArtistSignature
+import com.music.bitchord.data.canvas.ArtistSignatureRepository
+import com.music.bitchord.data.canvas.SignatureInkTransformation
+import com.music.bitchord.data.canvas.keyColors
 import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
 import dev.chrisbanes.haze.materials.HazeMaterials
-import com.music.zen.data.canvas.CanvasArtwork
-import com.music.zen.data.canvas.CanvasSource
-import com.music.zen.data.canvas.CanvasRepository
-import com.music.zen.data.model.BrowseType
-import com.music.zen.data.model.DetailPage
-import com.music.zen.data.model.CARD_ART_PX
-import com.music.zen.data.model.HEADER_ART_PX
-import com.music.zen.data.model.ROW_ART_PX
-import com.music.zen.data.model.HomeShelf
-import com.music.zen.data.model.ShelfItem
-import com.music.zen.data.settings.SongSort
-import com.music.zen.data.model.Song
-import com.music.zen.data.model.SubscriptionState
-import com.music.zen.data.model.UiState
-import com.music.zen.data.model.artworkAt
-import com.music.zen.data.model.durationMillis
-import com.music.zen.data.model.playingRowMatcher
-import com.music.zen.data.settings.AppSettings
-import com.music.zen.ui.components.DownloadedBadge
-import com.music.zen.ui.components.ExplicitSongTitle
-import com.music.zen.ui.components.LIBRARY_GRID_SPACING
-import com.music.zen.ui.components.MessageState
-import com.music.zen.ui.components.PAGE_GUTTER
-import com.music.zen.ui.components.NUMBERED_ROW_DIVIDER_INSET
-import com.music.zen.ui.components.RowMoreButton
-import com.music.zen.ui.components.ROW_DIVIDER_INSET
-import com.music.zen.ui.components.SHELF_CARD_WIDTH
-import com.music.zen.ui.components.SongRow
-import com.music.zen.ui.components.SearchPlayingBars
-import com.music.zen.ui.components.libraryGrid
-import com.music.zen.ui.components.lightweightLiquidGlass
-import com.music.zen.ui.components.thumbnailBorder
-import com.music.zen.ui.components.detailSkeleton
-import com.music.zen.ui.components.topBarContentPadding
-import com.music.zen.ui.components.trackColumnWidth
-import com.music.zen.ui.haptics.Haptic
-import com.music.zen.ui.haptics.rememberHaptics
-import com.music.zen.ui.icons.ZenIcons
-import com.music.zen.ui.graphics.FADE_CURVE_STOPS
-import com.music.zen.ui.graphics.smootherStep
-import com.music.zen.ui.player.CanvasArtworkPlayer
-import com.music.zen.ui.theme.ArtworkPalette
-import com.music.zen.ui.theme.rememberArtworkPalette
+import com.music.bitchord.data.canvas.CanvasArtwork
+import com.music.bitchord.data.canvas.CanvasSource
+import com.music.bitchord.data.canvas.CanvasRepository
+import com.music.bitchord.data.model.BrowseType
+import com.music.bitchord.data.model.DetailPage
+import com.music.bitchord.data.model.CARD_ART_PX
+import com.music.bitchord.data.model.HEADER_ART_PX
+import com.music.bitchord.data.model.ROW_ART_PX
+import com.music.bitchord.data.model.HomeShelf
+import com.music.bitchord.data.model.ShelfItem
+import com.music.bitchord.data.settings.SongSort
+import com.music.bitchord.data.model.Song
+import com.music.bitchord.data.model.SubscriptionState
+import com.music.bitchord.data.model.UiState
+import com.music.bitchord.data.model.artworkAt
+import com.music.bitchord.data.model.durationMillis
+import com.music.bitchord.data.model.playingRowMatcher
+import com.music.bitchord.data.settings.AppSettings
+import com.music.bitchord.ui.components.DownloadedBadge
+import com.music.bitchord.ui.components.ExplicitSongTitle
+import com.music.bitchord.ui.components.LIBRARY_GRID_SPACING
+import com.music.bitchord.ui.components.MessageState
+import com.music.bitchord.ui.components.PAGE_GUTTER
+import com.music.bitchord.ui.components.NUMBERED_ROW_DIVIDER_INSET
+import com.music.bitchord.ui.components.RowMoreButton
+import com.music.bitchord.ui.components.ROW_DIVIDER_INSET
+import com.music.bitchord.ui.components.SHELF_CARD_WIDTH
+import com.music.bitchord.ui.components.SongRow
+import com.music.bitchord.ui.components.SearchPlayingBars
+import com.music.bitchord.ui.components.libraryGrid
+import com.music.bitchord.ui.components.lightweightLiquidGlass
+import com.music.bitchord.ui.components.thumbnailBorder
+import com.music.bitchord.ui.components.detailSkeleton
+import com.music.bitchord.ui.components.topBarContentPadding
+import com.music.bitchord.ui.components.trackColumnWidth
+import com.music.bitchord.ui.haptics.Haptic
+import com.music.bitchord.ui.haptics.rememberHaptics
+import com.music.bitchord.ui.icons.BitChordIcons
+import com.music.bitchord.ui.graphics.FADE_CURVE_STOPS
+import com.music.bitchord.ui.graphics.smootherStep
+import com.music.bitchord.ui.player.CanvasArtworkPlayer
+import com.music.bitchord.ui.theme.ArtworkPalette
+import com.music.bitchord.ui.theme.rememberArtworkPalette
 import kotlin.math.roundToInt
 import java.util.Locale
 
@@ -1133,7 +1133,7 @@ private fun ReleaseHeader(
                     // greyed-out plus would only promise one. Apple Music's
                     // own pair for that case: Play and Shuffle, side by side.
                     ActionPill(
-                        icon = ZenIcons.Play,
+                        icon = BitChordIcons.Play,
                         label = stringResource(R.string.play),
                         onClick = onPlay,
                         filled = true,
@@ -1141,7 +1141,7 @@ private fun ReleaseHeader(
                         modifier = Modifier.weight(1f),
                     )
                     ActionPill(
-                        icon = ZenIcons.Shuffle,
+                        icon = BitChordIcons.Shuffle,
                         label = stringResource(R.string.shuffle),
                         onClick = onShuffle,
                         filled = false,
@@ -1161,14 +1161,14 @@ private fun ReleaseHeader(
                     return@Row
                 }
                 CircleIconButton(
-                    icon = ZenIcons.Shuffle,
+                    icon = BitChordIcons.Shuffle,
                     contentDescription = stringResource(R.string.shuffle),
                     onClick = onShuffle,
                     haptic = Haptic.Resume,
                     size = RELEASE_SIDE_BUTTON,
                 )
                 ActionPill(
-                    icon = ZenIcons.Play,
+                    icon = BitChordIcons.Play,
                     label = stringResource(R.string.play),
                     onClick = onPlay,
                     filled = true,
@@ -1179,7 +1179,7 @@ private fun ReleaseHeader(
                     CircleIconButton(
                         // A tick, not a filled-in plus: the pair reads as
                         // "not yet / done", which is what the state is.
-                        icon = if (library.saved) ZenIcons.Check else ZenIcons.Plus,
+                        icon = if (library.saved) BitChordIcons.Check else BitChordIcons.Plus,
                         contentDescription = if (library.saved) {
                             stringResource(R.string.remove_from_library)
                         } else {
@@ -1193,7 +1193,7 @@ private fun ReleaseHeader(
                     // Shown but greyed out for a guest, rather than leaving a
                     // hole beside Play.
                     CircleIconButton(
-                        icon = ZenIcons.Plus,
+                        icon = BitChordIcons.Plus,
                         contentDescription = stringResource(R.string.add_to_library),
                         onClick = {},
                         size = RELEASE_SIDE_BUTTON,
@@ -1250,7 +1250,7 @@ private fun DetailSearchField(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(
-            imageVector = ZenIcons.Search,
+            imageVector = BitChordIcons.Search,
             contentDescription = null,
             tint = palette.onBackgroundVariant,
             modifier = Modifier.size(18.dp),
@@ -1658,7 +1658,7 @@ private fun ActionRow(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         CircleIconButton(
-            icon = ZenIcons.Shuffle,
+            icon = BitChordIcons.Shuffle,
             contentDescription = stringResource(R.string.shuffle),
             onClick = onShuffle,
             haptic = Haptic.Resume,
@@ -2525,7 +2525,7 @@ private fun DetailPage.placeholderIcon(): ImageVector = deviceFolderIcon(browseI
     LocalGroups.isDirectory(browseId) -> Icons.Rounded.Folder
     type == BrowseType.ALBUM -> Icons.Rounded.Album
     type == BrowseType.PLAYLIST -> Icons.AutoMirrored.Rounded.QueueMusic
-    else -> ZenIcons.MusicNote
+    else -> BitChordIcons.MusicNote
 }
 
 /** "10 tracks" → "10 Tracks", "playlist" → "Playlist". */

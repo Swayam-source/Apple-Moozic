@@ -1,6 +1,6 @@
-package com.music.zen.ui.screens
+package com.music.bitchord.ui.screens
 
-import com.music.zen.ui.icons.SfIcons
+import com.music.bitchord.ui.icons.SfIcons
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -31,7 +31,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import com.music.zen.ui.components.IosSwitch
+import com.music.bitchord.ui.components.IosSwitch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -55,14 +55,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.music.zen.R
-import com.music.zen.data.settings.AppSettings
-import com.music.zen.data.settings.EqualizerMode
-import com.music.zen.playback.AudioOutputStatus
-import com.music.zen.playback.EqLayout
-import com.music.zen.playback.EqualizerPreset
-import com.music.zen.ui.haptics.Haptic
-import com.music.zen.ui.haptics.rememberHaptics
+import com.music.bitchord.R
+import com.music.bitchord.data.settings.AppSettings
+import com.music.bitchord.data.settings.EqualizerMode
+import com.music.bitchord.playback.AudioOutputStatus
+import com.music.bitchord.playback.EqLayout
+import com.music.bitchord.playback.EqualizerPreset
+import com.music.bitchord.ui.haptics.Haptic
+import com.music.bitchord.ui.haptics.rememberHaptics
 import java.util.Locale
 import kotlin.math.abs
 import kotlin.math.roundToInt

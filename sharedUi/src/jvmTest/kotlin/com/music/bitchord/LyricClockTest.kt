@@ -1,11 +1,11 @@
-package com.music.zen
+package com.music.bitchord
 
 import androidx.compose.runtime.mutableStateOf
-import com.music.zen.data.lyrics.LyricLine
-import com.music.zen.data.lyrics.LyricWord
-import com.music.zen.playback.PlaybackPosition
-import com.music.zen.ui.player.LyricClock
-import com.music.zen.ui.player.LyricPlayhead
+import com.music.bitchord.data.lyrics.LyricLine
+import com.music.bitchord.data.lyrics.LyricWord
+import com.music.bitchord.playback.PlaybackPosition
+import com.music.bitchord.ui.player.LyricClock
+import com.music.bitchord.ui.player.LyricPlayhead
 import kotlin.math.abs
 import kotlin.random.Random
 import org.junit.Assert.assertEquals

@@ -1,6 +1,6 @@
-package com.music.zen.data.remote
+package com.music.bitchord.data.remote
 
-import com.music.zen.data.model.UiState
+import com.music.bitchord.data.model.UiState
 
 /**
  * What a remote library page shows for a listing. A failed listing names

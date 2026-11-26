@@ -1,4 +1,4 @@
-package com.music.zen.ui.icons
+package com.music.bitchord.ui.icons
 
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.Color

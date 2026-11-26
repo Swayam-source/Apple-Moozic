@@ -1,4 +1,4 @@
-package com.music.zen.ui.screens
+package com.music.bitchord.ui.screens
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -19,10 +19,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.music.zen.R
-import com.music.zen.data.backup.DriveBackup
-import com.music.zen.data.backup.RemoteDevice
-import com.music.zen.ui.icons.SfIcons
+import com.music.bitchord.R
+import com.music.bitchord.data.backup.DriveBackup
+import com.music.bitchord.data.backup.RemoteDevice
+import com.music.bitchord.ui.icons.SfIcons
 import kotlinx.coroutines.launch
 
 /**
@@ -36,7 +36,7 @@ import kotlinx.coroutines.launch
  *
  * A page of its own on the app's navigator, so Back leaves it like any other;
  * restoring is confirmed in the app's frosted alert, raised to
- * [com.music.zen.MainActivity] through [onConfirmRestore].
+ * [com.music.bitchord.MainActivity] through [onConfirmRestore].
  */
 @Composable
 fun DriveDevicesScreen(

@@ -1,7 +1,7 @@
-package com.music.zen.ui.player
+package com.music.bitchord.ui.player
 
 import androidx.compose.runtime.Composable
-import com.music.zen.sharedui.resources.*
+import com.music.bitchord.sharedui.resources.*
 import org.jetbrains.compose.resources.stringResource
 
 /**

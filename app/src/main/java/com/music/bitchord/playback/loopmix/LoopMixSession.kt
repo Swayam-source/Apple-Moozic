@@ -1,7 +1,7 @@
-package com.music.zen.playback.loopmix
+package com.music.bitchord.playback.loopmix
 
 import android.util.Log
-import com.music.zen.playback.smart.LoopMix
+import com.music.bitchord.playback.smart.LoopMix
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.roundToLong
@@ -101,7 +101,7 @@ class LoopMixSession private constructor(
     }
 
     companion object {
-        private const val TAG = "ZenLoopMix"
+        private const val TAG = "BitChordLoopMix"
 
         /** Mix seconds into the mix at which the incoming player starts, silent. */
         const val STARTUP_LEAD = 0.5

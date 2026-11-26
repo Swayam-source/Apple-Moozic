@@ -1,4 +1,4 @@
-package com.music.zen.ui.player
+package com.music.bitchord.ui.player
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
@@ -79,17 +79,17 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.Dispatchers
-import com.music.zen.ui.graphics.toImageBitmap
-import com.music.zen.ui.graphics.forPixelAccess
+import com.music.bitchord.ui.graphics.toImageBitmap
+import com.music.bitchord.ui.graphics.forPixelAccess
 import coil3.request.SuccessResult
 import coil3.request.ImageRequest
 import coil3.compose.LocalPlatformContext
 import coil3.SingletonImageLoader
-import com.music.zen.data.settings.MixDeck
-import com.music.zen.data.settings.MixTransitionView
-import com.music.zen.sharedui.resources.*
-import com.music.zen.ui.components.optimizedHazeEffect
-import com.music.zen.ui.utils.containSheetGestures
+import com.music.bitchord.data.settings.MixDeck
+import com.music.bitchord.data.settings.MixTransitionView
+import com.music.bitchord.sharedui.resources.*
+import com.music.bitchord.ui.components.optimizedHazeEffect
+import com.music.bitchord.ui.utils.containSheetGestures
 import dev.chrisbanes.haze.ExperimentalHazeApi
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
