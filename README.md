@@ -1,4 +1,4 @@
-# Apple Moozic
+# Zen
 
 A Liquid-Glass Android music player with high-resolution audio streaming, offline playback, time-synced lyrics, and native Discord Rich Presence (`Listening to Apple Music`).
 
