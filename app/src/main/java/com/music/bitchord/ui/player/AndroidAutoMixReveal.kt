@@ -1,4 +1,4 @@
-package com.music.bitchord.ui.player
+package com.music.zen.ui.player
 
 import android.graphics.BlendMode
 import android.graphics.Color
@@ -19,7 +19,7 @@ import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.platform.LocalDensity
-import com.music.bitchord.playback.AutoMixArtworkTuning as Tuning
+import com.music.zen.playback.AutoMixArtworkTuning as Tuning
 import kotlin.math.roundToInt
 import kotlin.random.Random
 

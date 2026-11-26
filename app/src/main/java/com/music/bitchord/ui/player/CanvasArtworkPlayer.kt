@@ -1,4 +1,4 @@
-package com.music.bitchord.ui.player
+package com.music.zen.ui.player
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -58,14 +58,14 @@ import androidx.media3.common.VideoSize
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.okhttp.OkHttpDataSource
 import androidx.media3.exoplayer.ExoPlayer
-import com.music.bitchord.ui.graphics.FADE_CURVE_STOPS
-import com.music.bitchord.ui.graphics.smootherStep
-import com.music.bitchord.ui.rememberIsForeground
+import com.music.zen.ui.graphics.FADE_CURVE_STOPS
+import com.music.zen.ui.graphics.smootherStep
+import com.music.zen.ui.rememberIsForeground
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
-import com.music.bitchord.data.Http
-import com.music.bitchord.data.canvas.CanvasArtwork
-import com.music.bitchord.data.canvas.CanvasCache
-import com.music.bitchord.data.settings.AppSettings
+import com.music.zen.data.Http
+import com.music.zen.data.canvas.CanvasArtwork
+import com.music.zen.data.canvas.CanvasCache
+import com.music.zen.data.settings.AppSettings
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -160,7 +160,7 @@ internal fun AndroidCanvasArtworkPlayer(
      * which is worth following as it plays rather than settling on whatever
      * colours its opening frame happened to have. That holds for every
      * source, not just
-     * [CanvasSource.SPOTIFY][com.music.bitchord.data.canvas.CanvasSource.SPOTIFY]:
+     * [CanvasSource.SPOTIFY][com.music.zen.data.canvas.CanvasSource.SPOTIFY]:
      * a clip is a clip, and one that pans or cuts changes colour under its own
      * still sleeve exactly the same way regardless of who published it. Null
      * when a caller has nothing worth re-tinting off a moving colour at all —

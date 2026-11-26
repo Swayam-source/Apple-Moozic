@@ -1,4 +1,4 @@
-package com.music.bitchord.ui.components
+package com.music.zen.ui.components
 
 import java.text.Normalizer
 import java.util.Locale

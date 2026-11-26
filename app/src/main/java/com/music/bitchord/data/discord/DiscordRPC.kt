@@ -1,9 +1,9 @@
-package com.music.bitchord.data.discord
+package com.music.zen.data.discord
 
 import android.content.Context
-import com.music.bitchord.data.model.Song
-import com.music.bitchord.data.model.artworkAt
-import com.music.bitchord.data.model.youTubeThumbnailFallback
+import com.music.zen.data.model.Song
+import com.music.zen.data.model.artworkAt
+import com.music.zen.data.model.youTubeThumbnailFallback
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob

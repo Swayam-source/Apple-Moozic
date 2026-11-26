@@ -1,12 +1,12 @@
-package com.music.bitchord.data.sources.addon
+package com.music.zen.data.sources.addon
 
 import android.content.Context
 import android.content.SharedPreferences
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
-import com.music.bitchord.BuildConfig
-import com.music.bitchord.data.Http
-import com.music.bitchord.data.TrackLog
+import com.music.zen.BuildConfig
+import com.music.zen.data.Http
+import com.music.zen.data.TrackLog
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Mutex
@@ -45,20 +45,20 @@ import java.util.concurrent.TimeUnit
  * a phone is therefore useless anywhere else.
  *
  * Opt-in per addon. Nothing is sent unless the addon's manifest declares
- * `bitchordAuth`, or it answers a request with `401` and
- * `WWW-Authenticate: BitChord`. Other addons never see the token. Even when
+ * `zenAuth`, or it answers a request with `401` and
+ * `WWW-Authenticate: Zen`. Other addons never see the token. Even when
  * they do, a proof is bound to one host, so it cannot be replayed to another.
  *
  * Wire format: "Addon auth" in the Moozic addon docs, protocol version 1.
  */
 object AddonAuth {
-    const val TOKEN_HEADER = "X-BitChord-Token"
-    const val PROOF_HEADER = "X-BitChord-Proof"
-    private const val PROOF_CONTEXT = "bitchord-addon-proof/v1"
+    const val TOKEN_HEADER = "X-Zen-Token"
+    const val PROOF_HEADER = "X-Zen-Proof"
+    private const val PROOF_CONTEXT = "zen-addon-proof/v1"
 
     private const val TAG = "Moozic"
     private const val KEYSTORE = "AndroidKeyStore"
-    private const val ALIAS_PREFIX = "bitchord_addon_auth_"
+    private const val ALIAS_PREFIX = "zen_addon_auth_"
 
     /** Refreshed this long before expiry, so an in-flight search never carries a token about to lapse. */
     private const val REFRESH_BEFORE_MS = 5 * 60_000L
@@ -109,8 +109,8 @@ object AddonAuth {
 
     /** Restores the last token, so a process restart doesn't cost a fresh attestation. */
     fun init(context: Context) {
-        testerPrefs = context.getSharedPreferences("bitchord_tester", Context.MODE_PRIVATE)
-        val p = context.getSharedPreferences("bitchord_addon_auth", Context.MODE_PRIVATE)
+        testerPrefs = context.getSharedPreferences("zen_tester", Context.MODE_PRIVATE)
+        val p = context.getSharedPreferences("zen_addon_auth", Context.MODE_PRIVATE)
         prefs = p
         val token = p.getString("token", null)
         val alias = p.getString("alias", null)
@@ -152,7 +152,7 @@ object AddonAuth {
      * Why this device can't get a token right now, while the last refusal's
      * backoff runs; null when it has one or may ask again.
      *
-     * Read by [SourceRegistry.active][com.music.bitchord.data.sources.SourceRegistry.active]
+     * Read by [SourceRegistry.active][com.music.zen.data.sources.SourceRegistry.active]
      * to leave addons that ask for auth out of the walks meanwhile: each request
      * would only re-throw this, and a resolve tries several queries per source,
      * so the same refusal filled the log a dozen times per track.
@@ -199,8 +199,8 @@ object AddonAuth {
     /** What to tell the listener when an addon refused credentials that were sent. */
     fun rejectionMessage(code: String?): String = when (code) {
         "stale_proof" -> "This addon rejected the request because this phone's clock is wrong"
-        "unavailable" -> "This addon couldn't check BitChord's verification right now"
-        else -> "This addon didn't accept BitChord's verification" + (code?.let { " ($it)" } ?: "")
+        "unavailable" -> "This addon couldn't check Zen's verification right now"
+        else -> "This addon didn't accept Zen's verification" + (code?.let { " ($it)" } ?: "")
     }
 
     // ── Session ───────────────────────────────────────────────────────────
@@ -222,7 +222,7 @@ object AddonAuth {
                 Refusal(e.message ?: "Verification refused", System.currentTimeMillis() + e.backoffMs, transient = false)
                     .also { refusal = it }.raise()
             } catch (e: Exception) {
-                val message = "Couldn't reach BitChord's addon verification service"
+                val message = "Couldn't reach Zen's addon verification service"
                 TrackLog.w(TAG, "addon auth: $message", e)
                 Refusal(message, System.currentTimeMillis() + TRANSIENT_BACKOFF_MS, transient = true)
                     .also { refusal = it }.raise()

@@ -1,4 +1,4 @@
-package com.music.bitchord.ui.player
+package com.music.zen.ui.player
 
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.unit.constrainHeight
@@ -6,10 +6,10 @@ import androidx.compose.ui.unit.constrainWidth
 import androidx.compose.ui.unit.offset
 import androidx.compose.ui.unit.constrain
 import androidx.compose.ui.unit.Constraints
-import com.music.bitchord.ui.graphics.FADE_CURVE_STOPS
-import com.music.bitchord.ui.graphics.smootherStep
-import com.music.bitchord.playback.PlaybackPosition
-import com.music.bitchord.sharedui.resources.*
+import com.music.zen.ui.graphics.FADE_CURVE_STOPS
+import com.music.zen.ui.graphics.smootherStep
+import com.music.zen.playback.PlaybackPosition
+import com.music.zen.sharedui.resources.*
 
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.animation.Crossfade
@@ -148,37 +148,37 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.isSpecified
 import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.unit.sp
-import com.music.bitchord.ui.components.ExplicitBadge
-import com.music.bitchord.ui.components.VideoThumbnails
-import com.music.bitchord.ui.components.menuAnchor
-import com.music.bitchord.ui.theme.HideStatusBar
-import com.music.bitchord.ui.theme.rememberScreenOrientation
-import com.music.bitchord.ui.theme.StatusBarIcons
-import com.music.bitchord.ui.theme.stableStatusBarInsets
-import com.music.bitchord.ui.theme.rememberArtworkTopBandLuminance
-import com.music.bitchord.ui.theme.topBandScrimAlpha
-import com.music.bitchord.ui.LyricsProviderState
-import com.music.bitchord.ui.haptics.Haptic
-import com.music.bitchord.ui.haptics.rememberHaptics
-import com.music.bitchord.ui.icons.BitChordIcons
+import com.music.zen.ui.components.ExplicitBadge
+import com.music.zen.ui.components.VideoThumbnails
+import com.music.zen.ui.components.menuAnchor
+import com.music.zen.ui.theme.HideStatusBar
+import com.music.zen.ui.theme.rememberScreenOrientation
+import com.music.zen.ui.theme.StatusBarIcons
+import com.music.zen.ui.theme.stableStatusBarInsets
+import com.music.zen.ui.theme.rememberArtworkTopBandLuminance
+import com.music.zen.ui.theme.topBandScrimAlpha
+import com.music.zen.ui.LyricsProviderState
+import com.music.zen.ui.haptics.Haptic
+import com.music.zen.ui.haptics.rememberHaptics
+import com.music.zen.ui.icons.ZenIcons
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.music.bitchord.data.canvas.CanvasArtwork
-import com.music.bitchord.data.canvas.CanvasSource
-import com.music.bitchord.data.lyrics.LyricLine
-import com.music.bitchord.data.lyrics.LyricsSource
-import com.music.bitchord.data.settings.LastPlayerScreen
-import com.music.bitchord.data.settings.PlayerTheme
-import com.music.bitchord.data.model.LikeStatus
-import com.music.bitchord.data.model.PlaybackSourceType
-import com.music.bitchord.data.model.PLAYER_ART_PX
-import com.music.bitchord.data.model.QueueEntryIdentity
-import com.music.bitchord.data.model.Song
-import com.music.bitchord.playback.BACK_RESTARTS_AFTER_MS
+import com.music.zen.data.canvas.CanvasArtwork
+import com.music.zen.data.canvas.CanvasSource
+import com.music.zen.data.lyrics.LyricLine
+import com.music.zen.data.lyrics.LyricsSource
+import com.music.zen.data.settings.LastPlayerScreen
+import com.music.zen.data.settings.PlayerTheme
+import com.music.zen.data.model.LikeStatus
+import com.music.zen.data.model.PlaybackSourceType
+import com.music.zen.data.model.PLAYER_ART_PX
+import com.music.zen.data.model.QueueEntryIdentity
+import com.music.zen.data.model.Song
+import com.music.zen.playback.BACK_RESTARTS_AFTER_MS
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeInputScale
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
-import com.music.bitchord.ui.components.optimizedHazeEffect
+import com.music.zen.ui.components.optimizedHazeEffect
 import dev.chrisbanes.haze.ExperimentalHazeApi
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
@@ -3822,7 +3822,7 @@ fun NowPlayingScreen(
                             ) {
                                 if (!coverLoaded() && (!canvasRendered || gesturePair != null)) {
                                     Icon(
-                                        imageVector = BitChordIcons.MusicNote,
+                                        imageVector = ZenIcons.MusicNote,
                                         contentDescription = null,
                                         tint = Color.White.copy(alpha = 0.35f),
                                         modifier = Modifier
@@ -4246,7 +4246,7 @@ fun NowPlayingScreen(
                                 if (signedIn || song.localUri != null) {
                                     val liked = likeStatus == LikeStatus.LIKE
                                     CircleGlyph(
-                                        icon = if (liked) BitChordIcons.StarFilled else BitChordIcons.Star,
+                                        icon = if (liked) ZenIcons.StarFilled else ZenIcons.Star,
                                         contentDescription = stringResource(
                                             if (liked) Res.string.remove_from_liked else Res.string.like,
                                         ),

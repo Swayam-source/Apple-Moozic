@@ -1,7 +1,7 @@
-package com.music.bitchord.data.discord
+package com.music.zen.data.discord
 
 import android.util.Log
-import com.music.bitchord.BuildConfig
+import com.music.zen.BuildConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
@@ -33,10 +33,10 @@ object DiscordNative {
 
     init {
         nativeLibAvailable = try {
-            System.loadLibrary("bitchord_discord")
+            System.loadLibrary("zen_discord")
             true
         } catch (t: Throwable) {
-            Log.e(TAG, "Failed to load libbitchord_discord.so", t)
+            Log.e(TAG, "Failed to load libzen_discord.so", t)
             false
         }
     }

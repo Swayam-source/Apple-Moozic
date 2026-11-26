@@ -1,4 +1,4 @@
-package com.music.bitchord.ui.replay.year
+package com.music.zen.ui.replay.year
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -59,22 +59,22 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.ColorUtils
-import com.music.bitchord.R
-import com.music.bitchord.ui.haptics.Haptic
-import com.music.bitchord.data.model.CARD_ART_PX
-import com.music.bitchord.data.model.HEADER_ART_PX
-import com.music.bitchord.data.model.ROW_ART_PX
-import com.music.bitchord.ui.player.MeshPalette
-import com.music.bitchord.ui.replay.CHROME_HEIGHT
-import com.music.bitchord.ui.replay.Cover
-import com.music.bitchord.ui.replay.HeadlineRun
-import com.music.bitchord.ui.replay.ReplayRow
-import com.music.bitchord.ui.replay.albumRows
-import com.music.bitchord.ui.replay.artistRows
-import com.music.bitchord.ui.replay.formatDay
-import com.music.bitchord.ui.replay.formatHour
-import com.music.bitchord.ui.replay.grouped
-import com.music.bitchord.ui.replay.songRows
+import com.music.zen.R
+import com.music.zen.ui.haptics.Haptic
+import com.music.zen.data.model.CARD_ART_PX
+import com.music.zen.data.model.HEADER_ART_PX
+import com.music.zen.data.model.ROW_ART_PX
+import com.music.zen.ui.player.MeshPalette
+import com.music.zen.ui.replay.CHROME_HEIGHT
+import com.music.zen.ui.replay.Cover
+import com.music.zen.ui.replay.HeadlineRun
+import com.music.zen.ui.replay.ReplayRow
+import com.music.zen.ui.replay.albumRows
+import com.music.zen.ui.replay.artistRows
+import com.music.zen.ui.replay.formatDay
+import com.music.zen.ui.replay.formatHour
+import com.music.zen.ui.replay.grouped
+import com.music.zen.ui.replay.songRows
 import java.time.LocalDate
 import java.time.format.TextStyle as DateTextStyle
 import kotlin.math.PI

@@ -1,14 +1,14 @@
-package com.music.bitchord.ui.replay.year
+package com.music.zen.ui.replay.year
 
 import android.content.Context
 import android.util.Log
-import com.music.bitchord.data.innertube.Innertube
-import com.music.bitchord.data.lyrics.EmbeddedLyrics
-import com.music.bitchord.data.lyrics.LyricLine
-import com.music.bitchord.data.lyrics.LyricsRepository
-import com.music.bitchord.data.model.Song
-import com.music.bitchord.data.model.durationMillis
-import com.music.bitchord.data.settings.AppSettings
+import com.music.zen.data.innertube.Innertube
+import com.music.zen.data.lyrics.EmbeddedLyrics
+import com.music.zen.data.lyrics.LyricLine
+import com.music.zen.data.lyrics.LyricsRepository
+import com.music.zen.data.model.Song
+import com.music.zen.data.model.durationMillis
+import com.music.zen.data.settings.AppSettings
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Mutex
@@ -188,7 +188,7 @@ object BestParts {
         fun heatmap(): Heatmap? = if (segmentMs > 0 && intensity.isNotEmpty()) Heatmap(segmentMs, intensity) else null
     }
 
-    private const val TAG = "BitChordBestPart"
+    private const val TAG = "ZenBestPart"
     private const val FILE_NAME = "replay_heatmaps.json"
     private const val MAX_KEPT = 500
     private const val HEATMAP_TIMEOUT_MS = 8_000L

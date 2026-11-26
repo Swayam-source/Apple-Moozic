@@ -1,8 +1,8 @@
-package com.music.bitchord.data.stats
+package com.music.zen.data.stats
 
-import com.music.bitchord.data.YtMusicRepository
-import com.music.bitchord.data.model.Song
-import com.music.bitchord.data.model.durationMillis
+import com.music.zen.data.YtMusicRepository
+import com.music.zen.data.model.Song
+import com.music.zen.data.model.durationMillis
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob

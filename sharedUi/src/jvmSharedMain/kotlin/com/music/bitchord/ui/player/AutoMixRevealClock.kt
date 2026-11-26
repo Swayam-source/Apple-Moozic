@@ -1,11 +1,11 @@
-package com.music.bitchord.ui.player
+package com.music.zen.ui.player
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.withFrameNanos
-import com.music.bitchord.playback.AutoMixVisualPhase
-import com.music.bitchord.playback.AutoMixVisualState
+import com.music.zen.playback.AutoMixVisualPhase
+import com.music.zen.playback.AutoMixVisualState
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map

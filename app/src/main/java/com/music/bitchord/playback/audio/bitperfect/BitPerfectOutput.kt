@@ -7,17 +7,17 @@
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  */
-package com.music.bitchord.playback.audio.bitperfect
+package com.music.zen.playback.audio.bitperfect
 
 import android.content.Context
 import android.media.AudioManager
 import android.os.Build
 import android.util.Log
-import com.music.bitchord.data.settings.AppSettings
-import com.music.bitchord.data.settings.BitPerfectMode
-import com.music.bitchord.playback.audio.bitperfect.usb.UsbDirectDevices
-import com.music.bitchord.playback.audio.bitperfect.usb.UsbDirectTransport
-import com.music.bitchord.playback.audio.bitperfect.usb.UsbVolume
+import com.music.zen.data.settings.AppSettings
+import com.music.zen.data.settings.BitPerfectMode
+import com.music.zen.playback.audio.bitperfect.usb.UsbDirectDevices
+import com.music.zen.playback.audio.bitperfect.usb.UsbDirectTransport
+import com.music.zen.playback.audio.bitperfect.usb.UsbVolume
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicReference
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -172,7 +172,7 @@ internal object BitPerfectOutput {
     private val _hardwareVolume = MutableStateFlow<UsbVolume.Snapshot?>(null)
     val hardwareVolume: StateFlow<UsbVolume.Snapshot?> = _hardwareVolume.asStateFlow()
     private val pendingVolume = AtomicReference<Double?>(null)
-    private val volumeExecutor = Executors.newSingleThreadExecutor { Thread(it, "BitChord-USB-volume") }
+    private val volumeExecutor = Executors.newSingleThreadExecutor { Thread(it, "Zen-USB-volume") }
 
     init {
         // A detached DAC stops its stream at once rather than at the next write.

@@ -1,4 +1,4 @@
-package com.music.bitchord.data.canvas
+package com.music.zen.data.canvas
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -8,9 +8,9 @@ import android.webkit.JavascriptInterface
 import android.webkit.WebStorage
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import com.music.bitchord.data.DebugLog as Log
-import com.music.bitchord.data.Http
-import com.music.bitchord.data.settings.AppSettings
+import com.music.zen.data.DebugLog as Log
+import com.music.zen.data.Http
+import com.music.zen.data.settings.AppSettings
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Mutex
@@ -28,7 +28,7 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.util.Base64
-import com.music.bitchord.data.web.QuietWebChromeClient
+import com.music.zen.data.web.QuietWebChromeClient
 
 /**
  * The bearer token behind Spotify's own web player, minted from the
@@ -43,7 +43,7 @@ import com.music.bitchord.data.web.QuietWebChromeClient
 internal object SpotifyToken {
 
     private const val TAG = "SpotifyToken"
-    private const val BRIDGE_NAME = "BitChordSpotifyTokenBridge"
+    private const val BRIDGE_NAME = "ZenSpotifyTokenBridge"
     private const val HARVEST_TIMEOUT_MS = 20_000L
     private const val DEFAULT_TOKEN_LIFETIME_MS = 3_600_000L
 
@@ -211,8 +211,8 @@ internal object SpotifyToken {
 
     private val HOOK_SCRIPT = """
         (function () {
-          if (window.__bitchordTokenHook) return;
-          window.__bitchordTokenHook = true;
+          if (window.__zenTokenHook) return;
+          window.__zenTokenHook = true;
           var report = function (body) {
             try { $BRIDGE_NAME.onTokenPayload(body); } catch (e) {}
           };
@@ -236,7 +236,7 @@ internal object SpotifyToken {
           }
           var origOpen = XMLHttpRequest.prototype.open;
           XMLHttpRequest.prototype.open = function (method, url) {
-            this.__bitchordUrl = url;
+            this.__zenUrl = url;
             return origOpen.apply(this, arguments);
           };
           var origSend = XMLHttpRequest.prototype.send;
@@ -244,7 +244,7 @@ internal object SpotifyToken {
             var xhr = this;
             try {
               xhr.addEventListener('load', function () {
-                if (isToken(xhr.__bitchordUrl)) {
+                if (isToken(xhr.__zenUrl)) {
                   try { report(xhr.responseText); } catch (e) {}
                 }
               });

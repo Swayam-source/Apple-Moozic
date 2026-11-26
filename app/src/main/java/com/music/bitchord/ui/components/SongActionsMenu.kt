@@ -1,10 +1,10 @@
-package com.music.bitchord.ui.components
+package com.music.zen.ui.components
 
-import com.music.bitchord.ui.icons.BrokenHeart
-import com.music.bitchord.ui.icons.SfIcons
-import com.music.bitchord.ui.components.trackArtSize
+import com.music.zen.ui.icons.BrokenHeart
+import com.music.zen.ui.icons.SfIcons
+import com.music.zen.ui.components.trackArtSize
 import androidx.compose.ui.layout.ContentScale
-import com.music.bitchord.R
+import com.music.zen.R
 
 import android.net.Uri
 import androidx.compose.foundation.background
@@ -54,22 +54,22 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import com.music.bitchord.ui.player.ThinSlider
+import com.music.zen.ui.player.ThinSlider
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
-import com.music.bitchord.data.model.LikeStatus
-import com.music.bitchord.data.model.ROW_ART_PX
-import com.music.bitchord.data.model.Song
-import com.music.bitchord.data.model.artworkAt
-import com.music.bitchord.data.webdav.WebDavUploads
-import com.music.bitchord.download.DownloadState
-import com.music.bitchord.download.Downloads
-import com.music.bitchord.playback.SleepTimer
-import com.music.bitchord.data.settings.AppSettings
-import com.music.bitchord.ui.components.thumbnailBorder
-import com.music.bitchord.ui.theme.ArtworkPalette
+import com.music.zen.data.model.LikeStatus
+import com.music.zen.data.model.ROW_ART_PX
+import com.music.zen.data.model.Song
+import com.music.zen.data.model.artworkAt
+import com.music.zen.data.webdav.WebDavUploads
+import com.music.zen.download.DownloadState
+import com.music.zen.download.Downloads
+import com.music.zen.playback.SleepTimer
+import com.music.zen.data.settings.AppSettings
+import com.music.zen.ui.components.thumbnailBorder
+import com.music.zen.ui.theme.ArtworkPalette
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.Locale
@@ -86,7 +86,7 @@ import java.util.Locale
  * finished download (`song.localUri != null`) carries no YouTube identity to
  * rate, fetch again or share, so it gets the offline player's rows instead:
  * Like and Add to playlist against the device's own playlists (see
- * [com.music.bitchord.data.OfflinePlaylists]), signed in or not.
+ * [com.music.zen.data.OfflinePlaylists]), signed in or not.
  *
  * [showSleepTimer] and [onShare] are the player's extras: a sleep timer isn't a
  * property of some row in a list, so it only appears where it means something.
@@ -139,14 +139,14 @@ fun SongActionsMenu(
      * Offered for any player item that has one behind it — a substituted copy
      * can be the wrong recording from the first second, not only after a
      * visible upgrade. See
-     * [com.music.bitchord.playback.hasYouTubeOriginal].
+     * [com.music.zen.playback.hasYouTubeOriginal].
      */
     onRollbackToOriginal: (() -> Unit)? = null,
     /**
      * The way back from a revert: available only for a player item the listener
      * has pinned to YouTube's own upload, where nothing will go looking for a
      * better copy again until they ask.
-     * See [com.music.bitchord.playback.OriginalVersion].
+     * See [com.music.zen.playback.OriginalVersion].
      */
     onUpgradeQuality: (() -> Unit)? = null,
     /** Keeps the upgrade row visible but untappable while its lookup is running. */
@@ -154,7 +154,7 @@ fun SongActionsMenu(
     /**
      * Switches the playing track between its video and audio-only cuts. Null
      * hides the row — offered for the playing track only. See
-     * [com.music.bitchord.playback.PlaybackService.smoothSwapCurrentTrackVersion].
+     * [com.music.zen.playback.PlaybackService.smoothSwapCurrentTrackVersion].
      */
     onToggleAudioVersion: (() -> Unit)? = null,
     /** Which cut is playing now, so the row can offer the other one. */

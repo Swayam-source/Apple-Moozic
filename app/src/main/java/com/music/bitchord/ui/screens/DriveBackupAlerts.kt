@@ -1,4 +1,4 @@
-package com.music.bitchord.ui.screens
+package com.music.zen.ui.screens
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
@@ -7,11 +7,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import com.music.bitchord.R
-import com.music.bitchord.data.backup.DriveBackup
-import com.music.bitchord.data.backup.RemoteDevice
-import com.music.bitchord.ui.components.ConfirmationAlert
-import com.music.bitchord.ui.components.TextValueAlert
+import com.music.zen.R
+import com.music.zen.data.backup.DriveBackup
+import com.music.zen.data.backup.RemoteDevice
+import com.music.zen.ui.components.ConfirmationAlert
+import com.music.zen.ui.components.TextValueAlert
 import dev.chrisbanes.haze.HazeState
 
 /**

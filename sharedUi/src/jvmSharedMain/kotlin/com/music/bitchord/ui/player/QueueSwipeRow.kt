@@ -1,4 +1,4 @@
-package com.music.bitchord.ui.player
+package com.music.zen.ui.player
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -44,10 +44,10 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.music.bitchord.sharedui.resources.*
-import com.music.bitchord.ui.AppUi
-import com.music.bitchord.ui.haptics.Haptic
-import com.music.bitchord.ui.haptics.rememberHaptics
+import com.music.zen.sharedui.resources.*
+import com.music.zen.ui.AppUi
+import com.music.zen.ui.haptics.Haptic
+import com.music.zen.ui.haptics.rememberHaptics
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay

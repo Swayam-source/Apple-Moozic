@@ -1,6 +1,6 @@
-package com.music.bitchord.ui.screens
+package com.music.zen.ui.screens
 
-import com.music.bitchord.ui.icons.SfIcons
+import com.music.zen.ui.icons.SfIcons
 import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -26,7 +26,7 @@ import androidx.compose.material.icons.rounded.Key
 import androidx.compose.material.icons.rounded.Tune
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import com.music.bitchord.ui.components.IosSwitch
+import com.music.zen.ui.components.IosSwitch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -49,19 +49,19 @@ import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
-import com.music.bitchord.R
-import com.music.bitchord.data.NerdStats
-import com.music.bitchord.data.discord.DiscordAuthManager
-import com.music.bitchord.data.discord.DiscordNative
-import com.music.bitchord.data.discord.DiscordRPC
-import com.music.bitchord.data.discord.discordAudioQualityLine
-import com.music.bitchord.data.model.CARD_ART_PX
-import com.music.bitchord.data.model.Song
-import com.music.bitchord.data.model.artworkAt
-import com.music.bitchord.data.settings.AppSettings
-import com.music.bitchord.ui.components.ChoiceAlert
-import com.music.bitchord.ui.components.TextValueAlert
-import com.music.bitchord.ui.components.thumbnailBorder
+import com.music.zen.R
+import com.music.zen.data.NerdStats
+import com.music.zen.data.discord.DiscordAuthManager
+import com.music.zen.data.discord.DiscordNative
+import com.music.zen.data.discord.DiscordRPC
+import com.music.zen.data.discord.discordAudioQualityLine
+import com.music.zen.data.model.CARD_ART_PX
+import com.music.zen.data.model.Song
+import com.music.zen.data.model.artworkAt
+import com.music.zen.data.settings.AppSettings
+import com.music.zen.ui.components.ChoiceAlert
+import com.music.zen.ui.components.TextValueAlert
+import com.music.zen.ui.components.thumbnailBorder
 import dev.chrisbanes.haze.HazeState
 import java.util.Locale
 

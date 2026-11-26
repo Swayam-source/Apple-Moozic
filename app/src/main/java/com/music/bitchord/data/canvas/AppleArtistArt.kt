@@ -1,12 +1,12 @@
-package com.music.bitchord.data.canvas
+package com.music.zen.data.canvas
 
-import com.music.bitchord.data.DebugLog as Log
-import com.music.bitchord.data.AppleCatalogue
-import com.music.bitchord.data.Http
-import com.music.bitchord.data.model.DetailPage
-import com.music.bitchord.data.model.UiState
+import com.music.zen.data.DebugLog as Log
+import com.music.zen.data.AppleCatalogue
+import com.music.zen.data.Http
+import com.music.zen.data.model.DetailPage
+import com.music.zen.data.model.UiState
 import androidx.compose.ui.graphics.Color
-import com.music.bitchord.ui.theme.ArtworkKeyColors
+import com.music.zen.ui.theme.ArtworkKeyColors
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

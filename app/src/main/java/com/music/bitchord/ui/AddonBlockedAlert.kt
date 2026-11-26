@@ -1,13 +1,13 @@
-package com.music.bitchord.ui
+package com.music.zen.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
-import com.music.bitchord.R
-import com.music.bitchord.data.model.Song
-import com.music.bitchord.data.settings.AppSettings
-import com.music.bitchord.data.settings.AudioQuality
-import com.music.bitchord.data.sources.SourceRegistry
-import com.music.bitchord.ui.components.InfoAlert
+import com.music.zen.R
+import com.music.zen.data.model.Song
+import com.music.zen.data.settings.AppSettings
+import com.music.zen.data.settings.AudioQuality
+import com.music.zen.data.sources.SourceRegistry
+import com.music.zen.ui.components.InfoAlert
 import dev.chrisbanes.haze.HazeState
 
 /**

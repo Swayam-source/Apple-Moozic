@@ -1,6 +1,6 @@
-package com.music.bitchord.ui.replay.year
+package com.music.zen.ui.replay.year
 
-import com.music.bitchord.data.lyrics.LyricLine
+import com.music.zen.data.lyrics.LyricLine
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject

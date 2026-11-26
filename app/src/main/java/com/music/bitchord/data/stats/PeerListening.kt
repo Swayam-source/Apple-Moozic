@@ -1,4 +1,4 @@
-package com.music.bitchord.data.stats
+package com.music.zen.data.stats
 
 import android.content.Context
 import android.util.Log
@@ -38,7 +38,7 @@ object PeerListening {
 
     private const val DIRECTORY = "listening-peers"
     private const val INDEX = "index.json"
-    private const val TAG = "BitChordPeers"
+    private const val TAG = "ZenPeers"
 
     private val json = Json {
         ignoreUnknownKeys = true

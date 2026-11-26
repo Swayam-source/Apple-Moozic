@@ -1,4 +1,4 @@
-package com.music.bitchord.ui.theme
+package com.music.zen.ui.theme
 
 import org.junit.Assert.assertEquals
 import org.junit.Test

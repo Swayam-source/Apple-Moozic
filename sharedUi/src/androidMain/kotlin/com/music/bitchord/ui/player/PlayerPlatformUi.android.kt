@@ -1,4 +1,4 @@
-package com.music.bitchord.ui.player
+package com.music.zen.ui.player
 
 import android.os.Build
 import android.os.SystemClock

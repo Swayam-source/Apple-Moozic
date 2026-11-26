@@ -1,4 +1,4 @@
-package com.music.bitchord.data
+package com.music.zen.data
 
 import android.Manifest
 import android.content.ContentUris
@@ -11,12 +11,12 @@ import android.os.Build
 import android.provider.DocumentsContract
 import android.provider.MediaStore
 import android.provider.OpenableColumns
-import com.music.bitchord.data.DebugLog as Log
+import com.music.zen.data.DebugLog as Log
 import androidx.core.content.ContextCompat
-import com.music.bitchord.data.model.Song
-import com.music.bitchord.data.settings.AppSettings
-import com.music.bitchord.download.DownloadStore
-import com.music.bitchord.download.Downloads
+import com.music.zen.data.model.Song
+import com.music.zen.data.settings.AppSettings
+import com.music.zen.download.DownloadStore
+import com.music.zen.download.Downloads
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -64,7 +64,7 @@ object LocalMediaRepository {
     }
 
     /**
-     * Retrieves all songs in the `Music/BitChord` directory, combining app downloads
+     * Retrieves all songs in the `Music/Zen` directory, combining app downloads
      * with any local audio files present in that folder.
      *
      * The download record is the better source for a title and a credit — it

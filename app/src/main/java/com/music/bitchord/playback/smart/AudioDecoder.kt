@@ -21,7 +21,7 @@
  * with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.music.bitchord.playback.smart
+package com.music.zen.playback.smart
 
 import android.media.MediaCodec
 import android.media.MediaDataSource
@@ -47,7 +47,7 @@ import kotlin.math.max
  */
 object AudioDecoder {
 
-    private const val TAG = "BitChordAudioDecoder"
+    private const val TAG = "ZenAudioDecoder"
     private const val TIMEOUT_US = 10_000L
 
     /** Decoded mono PCM at the container's own sample rate; the caller resamples. */

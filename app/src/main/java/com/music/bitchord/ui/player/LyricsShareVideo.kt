@@ -1,4 +1,4 @@
-package com.music.bitchord.ui.player
+package com.music.zen.ui.player
 
 import android.content.ContentValues
 import android.content.Context
@@ -26,15 +26,15 @@ import androidx.media3.exoplayer.source.MediaSource
 import androidx.media3.exoplayer.upstream.LoadErrorHandlingPolicy
 import androidx.media3.transformer.DefaultAssetLoaderFactory
 import androidx.media3.transformer.DefaultDecoderFactory
-import com.music.bitchord.playback.AudioCache
-import com.music.bitchord.data.YtMusicRepository
-import com.music.bitchord.data.model.SearchFilter
-import com.music.bitchord.data.model.SearchResult
-import com.music.bitchord.data.model.Song
-import com.music.bitchord.data.sources.SourceRegistry
-import com.music.bitchord.data.sources.TrackMatcher
+import com.music.zen.playback.AudioCache
+import com.music.zen.data.YtMusicRepository
+import com.music.zen.data.model.SearchFilter
+import com.music.zen.data.model.SearchResult
+import com.music.zen.data.model.Song
+import com.music.zen.data.sources.SourceRegistry
+import com.music.zen.data.sources.TrackMatcher
 import java.util.concurrent.ConcurrentHashMap
-import com.music.bitchord.data.DebugLog as Log
+import com.music.zen.data.DebugLog as Log
 import androidx.media3.effect.BitmapOverlay
 import androidx.media3.effect.GaussianBlur
 import androidx.media3.effect.OverlayEffect
@@ -50,7 +50,7 @@ import androidx.media3.transformer.ExportException
 import androidx.media3.transformer.ExportResult
 import androidx.media3.transformer.Transformer
 import androidx.media3.transformer.VideoEncoderSettings
-import com.music.bitchord.data.canvas.CanvasArtwork
+import com.music.zen.data.canvas.CanvasArtwork
 import java.io.File
 import java.util.Locale
 import kotlin.coroutines.resume
@@ -446,10 +446,10 @@ internal fun shareVideoIntent(context: Context, video: File): Intent? = runCatch
         .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
 }.getOrNull()
 
-/** Copies [video] into the device's Movies/BitChord, where a gallery will find it. */
+/** Copies [video] into the device's Movies/Zen, where a gallery will find it. */
 internal suspend fun saveVideoToGallery(context: Context, video: File, label: String): Boolean =
     withContext(Dispatchers.IO) {
-        val name = "bitchord-lyrics-${label.replace(' ', '-').lowercase(Locale.ROOT)}.mp4"
+        val name = "zen-lyrics-${label.replace(' ', '-').lowercase(Locale.ROOT)}.mp4"
         runCatching {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 val resolver = context.contentResolver
@@ -458,7 +458,7 @@ internal suspend fun saveVideoToGallery(context: Context, video: File, label: St
                 val values = ContentValues().apply {
                     put(MediaStore.Video.Media.DISPLAY_NAME, name)
                     put(MediaStore.Video.Media.MIME_TYPE, VIDEO_MIME)
-                    put(MediaStore.Video.Media.RELATIVE_PATH, "${Environment.DIRECTORY_MOVIES}/BitChord")
+                    put(MediaStore.Video.Media.RELATIVE_PATH, "${Environment.DIRECTORY_MOVIES}/Zen")
                     put(MediaStore.Video.Media.IS_PENDING, 1)
                 }
                 val uri: Uri = resolver.insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values)
@@ -481,7 +481,7 @@ internal suspend fun saveVideoToGallery(context: Context, video: File, label: St
                 }
             } else {
                 @Suppress("DEPRECATION")
-                val dir = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES), "BitChord")
+                val dir = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES), "Zen")
                 dir.mkdirs()
                 video.copyTo(File(dir, name), overwrite = true)
             }

@@ -1,4 +1,4 @@
-package com.music.bitchord.playback
+package com.music.zen.playback
 
 import android.app.SearchManager
 import android.content.Intent
@@ -32,7 +32,7 @@ sealed interface LinkRequest {
     /**
      * An audio file another app asked to have played — "Open with" from a file
      * manager, a tapped attachment — by the `content://` or `file://` uri it
-     * handed over. See [com.music.bitchord.data.LocalMediaRepository.songFromUri].
+     * handed over. See [com.music.zen.data.LocalMediaRepository.songFromUri].
      */
     data class LocalFile(val uri: Uri) : LinkRequest
 }
@@ -42,7 +42,7 @@ sealed interface LinkRequest {
  *
  * The same relay [PlayerDeepLink] is, and for the same reason: what has to
  * happen — start a queue, push a page, run a search — is all inside
- * `BitChordApp`'s composition, which [MainActivity][com.music.bitchord.MainActivity]
+ * `ZenApp`'s composition, which [MainActivity][com.music.zen.MainActivity]
  * has no handle on. The activity reads the intent, this holds the answer, and
  * the composition serves it once its controller and view model exist.
  *
@@ -61,7 +61,7 @@ object MusicLink {
      * returning the link that launched it. Without this, rotating the phone an
      * hour later would replay the shared song over whatever is playing.
      */
-    private const val EXTRA_CONSUMED = "bitchord.linkConsumed"
+    private const val EXTRA_CONSUMED = "zen.linkConsumed"
 
     private val _pending = MutableStateFlow<LinkRequest?>(null)
 

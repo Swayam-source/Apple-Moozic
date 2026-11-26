@@ -1,22 +1,22 @@
-package com.music.bitchord.download
+package com.music.zen.download
 
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.media.MediaMetadataRetriever
 import android.net.Uri
-import com.music.bitchord.data.DebugLog as Log
+import com.music.zen.data.DebugLog as Log
 import androidx.core.content.ContextCompat
-import com.music.bitchord.data.innertube.StreamResolver
-import com.music.bitchord.data.model.Song
-import com.music.bitchord.data.settings.AppSettings
-import com.music.bitchord.data.settings.DownloadQuality
-import com.music.bitchord.data.sources.SourceRegistry
-import com.music.bitchord.data.sources.SourceResolver
-import com.music.bitchord.data.sources.SourceStream
-import com.music.bitchord.data.sources.StreamFormat
-import com.music.bitchord.data.sources.TrackMatcher
-import com.music.bitchord.playback.AudioCache
+import com.music.zen.data.innertube.StreamResolver
+import com.music.zen.data.model.Song
+import com.music.zen.data.settings.AppSettings
+import com.music.zen.data.settings.DownloadQuality
+import com.music.zen.data.sources.SourceRegistry
+import com.music.zen.data.sources.SourceResolver
+import com.music.zen.data.sources.SourceStream
+import com.music.zen.data.sources.StreamFormat
+import com.music.zen.data.sources.TrackMatcher
+import com.music.zen.playback.AudioCache
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
@@ -148,7 +148,7 @@ object Downloads {
     private val running = LinkedHashMap<String, Job?>()
 
     fun init(context: Context) {
-        prefs = context.getSharedPreferences("bitchord_settings", Context.MODE_PRIVATE)
+        prefs = context.getSharedPreferences("zen_settings", Context.MODE_PRIVATE)
         _saved.value = runCatching {
             json.decodeFromString(serializer, prefs.getString(KEY_SAVED, null) ?: "{}")
         }.getOrDefault(emptyMap())
@@ -517,7 +517,7 @@ object Downloads {
         // Deleting the liked songs while they are kept downloaded would have
         // the next check fetch every one of them again. Taking them off the
         // device says the listener no longer wants that, so it ends here.
-        if (id == com.music.bitchord.data.YtMusicRepository.LIKED_MUSIC) AppSettings.setDownloadLikedSongs(false)
+        if (id == com.music.zen.data.YtMusicRepository.LIKED_MUSIC) AppSettings.setDownloadLikedSongs(false)
         var any = false
         tracksOnlyIn(id, _collections.value, _saved.value)
             .forEach { videoId -> if (delete(context, videoId)) any = true }
@@ -1210,7 +1210,7 @@ object Downloads {
         val mimeType: String,
         /** For the log line, so a download's provenance is on the record. */
         val describe: String,
-        /** Short premium-rendition badge shown only in BitChord's Downloads list. */
+        /** Short premium-rendition badge shown only in Zen's Downloads list. */
         val downloadFormat: String? = null,
         val taggable: Boolean = true,
         val offlineHls: Manifest? = null,
@@ -1655,7 +1655,7 @@ internal fun resolvedDownloadDates(
     return (persistedAddedSeconds ?: modifiedSeconds) to modifiedSeconds
 }
 
-/** Premium source labels used in BitChord's Downloads list. */
+/** Premium source labels used in Zen's Downloads list. */
 private fun StreamFormat.downloadBadge(): String? = when {
     isDolbyAtmos -> "DOLBY"
     codec.equals("flac", ignoreCase = true) || codec.equals("x-flac", ignoreCase = true) -> "FLAC"

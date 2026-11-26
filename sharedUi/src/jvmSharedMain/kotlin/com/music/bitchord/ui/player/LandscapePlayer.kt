@@ -1,7 +1,7 @@
-package com.music.bitchord.ui.player
+package com.music.zen.ui.player
 
 import dev.chrisbanes.haze.HazeState
-import com.music.bitchord.sharedui.resources.*
+import com.music.zen.sharedui.resources.*
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.AnimatedContent
@@ -58,15 +58,15 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.music.bitchord.ui.components.ExplicitBadge
-import com.music.bitchord.ui.components.menuAnchor
-import com.music.bitchord.ui.haptics.Haptic
-import com.music.bitchord.ui.icons.BitChordIcons
-import com.music.bitchord.ui.theme.stableStatusBarInsets
-import com.music.bitchord.data.canvas.CanvasArtwork
-import com.music.bitchord.data.canvas.CanvasSource
-import com.music.bitchord.data.model.LikeStatus
-import com.music.bitchord.data.model.Song
+import com.music.zen.ui.components.ExplicitBadge
+import com.music.zen.ui.components.menuAnchor
+import com.music.zen.ui.haptics.Haptic
+import com.music.zen.ui.icons.ZenIcons
+import com.music.zen.ui.theme.stableStatusBarInsets
+import com.music.zen.data.canvas.CanvasArtwork
+import com.music.zen.data.canvas.CanvasSource
+import com.music.zen.data.model.LikeStatus
+import com.music.zen.data.model.Song
 
 /**
  * The widest the two columns are allowed to get between them, centred in
@@ -333,7 +333,7 @@ internal fun LandscapeArtwork(
         ) {
             if (!artLoaded && !canvasRendered) {
                 Icon(
-                    imageVector = BitChordIcons.MusicNote,
+                    imageVector = ZenIcons.MusicNote,
                     contentDescription = null,
                     tint = Color.White.copy(alpha = 0.35f),
                     modifier = Modifier.fillMaxSize(0.36f),
@@ -514,7 +514,7 @@ internal fun LandscapeCredits(
             if (signedIn || song.localUri != null) {
                 val liked = likeStatus == LikeStatus.LIKE
                 CircleGlyph(
-                    icon = if (liked) BitChordIcons.StarFilled else BitChordIcons.Star,
+                    icon = if (liked) ZenIcons.StarFilled else ZenIcons.Star,
                     contentDescription = stringResource(
                         if (liked) Res.string.remove_from_liked else Res.string.like,
                     ),

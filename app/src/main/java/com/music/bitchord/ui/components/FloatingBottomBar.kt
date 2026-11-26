@@ -1,4 +1,4 @@
-package com.music.bitchord.ui.components
+package com.music.zen.ui.components
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.AnimationSpec
@@ -53,9 +53,9 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.music.bitchord.data.settings.AppSettings
-import com.music.bitchord.ui.haptics.Haptic
-import com.music.bitchord.ui.haptics.rememberHaptics
+import com.music.zen.data.settings.AppSettings
+import com.music.zen.ui.haptics.Haptic
+import com.music.zen.ui.haptics.rememberHaptics
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
 import dev.chrisbanes.haze.materials.HazeMaterials

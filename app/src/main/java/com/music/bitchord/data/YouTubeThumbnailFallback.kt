@@ -1,15 +1,15 @@
-package com.music.bitchord.data
+package com.music.zen.data
 
 import coil3.intercept.Interceptor
 import coil3.network.HttpException
 import coil3.request.ErrorResult
 import coil3.request.ImageResult
-import com.music.bitchord.data.model.youTubeThumbnailFallback
+import com.music.zen.data.model.youTubeThumbnailFallback
 import java.util.concurrent.ConcurrentHashMap
 
 /**
  * Falls back to a YouTube video's `hqdefault` when the larger cover
- * [artworkAt][com.music.bitchord.data.model.artworkAt] asked for isn't there.
+ * [artworkAt][com.music.zen.data.model.artworkAt] asked for isn't there.
  *
  * The player, a detail header, the widget and the watch ask for
  * `maxresdefault` or `sddefault`, which only videos uploaded at that

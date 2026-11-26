@@ -1,4 +1,4 @@
-package com.music.bitchord.ui.player
+package com.music.zen.ui.player
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -12,18 +12,18 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
 import android.graphics.RectF
 import android.graphics.Shader
-import com.music.bitchord.data.lyrics.CharGrowth
-import com.music.bitchord.data.lyrics.GrowingWord
-import com.music.bitchord.data.lyrics.LyricLine
+import com.music.zen.data.lyrics.CharGrowth
+import com.music.zen.data.lyrics.GrowingWord
+import com.music.zen.data.lyrics.LyricLine
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.core.content.res.ResourcesCompat
-import com.music.bitchord.R
-import com.music.bitchord.ui.replay.Fonts
-import com.music.bitchord.ui.replay.drawArtwork
-import com.music.bitchord.ui.replay.drawLogo
-import com.music.bitchord.ui.replay.ellipsised
-import com.music.bitchord.ui.replay.loadBitmap
+import com.music.zen.R
+import com.music.zen.ui.replay.Fonts
+import com.music.zen.ui.replay.drawArtwork
+import com.music.zen.ui.replay.drawLogo
+import com.music.zen.ui.replay.ellipsised
+import com.music.zen.ui.replay.loadBitmap
 import kotlin.math.roundToInt
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -45,7 +45,7 @@ import kotlinx.coroutines.withContext
  * ## Why it isn't Compose
  *
  * `Bitmap` + `android.graphics.Canvas`, exactly as
- * [com.music.bitchord.ui.replay.ReplayPoster] does it, and for the same
+ * [com.music.zen.ui.replay.ReplayPoster] does it, and for the same
  * reasons written up there: Compose offscreen on minSdk 26 is a cascade of
  * hardware bitmaps and layers that fails differently per device, while a
  * software canvas draws identically from API 26 up. The backdrop, the logo, the
@@ -67,7 +67,7 @@ internal suspend fun renderLyricsShareCard(
     card: LyricsShareRequest,
     /** The 1080×1920 story layout instead: see [layoutStory]. */
     story: Boolean = false,
-    /** The BitChord mark at the top right; without it the passage moves up into its room. */
+    /** The Zen mark at the top right; without it the passage moves up into its room. */
     showLogo: Boolean = true,
     /** No backdrop: the card alone, to lay over a video of one. */
     transparent: Boolean = false,
@@ -676,7 +676,7 @@ private const val CARD_MARGIN = 72f
 private const val CARD_CONTENT_W = CARD_W - CARD_MARGIN * 2
 
 private const val LOGO_GAP = 20f
-private const val BRAND = "BitChord"
+private const val BRAND = "Zen"
 
 /** Baseline of the mark at the top right, and just under it where the gap starts. */
 private const val HEADER_BASELINE = 132f

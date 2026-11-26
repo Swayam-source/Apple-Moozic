@@ -1,4 +1,4 @@
-package com.music.bitchord.widget
+package com.music.zen.widget
 
 import android.content.Intent
 import android.content.SharedPreferences

@@ -1,14 +1,14 @@
-package com.music.bitchord.data.stats
+package com.music.zen.data.stats
 
 import android.content.Context
 import android.net.Uri
 import android.util.Log
-import com.music.bitchord.BuildConfig
-import com.music.bitchord.data.Http
-import com.music.bitchord.data.YtMusicRepository
-import com.music.bitchord.data.model.SearchFilter
-import com.music.bitchord.data.model.SearchResult
-import com.music.bitchord.data.settings.AppSettings
+import com.music.zen.BuildConfig
+import com.music.zen.data.Http
+import com.music.zen.data.YtMusicRepository
+import com.music.zen.data.model.SearchFilter
+import com.music.zen.data.model.SearchResult
+import com.music.zen.data.settings.AppSettings
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -317,9 +317,9 @@ object ArtistFacts {
         val cardAt: Long = 0L,
     )
 
-    private const val TAG = "BitChordArtists"
+    private const val TAG = "ZenArtists"
     private const val FILE_NAME = "artist_facts.json"
-    private const val USER_AGENT = "BitChord/${BuildConfig.VERSION_NAME}"
+    private const val USER_AGENT = "Zen/${BuildConfig.VERSION_NAME}"
     private const val MAX_NAME_LENGTH = 120
     private const val MAX_GENRES_PER_ARTIST = 2
     private const val MAX_ARTISTS = 4_000

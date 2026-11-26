@@ -1,10 +1,10 @@
-package com.music.bitchord.data.canvas
+package com.music.zen.data.canvas
 
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.async
-import com.music.bitchord.data.DebugLog as Log
-import com.music.bitchord.data.model.Song
-import com.music.bitchord.data.settings.AppSettings
+import com.music.zen.data.DebugLog as Log
+import com.music.zen.data.model.Song
+import com.music.zen.data.settings.AppSettings
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock

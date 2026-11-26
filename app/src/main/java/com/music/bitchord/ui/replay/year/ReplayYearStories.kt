@@ -1,8 +1,8 @@
-package com.music.bitchord.ui.replay.year
+package com.music.zen.ui.replay.year
 
 import androidx.compose.runtime.snapshotFlow
-import com.music.bitchord.ui.haptics.Haptic
-import com.music.bitchord.ui.haptics.rememberHaptics
+import com.music.zen.ui.haptics.Haptic
+import com.music.zen.ui.haptics.rememberHaptics
 import android.content.Context
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ContentTransform
@@ -72,15 +72,15 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.music.bitchord.R
-import com.music.bitchord.data.model.Song
-import com.music.bitchord.data.settings.AppSettings
-import com.music.bitchord.ui.player.MeshGradientBackground
-import com.music.bitchord.ui.player.rememberArtworkColors
-import com.music.bitchord.ui.replay.BACK_ZONE
-import com.music.bitchord.ui.replay.Segment
-import com.music.bitchord.ui.replay.StoryFrame
-import com.music.bitchord.ui.replay.rotated
+import com.music.zen.R
+import com.music.zen.data.model.Song
+import com.music.zen.data.settings.AppSettings
+import com.music.zen.ui.player.MeshGradientBackground
+import com.music.zen.ui.player.rememberArtworkColors
+import com.music.zen.ui.replay.BACK_ZONE
+import com.music.zen.ui.replay.Segment
+import com.music.zen.ui.replay.StoryFrame
+import com.music.zen.ui.replay.rotated
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Semaphore
@@ -93,7 +93,7 @@ import kotlin.math.abs
  * scored with the best part of a song that belongs to it.
  *
  * It keeps everything the ordinary Replay story taught (see
- * [com.music.bitchord.ui.replay.ReplayStories]): the fixed 9:16 frame, the
+ * [com.music.zen.ui.replay.ReplayStories]): the fixed 9:16 frame, the
  * artwork mesh rotated to a new colour per card, tap right for on and left for
  * back, hold to stop the clock, swipe, the share button on every card. What it
  * adds is motion and sound: the cards don't slide past, they arrive, and each
@@ -451,7 +451,7 @@ private fun YearChrome(
             )
             Spacer(Modifier.width(7.dp))
             Text(
-                text = "BitChord",
+                text = "Zen",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.W700,
                 color = Color.White.copy(alpha = 0.9f),
@@ -462,7 +462,7 @@ private fun YearChrome(
 
 /** The same backdrop as the ordinary Replay story, card for card. */
 @Composable
-private fun YearBackdrop(slide: YearSlide, palette: com.music.bitchord.ui.player.MeshPalette) {
+private fun YearBackdrop(slide: YearSlide, palette: com.music.zen.ui.player.MeshPalette) {
     MeshGradientBackground(palette = palette, trackKey = slide.name, animated = false)
     Box(
         Modifier
@@ -479,7 +479,7 @@ private fun YearBackdrop(slide: YearSlide, palette: com.music.bitchord.ui.player
 
 /** The colours [slide] is drawn in: its song's artwork, turned to the card's own hue. */
 @Composable
-private fun paletteFor(year: ReplayYear, slide: YearSlide): com.music.bitchord.ui.player.MeshPalette {
+private fun paletteFor(year: ReplayYear, slide: YearSlide): com.music.zen.ui.player.MeshPalette {
     val artwork = year.clips[slide]?.thumbnailUrl ?: year.data.summary.songs.firstOrNull()?.song?.thumbnailUrl
     return rememberArtworkColors(artwork).rotated(slide.hue)
 }

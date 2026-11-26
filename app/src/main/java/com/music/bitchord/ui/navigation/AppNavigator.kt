@@ -1,17 +1,17 @@
-package com.music.bitchord.ui.navigation
+package com.music.zen.ui.navigation
 
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.mutableStateListOf
-import com.music.bitchord.data.model.HomeShelf
-import com.music.bitchord.ui.screens.SettingsCategory
-import com.music.bitchord.ui.screens.SettingsChoiceKind
+import com.music.zen.data.model.HomeShelf
+import com.music.zen.ui.screens.SettingsCategory
+import com.music.zen.ui.screens.SettingsChoiceKind
 
 /**
  * A page pushed over the tabs: Settings and every page under it, and the
  * handful of pages a tab opens that are not a release.
  *
  * Album, artist and playlist pages are not routes. They live on
- * [com.music.bitchord.ui.MainViewModel.detailStack], which loads them and
+ * [com.music.zen.ui.MainViewModel.detailStack], which loads them and
  * updates them in place, and [AppNavigator] interleaves the two stacks into
  * one — see [RouteEntry.detailDepth].
  */

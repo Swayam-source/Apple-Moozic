@@ -1,4 +1,4 @@
-package com.music.bitchord.ui.player
+package com.music.zen.ui.player
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -54,7 +54,7 @@ import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.music.bitchord.ui.utils.containSheetGestures
+import com.music.zen.ui.utils.containSheetGestures
 import dev.chrisbanes.haze.HazeState
 import kotlin.math.roundToInt
 

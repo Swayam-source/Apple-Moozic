@@ -1,9 +1,9 @@
-package com.music.bitchord.ui.player
+package com.music.zen.ui.player
 
-import com.music.bitchord.ui.components.trackArtSize
+import com.music.zen.ui.components.trackArtSize
 import androidx.compose.ui.layout.ContentScale
-import com.music.bitchord.sharedui.resources.*
-import com.music.bitchord.ui.components.ExplicitSongTitle
+import com.music.zen.sharedui.resources.*
+import com.music.zen.ui.components.ExplicitSongTitle
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
@@ -91,7 +91,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
-import com.music.bitchord.ui.components.longPressMenuClickable
+import com.music.zen.ui.components.longPressMenuClickable
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
@@ -100,13 +100,13 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.Velocity
 import coil3.compose.AsyncImage
-import com.music.bitchord.ui.components.thumbnailBorder
-import com.music.bitchord.ui.icons.BitChordIcons
-import com.music.bitchord.data.model.QueueEntryIdentity
-import com.music.bitchord.data.model.QueueTier
-import com.music.bitchord.data.model.Song
-import com.music.bitchord.playback.autoplaySectionStart
-import com.music.bitchord.ui.AppUi
+import com.music.zen.ui.components.thumbnailBorder
+import com.music.zen.ui.icons.ZenIcons
+import com.music.zen.data.model.QueueEntryIdentity
+import com.music.zen.data.model.QueueTier
+import com.music.zen.data.model.Song
+import com.music.zen.playback.autoplaySectionStart
+import com.music.zen.ui.AppUi
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.hazeSource
 import kotlin.math.abs
@@ -881,7 +881,7 @@ private fun AutoplayHeading(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(
-            BitChordIcons.Infinity,
+            ZenIcons.Infinity,
             contentDescription = null,
             tint = Color.White.copy(alpha = 0.75f),
             modifier = Modifier.size(18.dp),

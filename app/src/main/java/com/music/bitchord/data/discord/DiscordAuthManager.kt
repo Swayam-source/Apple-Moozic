@@ -1,4 +1,4 @@
-package com.music.bitchord.data.discord
+package com.music.zen.data.discord
 
 import android.app.Activity
 import android.content.Context
@@ -10,8 +10,8 @@ import androidx.browser.customtabs.CustomTabColorSchemeParams
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
-import com.music.bitchord.BuildConfig
-import com.music.bitchord.data.settings.AppSettings
+import com.music.zen.BuildConfig
+import com.music.zen.data.settings.AppSettings
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -136,7 +136,7 @@ object DiscordAuthManager {
 
     fun consumeRedirectIntent(context: Context, intent: Intent?) {
         val uri = intent?.data ?: return
-        if ((uri.scheme == "applemoozic" || uri.scheme == "bitchord") &&
+        if ((uri.scheme == "applemoozic" || uri.scheme == "zen") &&
             uri.host == "discord" &&
             uri.path?.startsWith("/callback") == true
         ) {

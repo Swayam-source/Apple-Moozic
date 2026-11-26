@@ -1,4 +1,4 @@
-package com.music.bitchord.ui.player
+package com.music.zen.ui.player
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -27,11 +27,11 @@ import coil3.compose.LocalPlatformContext
 import coil3.compose.asPainter
 import coil3.memory.MemoryCache
 import coil3.request.SuccessResult
-import com.music.bitchord.data.model.QueueEntryIdentity
-import com.music.bitchord.data.model.Song
-import com.music.bitchord.playback.AutoMixArtworkTuning
-import com.music.bitchord.playback.AutoMixVisualPhase
-import com.music.bitchord.playback.AutoMixVisualState
+import com.music.zen.data.model.QueueEntryIdentity
+import com.music.zen.data.model.Song
+import com.music.zen.playback.AutoMixArtworkTuning
+import com.music.zen.playback.AutoMixVisualPhase
+import com.music.zen.playback.AutoMixVisualState
 
 /** Hold pixels and hold-over key without retaining a request's platform context. */
 internal class DecodedAutoMixCover(

@@ -1,4 +1,4 @@
-package com.music.bitchord.download
+package com.music.zen.download
 
 import android.content.ContentValues
 import android.content.Context
@@ -7,10 +7,10 @@ import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
-import com.music.bitchord.data.DebugLog as Log
-import com.music.bitchord.data.settings.AppSettings
+import com.music.zen.data.DebugLog as Log
+import com.music.zen.data.settings.AppSettings
 import androidx.annotation.RequiresApi
-import com.music.bitchord.data.model.Song
+import com.music.zen.data.model.Song
 import java.io.File
 import java.io.OutputStream
 import java.util.Locale
@@ -18,7 +18,7 @@ import java.util.Locale
 /**
  * Where a downloaded track goes, and how it gets there.
  *
- * The destination is the device's own Music folder, in a `BitChord`
+ * The destination is the device's own Music folder, in a `Zen`
  * subfolder — somewhere the file manager lists, other players can open, and a
  * user can back up or delete without going through this app. That choice is
  * what makes this class necessary at all: an app-private directory would be

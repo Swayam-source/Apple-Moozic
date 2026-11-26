@@ -1,4 +1,4 @@
-package com.music.bitchord.data.backup
+package com.music.zen.data.backup
 
 import android.app.Application
 import android.content.Context
@@ -19,9 +19,9 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
-import com.music.bitchord.data.stats.Backup
-import com.music.bitchord.data.stats.ListeningStats
-import com.music.bitchord.data.stats.PeerListening
+import com.music.zen.data.stats.Backup
+import com.music.zen.data.stats.ListeningStats
+import com.music.zen.data.stats.PeerListening
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -108,7 +108,7 @@ object DriveBackup {
     /** The grant has gone; the run stops and the screen asks again. */
     class NeedsSignIn : Exception("Sign in to Google Drive again to continue")
 
-    private const val PREFS = "bitchord_drive_backup"
+    private const val PREFS = "zen_drive_backup"
     private const val KEY_ACCOUNT = "account"
     private const val KEY_ACCOUNT_NAME = "account_name"
     private const val KEY_FREQUENCY = "frequency"

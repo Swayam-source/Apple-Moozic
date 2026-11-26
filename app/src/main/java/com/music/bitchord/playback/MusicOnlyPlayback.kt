@@ -1,4 +1,4 @@
-package com.music.bitchord.playback
+package com.music.zen.playback
 
 import android.net.Uri
 import androidx.annotation.OptIn
@@ -7,10 +7,10 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.DataSource
 import androidx.media3.datasource.DataSpec
 import androidx.media3.datasource.TransferListener
-import com.music.bitchord.data.TrackLog
-import com.music.bitchord.data.listentogether.ListenTogether
-import com.music.bitchord.data.model.Song
-import com.music.bitchord.data.settings.AppSettings
+import com.music.zen.data.TrackLog
+import com.music.zen.data.listentogether.ListenTogether
+import com.music.zen.data.model.Song
+import com.music.zen.data.settings.AppSettings
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
@@ -62,7 +62,7 @@ object MusicOnlyPlayback {
 
     /** Whether this playback URI is a music video still owed its answer. */
     fun holds(uri: Uri): Boolean {
-        if (uri.scheme != "bitchord" || uri.authority != "watch") return false
+        if (uri.scheme != "zen" || uri.authority != "watch") return false
         // `m` marks a video row, and a row reverted by hand is that exact upload.
         if (uri.getQueryParameter("m") != "1") return false
         if (uri.getQueryParameter(DIRECT_YOUTUBE_PARAMETER) == "1") return false
@@ -70,7 +70,7 @@ object MusicOnlyPlayback {
         return isActive() && videoId !in kept.value && videoId !in settled.value
     }
 
-    /** A download has no `bitchord` URI, so it is never converted: it is what's on the device. */
+    /** A download has no `zen` URI, so it is never converted: it is what's on the device. */
     fun wants(item: MediaItem): Boolean = item.localConfiguration?.uri?.let(::holds) == true
 
     /** [videoId] plays as itself: no audio version, or none in time. */

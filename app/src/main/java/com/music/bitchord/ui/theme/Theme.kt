@@ -1,4 +1,4 @@
-package com.music.bitchord.ui.theme
+package com.music.zen.ui.theme
 
 import android.app.Activity
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -16,8 +16,8 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import com.music.bitchord.R
-import com.music.bitchord.data.settings.AppFont
+import com.music.zen.R
+import com.music.zen.data.settings.AppFont
 
 // Apple Music's signature red. No longer the primary accent, but kept for the
 // spots (Replay's rank badge) that want that specific red regardless of theme.
@@ -81,7 +81,7 @@ val SFProDisplay = FontFamily(
  * nothing for semibold titles at 18 to 24. The large titles had nothing to
  * measure against and follow the same trend.
  */
-private val BitChordTypography = Typography(
+private val ZenTypography = Typography(
     displayLarge = TextStyle(fontWeight = FontWeight.W800, fontSize = 34.sp, letterSpacing = (-0.5).sp),
     headlineLarge = TextStyle(fontWeight = FontWeight.W800, fontSize = 30.sp, letterSpacing = (-0.4).sp),
     headlineMedium = TextStyle(fontWeight = FontWeight.W700, fontSize = 22.sp, letterSpacing = (-0.25).sp),
@@ -139,7 +139,7 @@ private fun Typography.withFamily(family: FontFamily) = Typography(
 )
 
 @Composable
-fun BitChordTheme(
+fun ZenTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     font: AppFont = AppFont.DEFAULT,
     content: @Composable () -> Unit,
@@ -147,7 +147,7 @@ fun BitChordTheme(
     MaterialTheme(
         colorScheme = if (darkTheme) DarkColors else LightColors,
         typography = when (font) {
-            AppFont.DEFAULT -> BitChordTypography
+            AppFont.DEFAULT -> ZenTypography
             AppFont.LEGACY -> LegacyTypography
         },
         content = content,

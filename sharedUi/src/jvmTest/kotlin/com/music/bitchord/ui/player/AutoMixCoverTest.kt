@@ -1,14 +1,14 @@
-package com.music.bitchord.ui.player
+package com.music.zen.ui.player
 
 import androidx.compose.ui.unit.IntSize
 import coil3.Image
-import com.music.bitchord.data.canvas.CanvasArtwork
-import com.music.bitchord.data.model.QueueEntryIdentity
-import com.music.bitchord.playback.AutoMixArtworkTuning
-import com.music.bitchord.playback.AutoMixArtworkWindow
-import com.music.bitchord.playback.AutoMixVisualPhase
-import com.music.bitchord.playback.AutoMixVisualState
-import com.music.bitchord.playback.AutoMixVisualTrack
+import com.music.zen.data.canvas.CanvasArtwork
+import com.music.zen.data.model.QueueEntryIdentity
+import com.music.zen.playback.AutoMixArtworkTuning
+import com.music.zen.playback.AutoMixArtworkWindow
+import com.music.zen.playback.AutoMixVisualPhase
+import com.music.zen.playback.AutoMixVisualState
+import com.music.zen.playback.AutoMixVisualTrack
 import org.jetbrains.skia.Canvas
 import kotlin.test.Test
 import kotlin.test.assertEquals

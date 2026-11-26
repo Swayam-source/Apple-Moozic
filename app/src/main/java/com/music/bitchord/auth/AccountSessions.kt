@@ -1,4 +1,4 @@
-package com.music.bitchord.auth
+package com.music.zen.auth
 
 import org.json.JSONArray
 import org.json.JSONObject

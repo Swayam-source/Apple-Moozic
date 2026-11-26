@@ -1,4 +1,4 @@
-package com.music.bitchord.ui.replay.year
+package com.music.zen.ui.replay.year
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -6,11 +6,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import com.music.bitchord.data.model.Song
-import com.music.bitchord.data.stats.ArtistFacts
-import com.music.bitchord.data.stats.ListeningStats
-import com.music.bitchord.data.stats.RankedSong
-import com.music.bitchord.data.stats.ReplayYearData
+import com.music.zen.data.model.Song
+import com.music.zen.data.stats.ArtistFacts
+import com.music.zen.data.stats.ListeningStats
+import com.music.zen.data.stats.RankedSong
+import com.music.zen.data.stats.ReplayYearData
 import kotlinx.coroutines.delay
 import java.time.LocalDate
 import java.time.Month

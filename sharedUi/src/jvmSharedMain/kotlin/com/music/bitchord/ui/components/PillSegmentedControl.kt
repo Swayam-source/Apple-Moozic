@@ -1,4 +1,4 @@
-package com.music.bitchord.ui.components
+package com.music.zen.ui.components
 
 import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.Spring
@@ -35,8 +35,8 @@ import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.music.bitchord.ui.graphics.fadingEdges
-import com.music.bitchord.ui.player.PlayerSettings
+import com.music.zen.ui.graphics.fadingEdges
+import com.music.zen.ui.player.PlayerSettings
 import kotlinx.coroutines.flow.first
 import kotlin.math.roundToInt
 

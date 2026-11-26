@@ -1,4 +1,4 @@
-package com.music.bitchord.ui.player
+package com.music.zen.ui.player
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -53,9 +53,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.music.bitchord.sharedui.resources.*
-import com.music.bitchord.ui.haptics.Haptic
-import com.music.bitchord.ui.haptics.rememberHaptics
+import com.music.zen.sharedui.resources.*
+import com.music.zen.ui.haptics.Haptic
+import com.music.zen.ui.haptics.rememberHaptics
 import dev.chrisbanes.haze.HazeState
 import kotlinx.coroutines.delay
 import java.util.Locale
@@ -136,7 +136,7 @@ internal fun AudioOutputSheet(
 }
 
 /**
- * Drills into [com.music.bitchord.ui.components.AudioPipelineDialog] — the
+ * Drills into [com.music.zen.ui.components.AudioPipelineDialog] — the
  * subtitle is the negotiated output itself, read live off
  * [AudioOutputStatus], so the row states what's actually leaving the phone
  * before anyone taps in for the rest of the chain.

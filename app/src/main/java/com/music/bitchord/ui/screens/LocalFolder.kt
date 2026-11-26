@@ -1,4 +1,4 @@
-package com.music.bitchord.ui.screens
+package com.music.zen.ui.screens
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -64,34 +64,34 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
-import com.music.bitchord.R
-import com.music.bitchord.data.LocalGroup
-import com.music.bitchord.data.LocalGroups
-import com.music.bitchord.data.OfflinePlaylists
-import com.music.bitchord.data.model.BrowseType
-import com.music.bitchord.data.model.CARD_ART_PX
-import com.music.bitchord.data.model.ROW_ART_PX
-import com.music.bitchord.data.model.Song
-import com.music.bitchord.data.model.artworkAt
-import com.music.bitchord.data.model.playingRowMatcher
-import com.music.bitchord.data.settings.LibraryViewType
-import com.music.bitchord.data.settings.LocalMusicSort
-import com.music.bitchord.download.DownloadState
-import com.music.bitchord.download.DownloadedCollection
-import com.music.bitchord.download.Downloads
-import com.music.bitchord.ui.components.CoverPlaceholder
-import com.music.bitchord.ui.components.ExplicitSongTitle
-import com.music.bitchord.ui.components.LIBRARY_GRID_SPACING
-import com.music.bitchord.ui.components.MessageState
-import com.music.bitchord.ui.components.PAGE_GUTTER
-import com.music.bitchord.ui.components.ROW_DIVIDER_INSET
-import com.music.bitchord.ui.components.SearchPlayingBars
-import com.music.bitchord.ui.components.SongRow
-import com.music.bitchord.ui.components.longPressMenuClickable
-import com.music.bitchord.ui.components.rememberRemoteArtworkUrl
-import com.music.bitchord.ui.components.thumbnailBorder
-import com.music.bitchord.ui.icons.BitChordIcons
-import com.music.bitchord.ui.theme.ArtworkPalette
+import com.music.zen.R
+import com.music.zen.data.LocalGroup
+import com.music.zen.data.LocalGroups
+import com.music.zen.data.OfflinePlaylists
+import com.music.zen.data.model.BrowseType
+import com.music.zen.data.model.CARD_ART_PX
+import com.music.zen.data.model.ROW_ART_PX
+import com.music.zen.data.model.Song
+import com.music.zen.data.model.artworkAt
+import com.music.zen.data.model.playingRowMatcher
+import com.music.zen.data.settings.LibraryViewType
+import com.music.zen.data.settings.LocalMusicSort
+import com.music.zen.download.DownloadState
+import com.music.zen.download.DownloadedCollection
+import com.music.zen.download.Downloads
+import com.music.zen.ui.components.CoverPlaceholder
+import com.music.zen.ui.components.ExplicitSongTitle
+import com.music.zen.ui.components.LIBRARY_GRID_SPACING
+import com.music.zen.ui.components.MessageState
+import com.music.zen.ui.components.PAGE_GUTTER
+import com.music.zen.ui.components.ROW_DIVIDER_INSET
+import com.music.zen.ui.components.SearchPlayingBars
+import com.music.zen.ui.components.SongRow
+import com.music.zen.ui.components.longPressMenuClickable
+import com.music.zen.ui.components.rememberRemoteArtworkUrl
+import com.music.zen.ui.components.thumbnailBorder
+import com.music.zen.ui.icons.ZenIcons
+import com.music.zen.ui.theme.ArtworkPalette
 
 /**
  * What a device folder — Downloads, Local Music, the song cache, a file
@@ -142,7 +142,7 @@ class LocalFolder(
     val tabs: List<LocalFolderTab> = LocalFolderTab.BASIC,
     /**
      * Local Music only: the offline player's own playlists, Liked first, as
-     * the Playlists tab lists them — see [com.music.bitchord.data.OfflinePlaylists].
+     * the Playlists tab lists them — see [com.music.zen.data.OfflinePlaylists].
      */
     val playlists: List<LocalGroup> = emptyList(),
     /** Puts "New playlist" at the head of the Playlists tab. */
@@ -432,7 +432,7 @@ private fun NewPlaylistRow(palette: ArtworkPalette, onClick: () -> Unit) {
             contentAlignment = Alignment.Center,
         ) {
             Icon(
-                BitChordIcons.Plus,
+                ZenIcons.Plus,
                 contentDescription = null,
                 tint = palette.accent,
                 modifier = Modifier.size(22.dp),
@@ -794,7 +794,7 @@ private fun GroupLabels(title: String, subtitle: String, palette: ArtworkPalette
 @Composable
 private fun TrailingGlyph(selected: Boolean, palette: ArtworkPalette) {
     Icon(
-        imageVector = if (selected) Icons.Rounded.CheckCircle else BitChordIcons.ChevronRight,
+        imageVector = if (selected) Icons.Rounded.CheckCircle else ZenIcons.ChevronRight,
         contentDescription = if (selected) stringResource(R.string.selected) else null,
         tint = if (selected) MaterialTheme.colorScheme.primary else palette.onBackgroundVariant,
         modifier = Modifier.size(if (selected) 22.dp else 16.dp),

@@ -1,4 +1,4 @@
-package com.music.bitchord.ui.components
+package com.music.zen.ui.components
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.EnterTransition
@@ -26,8 +26,8 @@ import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.music.bitchord.data.settings.AppSettings
-import com.music.bitchord.ui.player.playerBarSurface
+import com.music.zen.data.settings.AppSettings
+import com.music.zen.ui.player.playerBarSurface
 import dev.chrisbanes.haze.HazeState
 
 /** A unique queue result, so repeating the same action restarts its lifetime. */

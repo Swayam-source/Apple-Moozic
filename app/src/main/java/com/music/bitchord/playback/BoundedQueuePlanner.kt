@@ -1,7 +1,7 @@
-package com.music.bitchord.playback
+package com.music.zen.playback
 
-import com.music.bitchord.data.model.QueueTier
-import com.music.bitchord.data.model.Song
+import com.music.zen.data.model.QueueTier
+import com.music.zen.data.model.Song
 
 data class BoundedContextPlan(
     val canonicalContext: List<Song>,

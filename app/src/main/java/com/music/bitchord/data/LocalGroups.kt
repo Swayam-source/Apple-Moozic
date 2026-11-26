@@ -1,10 +1,10 @@
-package com.music.bitchord.data
+package com.music.zen.data
 
-import com.music.bitchord.data.model.BrowseType
-import com.music.bitchord.data.model.Song
-import com.music.bitchord.data.settings.LocalMusicSort
-import com.music.bitchord.download.DownloadedCollection
-import com.music.bitchord.download.Downloads
+import com.music.zen.data.model.BrowseType
+import com.music.zen.data.model.Song
+import com.music.zen.data.settings.LocalMusicSort
+import com.music.zen.download.DownloadedCollection
+import com.music.zen.download.Downloads
 import java.util.Locale
 
 /**

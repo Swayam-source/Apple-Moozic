@@ -1,4 +1,4 @@
-package com.music.bitchord.wear
+package com.music.zen.wear
 
 /**
  * What Settings → "Moozic for Wear OS" draws, kept apart from
@@ -32,7 +32,7 @@ enum class WatchAppStatus {
     UNKNOWN,
 }
 
-/** Sending this phone's watch build to a watch that already has BitChord. */
+/** Sending this phone's watch build to a watch that already has Zen. */
 sealed interface WatchUpdateState {
     data object Idle : WatchUpdateState
     data class Sending(val nodeId: String) : WatchUpdateState

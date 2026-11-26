@@ -1,4 +1,4 @@
-package com.music.bitchord.ui.screens
+package com.music.zen.ui.screens
 
 import android.app.Activity
 import android.content.Context
@@ -36,14 +36,14 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.CommonStatusCodes
-import com.music.bitchord.R
-import com.music.bitchord.data.backup.BackupFrequency
-import com.music.bitchord.data.backup.DriveAuth
-import com.music.bitchord.data.backup.DriveBackup
-import com.music.bitchord.data.backup.RemoteDevice
-import com.music.bitchord.data.backup.ReplaySync
-import com.music.bitchord.ui.components.IosSwitch
-import com.music.bitchord.ui.icons.SfIcons
+import com.music.zen.R
+import com.music.zen.data.backup.BackupFrequency
+import com.music.zen.data.backup.DriveAuth
+import com.music.zen.data.backup.DriveBackup
+import com.music.zen.data.backup.RemoteDevice
+import com.music.zen.data.backup.ReplaySync
+import com.music.zen.ui.components.IosSwitch
+import com.music.zen.ui.icons.SfIcons
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 
@@ -76,7 +76,7 @@ internal fun DriveBackupSettingsRow(title: String, onClick: () -> Unit) {
  * Pushed on the app's navigator like every other Settings page, so Back and the
  * top bar's back button leave it the same way. Its questions — disconnect,
  * remove a device, rename this one — are asked in the app's frosted alerts,
- * which need the app's blur, so they are raised to [com.music.bitchord.MainActivity]
+ * which need the app's blur, so they are raised to [com.music.zen.MainActivity]
  * the way Settings raises its own.
  *
  * A sync or restore keeps going if the page is left: it runs on

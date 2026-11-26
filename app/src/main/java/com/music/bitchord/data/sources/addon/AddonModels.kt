@@ -1,4 +1,4 @@
-package com.music.bitchord.data.sources.addon
+package com.music.zen.data.sources.addon
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -13,7 +13,7 @@ import kotlinx.serialization.json.booleanOrNull
  * An addon is an ordinary HTTP server, not code: it answers `/manifest.json`,
  * `/search?q=` and `/stream/{id}` with JSON, and nothing is ever executed on
  * this side. That is the whole reason this package exists alongside
- * [module][com.music.bitchord.data.sources.module] rather than inside it —
+ * [module][com.music.zen.data.sources.module] rather than inside it —
  * the two speak different protocols, and the module one has to download and
  * run somebody's JavaScript to ask the same two questions.
  *
@@ -73,15 +73,15 @@ data class AddonManifest(
      */
     @SerialName("checkValidLossless") val checkValidLossless: JsonElement? = null,
     /**
-     * `bitchordAuth`: the addon only serves the genuine Moozic app, so every
+     * `zenAuth`: the addon only serves the genuine Moozic app, so every
      * request has to carry [AddonAuth]'s token and proof. Absent means nothing
      * is sent. An addon that leaves it out but answers `401` with
-     * `WWW-Authenticate: BitChord` is handled the same way, one round trip
-     * later. Read through [requiresBitChordAuth].
+     * `WWW-Authenticate: Zen` is handled the same way, one round trip
+     * later. Read through [requiresZenAuth].
      */
-    @SerialName("bitchordAuth") val bitchordAuth: JsonElement? = null,
+    @SerialName("zenAuth") val zenAuth: JsonElement? = null,
 ) {
-    val requiresBitChordAuth: Boolean get() = bitchordAuth.asFlag() ?: false
+    val requiresZenAuth: Boolean get() = zenAuth.asFlag() ?: false
 
     val downloadsAllowed: Boolean get() = allowDownloads.asFlag() ?: true
 
@@ -114,7 +114,7 @@ data class AddonManifest(
      * name, so one that cannot be searched has nothing to offer — but one that
      * does not declare `stream` may still work, because a search row is allowed
      * to carry its own `streamURL` and
-     * [AddonSource][com.music.bitchord.data.sources.AddonSource] falls back to
+     * [AddonSource][com.music.zen.data.sources.AddonSource] falls back to
      * it. An empty [resources] is silence rather than a claim, and silence is
      * settled by asking the endpoints, not by refusing here.
      */
@@ -158,7 +158,7 @@ data class AddonSettingOption(
 
 /**
  * One entry of an addon's quality picker, as stored with the source — see
- * [SourceConfig.qualityOptions][com.music.bitchord.data.sources.SourceConfig.qualityOptions].
+ * [SourceConfig.qualityOptions][com.music.zen.data.sources.SourceConfig.qualityOptions].
  */
 @Serializable
 data class AddonQualityOption(
@@ -171,7 +171,7 @@ data class AddonQualityOption(
 /**
  * A search answer. Every array is optional — the spec is explicit that an
  * addon returns "only what you have" — and only [tracks] is read, because a
- * [MusicSource][com.music.bitchord.data.sources.MusicSource] is asked for
+ * [MusicSource][com.music.zen.data.sources.MusicSource] is asked for
  * tracks and nothing else.
  */
 @Serializable
@@ -232,7 +232,7 @@ data class AddonTrack(
      * track — and the only thing that can find it is this field. Note also the
      * `LOW`: Tidal files immersive rows under its *lowest* quality label, so a
      * row read on [audioQuality] alone reads as the worst thing on offer
-     * rather than the best. See [AddonSource.search][com.music.bitchord.data.sources.AddonSource].
+     * rather than the best. See [AddonSource.search][com.music.zen.data.sources.AddonSource].
      */
     val isDolbyAtmos: Boolean
         get() = atmos == true || ATMOS_HINT.containsMatchIn(
@@ -266,7 +266,7 @@ private val ATMOS_HINT = Regex("""atmos|dolby|eac3[_-]?joc|ec-?3""", RegexOption
  * player to sniff it, which is how a DASH manifest with no `.mpd` on the end
  * reached a progressive extractor and failed as an unreadable container. Here
  * the addon states the transport up front, and
- * [StreamContainer][com.music.bitchord.playback.StreamContainer] is told
+ * [StreamContainer][com.music.zen.playback.StreamContainer] is told
  * before the first byte is fetched.
  *
  * All of them are optional. The spec asks addons to "send them whenever you
@@ -372,7 +372,7 @@ data class AddonStream(
      * describing the *audio*. Read it and the track plays through
      * `DashMediaSource`; ignore it and a DASH document reaches a progressive
      * extractor, which is the `ERROR_CODE_PARSING_CONTAINER_UNSUPPORTED`
-     * failure [StreamContainer][com.music.bitchord.playback.StreamContainer]
+     * failure [StreamContainer][com.music.zen.playback.StreamContainer]
      * exists to describe.
      *
      * Reading [format] is safe precisely because this normalises rather than

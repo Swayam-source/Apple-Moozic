@@ -1,9 +1,9 @@
-package com.music.bitchord.download
+package com.music.zen.download
 
 import android.content.Context
 import android.net.Uri
-import com.music.bitchord.data.Http
-import com.music.bitchord.data.lyrics.WORD_LYRICS_FIELD
+import com.music.zen.data.Http
+import com.music.zen.data.lyrics.WORD_LYRICS_FIELD
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.withContext

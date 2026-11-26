@@ -1,6 +1,6 @@
-package com.music.bitchord.data.backup
+package com.music.zen.data.backup
 
-import com.music.bitchord.data.Http
+import com.music.zen.data.Http
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.withContext
@@ -39,7 +39,7 @@ import java.util.concurrent.TimeUnit
 object DriveApi {
 
     /** The single shared file earlier builds wrote; still read, never written. */
-    const val LEGACY_FILE_NAME = "bitchord-backup.json.gz"
+    const val LEGACY_FILE_NAME = "zen-backup.json.gz"
 
     private const val MIME = "application/gzip"
     private const val API = "https://www.googleapis.com/drive/v3"

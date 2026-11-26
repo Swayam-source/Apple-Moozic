@@ -1,4 +1,4 @@
-package com.music.bitchord.ui.graphics
+package com.music.zen.ui.graphics
 
 import android.graphics.Bitmap
 import androidx.compose.ui.graphics.ImageBitmap

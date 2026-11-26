@@ -1,4 +1,4 @@
-package com.music.bitchord.ui.player
+package com.music.zen.ui.player
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.Spring
@@ -28,7 +28,7 @@ import androidx.compose.ui.graphics.vector.PathNode
 import androidx.compose.ui.graphics.vector.VectorPath
 import androidx.compose.ui.graphics.vector.toPath
 import androidx.compose.ui.unit.Dp
-import com.music.bitchord.ui.rememberIsForeground
+import com.music.zen.ui.rememberIsForeground
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch

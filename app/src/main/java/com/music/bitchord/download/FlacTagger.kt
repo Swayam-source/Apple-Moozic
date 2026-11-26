@@ -1,6 +1,6 @@
-package com.music.bitchord.download
+package com.music.zen.download
 
-import com.music.bitchord.data.lyrics.WORD_LYRICS_FIELD
+import com.music.zen.data.lyrics.WORD_LYRICS_FIELD
 
 import java.io.ByteArrayOutputStream
 

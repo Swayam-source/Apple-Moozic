@@ -1,4 +1,4 @@
-package com.music.bitchord.auth
+package com.music.zen.auth
 
 import android.annotation.SuppressLint
 import android.net.Uri
@@ -18,7 +18,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.net.toUri
-import com.music.bitchord.data.web.QuietWebChromeClient
+import com.music.zen.data.web.QuietWebChromeClient
 
 private const val LOGIN_URL =
     "https://accounts.spotify.com/login?continue=https%3A%2F%2Fopen.spotify.com%2F"

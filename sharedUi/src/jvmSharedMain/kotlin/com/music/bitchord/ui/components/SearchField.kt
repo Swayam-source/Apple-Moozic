@@ -1,6 +1,6 @@
-package com.music.bitchord.ui.components
+package com.music.zen.ui.components
 
-import com.music.bitchord.sharedui.resources.*
+import com.music.zen.sharedui.resources.*
 import org.jetbrains.compose.resources.stringResource
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

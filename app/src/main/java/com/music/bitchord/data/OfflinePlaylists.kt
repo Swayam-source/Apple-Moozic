@@ -1,8 +1,8 @@
-package com.music.bitchord.data
+package com.music.zen.data
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.music.bitchord.data.model.Song
+import com.music.zen.data.model.Song
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -52,7 +52,7 @@ object OfflinePlaylists {
     const val PREFIX = "local:offline:"
     const val LIKED_ID = "liked"
 
-    private const val PREF_NAME = "bitchord_offline_playlists"
+    private const val PREF_NAME = "zen_offline_playlists"
     private const val KEY_PLAYLISTS = "playlists_json"
 
     private lateinit var prefs: SharedPreferences
@@ -284,6 +284,6 @@ fun OfflinePlaylist.toGroup(): LocalGroup = LocalGroup(
     title = title,
     subtitle = "",
     thumbnailUrl = if (isLiked) null else songs.firstNotNullOfOrNull { it.thumbnailUrl },
-    type = com.music.bitchord.data.model.BrowseType.PLAYLIST,
+    type = com.music.zen.data.model.BrowseType.PLAYLIST,
     songs = songs,
 )

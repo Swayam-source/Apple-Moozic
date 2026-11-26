@@ -1,4 +1,4 @@
-package com.music.bitchord.data.web
+package com.music.zen.data.web
 
 import android.webkit.ConsoleMessage
 import android.webkit.WebChromeClient

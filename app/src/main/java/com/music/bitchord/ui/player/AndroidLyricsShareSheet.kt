@@ -1,13 +1,13 @@
-package com.music.bitchord.ui.player
+package com.music.zen.ui.player
 
 import android.content.Intent
 import android.graphics.Bitmap
 import androidx.annotation.StringRes
 import androidx.compose.ui.draw.blur
-import com.music.bitchord.data.canvas.CanvasArtwork
-import com.music.bitchord.data.canvas.CanvasRepository
-import com.music.bitchord.data.canvas.CanvasSource
-import com.music.bitchord.ui.screens.SegmentedControl
+import com.music.zen.data.canvas.CanvasArtwork
+import com.music.zen.data.canvas.CanvasRepository
+import com.music.zen.data.canvas.CanvasSource
+import com.music.zen.ui.screens.SegmentedControl
 import java.io.File
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -44,19 +44,19 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.semantics.Role
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.music.bitchord.data.settings.AppSettings
-import com.music.bitchord.ui.components.IosSwitch
+import com.music.zen.data.settings.AppSettings
+import com.music.zen.ui.components.IosSwitch
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.music.bitchord.R
-import com.music.bitchord.ui.haptics.Haptic
-import com.music.bitchord.ui.haptics.rememberHaptics
-import com.music.bitchord.ui.replay.ShareAction
-import com.music.bitchord.ui.replay.cacheForSharing
-import com.music.bitchord.ui.replay.saveToGallery
-import com.music.bitchord.ui.replay.sendIntent
+import com.music.zen.R
+import com.music.zen.ui.haptics.Haptic
+import com.music.zen.ui.haptics.rememberHaptics
+import com.music.zen.ui.replay.ShareAction
+import com.music.zen.ui.replay.cacheForSharing
+import com.music.zen.ui.replay.saveToGallery
+import com.music.zen.ui.replay.sendIntent
 import dev.chrisbanes.haze.HazeState
 import androidx.compose.foundation.Canvas
 import androidx.compose.runtime.mutableLongStateOf
@@ -484,4 +484,4 @@ private val PREVIEW_BLUR = 10.dp
 
 /** One fill for the sheet's plain controls: the story button, Save and the logo row. */
 private val PlainFill = Color.White.copy(alpha = 0.10f)
-private const val LYRICS_FILE_PREFIX = "bitchord-lyrics"
+private const val LYRICS_FILE_PREFIX = "zen-lyrics"

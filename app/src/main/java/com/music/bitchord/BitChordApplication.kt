@@ -1,4 +1,4 @@
-package com.music.bitchord
+package com.music.zen
 
 import android.app.Application
 import androidx.annotation.OptIn
@@ -16,40 +16,40 @@ import coil3.request.crossfade
 import coil3.svg.SvgDecoder
 import coil3.network.okhttp.OkHttpNetworkFetcherFactory
 import okhttp3.OkHttpClient
-import com.music.bitchord.auth.AuthStore
-import com.music.bitchord.data.DebugLog
-import com.music.bitchord.data.YouTubeThumbnailFallback
-import com.music.bitchord.data.lyrics.LyricsTranslation
+import com.music.zen.auth.AuthStore
+import com.music.zen.data.DebugLog
+import com.music.zen.data.YouTubeThumbnailFallback
+import com.music.zen.data.lyrics.LyricsTranslation
 import androidx.appcompat.app.AppCompatDelegate
-import com.music.bitchord.ui.player.AndroidPlayerHost
-import com.music.bitchord.ui.player.PlayerPlatform
-import com.music.bitchord.data.canvas.CanvasCache
-import com.music.bitchord.data.smb.SmbCoverFetcher
-import com.music.bitchord.data.webdav.WebDavCoilAuth
-import com.music.bitchord.data.canvas.SpotifyToken
-import com.music.bitchord.data.spotify.SpotifyLibrary
-import com.music.bitchord.playback.AudioCache
-import com.music.bitchord.playback.LastPlayed
-import com.music.bitchord.playback.BoundedContextPersistence
-import com.music.bitchord.playback.OriginalVersion
-import com.music.bitchord.data.innertube.Innertube
-import com.music.bitchord.data.innertube.AndroidStreamHooks
-import com.music.bitchord.data.listentogether.ListenTogether
-import com.music.bitchord.data.scrobbling.LastFM
-import com.music.bitchord.data.settings.AppSettings
-import com.music.bitchord.data.settings.SearchHistory
-import com.music.bitchord.data.sources.SourceRegistry
-import com.music.bitchord.data.stats.ArtistFacts
-import com.music.bitchord.data.stats.ListeningStats
-import com.music.bitchord.download.Downloads
-import com.music.bitchord.download.PlaylistSync
+import com.music.zen.ui.player.AndroidPlayerHost
+import com.music.zen.ui.player.PlayerPlatform
+import com.music.zen.data.canvas.CanvasCache
+import com.music.zen.data.smb.SmbCoverFetcher
+import com.music.zen.data.webdav.WebDavCoilAuth
+import com.music.zen.data.canvas.SpotifyToken
+import com.music.zen.data.spotify.SpotifyLibrary
+import com.music.zen.playback.AudioCache
+import com.music.zen.playback.LastPlayed
+import com.music.zen.playback.BoundedContextPersistence
+import com.music.zen.playback.OriginalVersion
+import com.music.zen.data.innertube.Innertube
+import com.music.zen.data.innertube.AndroidStreamHooks
+import com.music.zen.data.listentogether.ListenTogether
+import com.music.zen.data.scrobbling.LastFM
+import com.music.zen.data.settings.AppSettings
+import com.music.zen.data.settings.SearchHistory
+import com.music.zen.data.sources.SourceRegistry
+import com.music.zen.data.stats.ArtistFacts
+import com.music.zen.data.stats.ListeningStats
+import com.music.zen.download.Downloads
+import com.music.zen.download.PlaylistSync
 import androidx.work.Configuration
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlin.concurrent.thread
 
-class BitChordApplication : Application(), SingletonImageLoader.Factory, Configuration.Provider {
+class ZenApplication : Application(), SingletonImageLoader.Factory, Configuration.Provider {
 
     init {
         // SLF4J (through Ktor) has no provider here and says so on System.err, which
@@ -70,7 +70,7 @@ class BitChordApplication : Application(), SingletonImageLoader.Factory, Configu
         // underneath — settings, the Canvas decoder, outputs, the party.
         AndroidStreamHooks.installEarly()
         PlayerPlatform.install(AndroidPlayerHost(this))
-        com.music.bitchord.ui.AppUi.install(com.music.bitchord.ui.AndroidAppUiHost)
+        com.music.zen.ui.AppUi.install(com.music.zen.ui.AndroidAppUiHost)
         // The shared data layer (lyrics, the YouTube Music client) logs to
         // logcat on debug builds only, as the app's own DebugLog always has.
         if (BuildConfig.DEBUG) {
@@ -152,13 +152,13 @@ class BitChordApplication : Application(), SingletonImageLoader.Factory, Configu
         AppSettings.init(this, authStore)
         // After AppSettings: fetches Automix's models as soon as Automix is on,
         // rather than waiting for the first song it would mix.
-        com.music.bitchord.playback.smart.AutomixModels.install(this)
+        com.music.zen.playback.smart.AutomixModels.install(this)
         // Restores the addon token, so the first search after a process restart
         // doesn't have to attest the device again.
-        com.music.bitchord.data.sources.addon.AddonAuth.init(this)
+        com.music.zen.data.sources.addon.AddonAuth.init(this)
         // Before anything resolves a track: an addon with `checkValidLossless`
         // is gated on this, and the gate reads "no" until it has looked.
-        com.music.bitchord.playback.audio.LosslessOutput.init(this)
+        com.music.zen.playback.audio.LosslessOutput.init(this)
         // Restores a party this device is still a member of, so a process death
         // mid-session is something the rest of the party never sees. The socket
         // and the clock offset are not restored — both are re-established on
@@ -167,7 +167,7 @@ class BitChordApplication : Application(), SingletonImageLoader.Factory, Configu
         SearchHistory.init(this)
         LastPlayed.init(this)
         BoundedContextPersistence.init(this)
-        com.music.bitchord.playback.PartyPersonalQueueStash.init(this)
+        com.music.zen.playback.PartyPersonalQueueStash.init(this)
         // Which tracks the listener has reverted to YouTube's own upload. Read
         // by [Song.toMediaItem], so it has to be open before the restart
         // snapshot below is turned back into queue items.
@@ -179,7 +179,7 @@ class BitChordApplication : Application(), SingletonImageLoader.Factory, Configu
         PlaylistSync.init(this)
         // Before anything could run a scheduled backup: its worker reads the
         // account and the schedule this loads.
-        com.music.bitchord.data.backup.DriveBackup.init(this)
+        com.music.zen.data.backup.DriveBackup.init(this)
         // The device's own listening record. Opened here rather than in
         // PlaybackService because the Replay page reads it from the UI side and
         // both live in this process — one owner, one directory.
@@ -213,12 +213,12 @@ class BitChordApplication : Application(), SingletonImageLoader.Factory, Configu
         // Initialize LastFM with saved settings if available
         initLastfm()
         // The public "apps open right now" count; see Presence.
-        com.music.bitchord.data.presence.AndroidPresence.install(this)
+        com.music.zen.data.presence.AndroidPresence.install(this)
         backgroundInit.join()
     }
 
     /**
-     * Coil's own transport, separate from [Http][com.music.bitchord.data.Http]'s
+     * Coil's own transport, separate from [Http][com.music.zen.data.Http]'s
      * playback-tuned client.
      *
      * Wikimedia (which serves signature art) answers generic clients with
@@ -232,7 +232,7 @@ class BitChordApplication : Application(), SingletonImageLoader.Factory, Configu
                     chain.request().newBuilder()
                         .header(
                             "User-Agent",
-                            "BitChord/${BuildConfig.VERSION_NAME} (Android; +https://github.com/pxper_-source/Apple-Moozic)",
+                            "Zen/${BuildConfig.VERSION_NAME} (Android; +https://github.com/pxper_-source/Apple-Moozic)",
                         )
                         .build(),
                 )

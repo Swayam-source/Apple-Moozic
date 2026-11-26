@@ -1,4 +1,4 @@
-package com.music.bitchord.playback
+package com.music.zen.playback
 
 import android.content.Context
 import android.media.MediaDataSource
@@ -6,9 +6,9 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.SystemClock
-import com.music.bitchord.R
-import com.music.bitchord.data.TrackLog
-import com.music.bitchord.playback.smart.AutomixAnalysisSource
+import com.music.zen.R
+import com.music.zen.data.TrackLog
+import com.music.zen.playback.smart.AutomixAnalysisSource
 import androidx.media3.common.C
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.database.StandaloneDatabaseProvider
@@ -22,16 +22,16 @@ import androidx.media3.datasource.cache.ContentMetadata
 import androidx.media3.datasource.cache.ContentMetadataMutations
 import androidx.media3.datasource.cache.SimpleCache
 import java.io.IOException
-import com.music.bitchord.data.innertube.StreamResolver
-import com.music.bitchord.data.model.Song
-import com.music.bitchord.data.settings.AppSettings
-import com.music.bitchord.data.sources.DeviceCodecs
-import com.music.bitchord.data.sources.SourceKind
-import com.music.bitchord.data.sources.SourceRegistry
-import com.music.bitchord.data.sources.SourceResolver
-import com.music.bitchord.data.sources.SourceStream
-import com.music.bitchord.data.sources.TrackMatcher
-import com.music.bitchord.download.Downloads
+import com.music.zen.data.innertube.StreamResolver
+import com.music.zen.data.model.Song
+import com.music.zen.data.settings.AppSettings
+import com.music.zen.data.sources.DeviceCodecs
+import com.music.zen.data.sources.SourceKind
+import com.music.zen.data.sources.SourceRegistry
+import com.music.zen.data.sources.SourceResolver
+import com.music.zen.data.sources.SourceStream
+import com.music.zen.data.sources.TrackMatcher
+import com.music.zen.download.Downloads
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -69,7 +69,7 @@ import kotlin.coroutines.coroutineContext
  * expire within hours, and differ between resolves of the same track, so
  * keying on them would cache every track afresh on every play. Because
  * [CacheDataSource] sits *outside* the resolving data source it sees the
- * original `bitchord://watch?v=<id>` request, and a cache hit never resolves a
+ * original `zen://watch?v=<id>` request, and a cache hit never resolves a
  * URL at all.
  */
 @UnstableApi
@@ -186,7 +186,7 @@ object AudioCache {
      * flight. Warming three tracks ahead therefore did not cost three cheap
      * resolves in the background, it cost the track the listener was waiting on
      * a thirty-second start. See
-     * [StreamResolver][com.music.bitchord.data.innertube.StreamResolver]'s
+     * [StreamResolver][com.music.zen.data.innertube.StreamResolver]'s
      * extraction gate, which serialises what is left of that.
      */
     private const val QUEUE_LOOKAHEAD = 1
@@ -553,7 +553,7 @@ object AudioCache {
      * resolved at all.
      */
     fun originOf(uri: Uri): Origin? {
-        if (!::cache.isInitialized || uri.scheme != "bitchord") return null
+        if (!::cache.isInitialized || uri.scheme != "zen") return null
         val key = keyFactory.buildCacheKey(DataSpec(uri))
         return runCatching { cache.getContentMetadata(key).get(META_ORIGIN, null as String?) }
             .getOrNull()
@@ -729,7 +729,7 @@ object AudioCache {
         if (playedIds.size > MAX_NOTED_SONGS) playedIds.clear()
         playedIds += song.videoId
         noteSongs(listOf(song))
-        if (!::cache.isInitialized || uri?.scheme != "bitchord") return
+        if (!::cache.isInitialized || uri?.scheme != "zen") return
         scope.launch {
             val key = keyFactory.buildCacheKey(DataSpec(uri))
             runCatching {
@@ -748,7 +748,7 @@ object AudioCache {
      * Tags the cache entry [spec] is filling with who is serving it.
      *
      * Called from the player's resolving data source, the one place where the
-     * `bitchord://` request and the real stream URL it resolved to are both in
+     * `zen://` request and the real stream URL it resolved to are both in
      * hand — see PlaybackService. [CacheDataSource] has already put the cache
      * key it is writing under into [DataSpec.key], so the tag lands on exactly
      * the entry being filled, whichever rendition that is.
@@ -759,7 +759,7 @@ object AudioCache {
      */
     fun recordServed(spec: DataSpec, servedUrl: String) {
         if (!::cache.isInitialized) return
-        if (spec.uri.scheme != "bitchord") return
+        if (spec.uri.scheme != "zen") return
         val mediaId = mediaIdIn(spec.uri) ?: return
         val key = spec.key ?: keyFactory.buildCacheKey(spec)
         val origin = originOf(spec.uri, mediaId, servedUrl)
@@ -1036,7 +1036,7 @@ object AudioCache {
         // No upstream factory, so anything not on disk fails rather than streams.
         val source = CacheDataSource.Factory().setCache(cache).createDataSource()
         val spec = DataSpec.Builder()
-            .setUri(Uri.parse("bitchord://cache"))
+            .setUri(Uri.parse("zen://cache"))
             .setKey(copy.key)
             .setPosition(0)
             .setLength(copy.length)
@@ -1240,7 +1240,7 @@ object AudioCache {
      * way on a direct-mode miss.
      */
     private fun settleDirectEntry(uri: Uri) {
-        if (uri.scheme != "bitchord" || uri.authority != "watch") return
+        if (uri.scheme != "zen" || uri.authority != "watch") return
         val videoId = uri.getQueryParameter("v") ?: return
         // A rendition of its own (an upgrade, a revert), the watch's capped
         // copy and Automix's Opus are none of this: each has its own entry.
@@ -1466,7 +1466,7 @@ object AudioCache {
                 // earlier play: the player reads that head straight off disk,
                 // and the pin would then stream the substitute after it. That
                 // track's way up is the second look — see [heldByYouTube].
-                val youTubeFilled = heldByYouTube(cacheKeyOf(Uri.parse("bitchord://watch?v=$next")))
+                val youTubeFilled = heldByYouTube(cacheKeyOf(Uri.parse("zen://watch?v=$next")))
                 val warmed = if (substitutable && target != null && !pinnedToYouTube && !youTubeFilled) {
                     runCatching { SourceResolver.prefetchSubstitute(target) }
                         .onFailure { TrackLog.d(TAG, "warm-up substitute failed for $next: ${it.message}", about = next) }
@@ -1551,7 +1551,7 @@ object AudioCache {
                     // rest streamed after it — see [settleDirectEntry]. The
                     // Opus goes first, or the addon is not pinned at all and
                     // playback's own open settles it.
-                    val key = cacheKeyOf(Uri.parse("bitchord://watch?v=$id"))
+                    val key = cacheKeyOf(Uri.parse("zen://watch?v=$id"))
                     if (addon != null && heldByYouTube(key)) dropYouTubeEntry(key, id)
                     if (addon != null && heldByYouTube(key)) return@launch
                     StreamChoice.remember(id, stream, substituted = addon != null)
@@ -1574,9 +1574,9 @@ object AudioCache {
      * [target] is what a cross-source match is made on, and read-ahead cannot
      * reach it any other way: it runs for tracks that are not the current item,
      * so the session's metadata is the wrong track's, and the plain
-     * `bitchord://watch?v=…` URI it builds for itself carries an id and nothing
+     * `zen://watch?v=…` URI it builds for itself carries an id and nothing
      * else. It rides along from the queue instead — see
-     * [PlaybackService.prefetchAround][com.music.bitchord.playback.PlaybackService].
+     * [PlaybackService.prefetchAround][com.music.zen.playback.PlaybackService].
      */
     data class Upcoming(val mediaId: String, val target: TrackMatcher.Target)
 
@@ -1653,7 +1653,7 @@ object AudioCache {
      * own key rather than the plain videoId.
      *
      * For the opening of a rendition that is about to be swapped in — see
-     * [PlaybackService][com.music.bitchord.playback.PlaybackService]'s audition.
+     * [PlaybackService][com.music.zen.playback.PlaybackService]'s audition.
      * A player preparing a progressive source has to parse the container from
      * byte zero before it can seek anywhere, and for a FLAC that is not a few
      * bytes: STREAMINFO, the seek table, the tags and an embedded cover can run
@@ -1768,7 +1768,7 @@ object AudioCache {
      */
     /**
      * Enough of a YouTube Opus head to decode the opening window
-     * [com.music.bitchord.playback.smart.VersionAudioAligner] measures.
+     * [com.music.zen.playback.smart.VersionAudioAligner] measures.
      */
     const val MIN_ALIGNMENT_PREFIX_BYTES = 800L * 1024
 
@@ -1874,7 +1874,7 @@ object AudioCache {
      * "openable with exactly these bytes".
      */
     private fun alignmentPrefixBytes(videoId: String): Long {
-        val watch = Uri.parse("bitchord://watch?v=$videoId")
+        val watch = Uri.parse("zen://watch?v=$videoId")
         val opus = Uri.parse(AutomixAnalysisSource.opusUri(videoId))
         val renditions = renditionsOf(watch)
         val sameSource = renditions
@@ -1951,7 +1951,7 @@ object AudioCache {
                     // regardless.
                     pull(
                         videoId,
-                        Uri.parse("bitchord://watch?v=$videoId"),
+                        Uri.parse("zen://watch?v=$videoId"),
                         0,
                         want,
                         /* pinKey = */ false,
@@ -2351,7 +2351,7 @@ object AudioCache {
      * from a track played earlier, or skipped back to — costs only the rest.
      */
     private suspend fun fetch(videoId: String, position: Long, length: Long) =
-        fetch(videoId, Uri.parse("bitchord://watch?v=$videoId"), position, length)
+        fetch(videoId, Uri.parse("zen://watch?v=$videoId"), position, length)
 
     /**
      * [pinKey] forces the write to land under [cacheKey] instead of wherever

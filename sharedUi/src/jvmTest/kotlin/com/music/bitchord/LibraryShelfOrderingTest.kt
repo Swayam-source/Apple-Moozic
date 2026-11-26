@@ -1,7 +1,7 @@
-package com.music.bitchord
+package com.music.zen
 
-import com.music.bitchord.data.model.HomeShelf
-import com.music.bitchord.data.model.ShelfItem
+import com.music.zen.data.model.HomeShelf
+import com.music.zen.data.model.ShelfItem
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

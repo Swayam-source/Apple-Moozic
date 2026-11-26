@@ -1,4 +1,4 @@
-package com.music.bitchord.ui.player
+package com.music.zen.ui.player
 
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.ui.graphics.graphicsLayer
@@ -8,10 +8,10 @@ import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.unit.isSpecified
-import com.music.bitchord.data.model.ArtistCredit
-import com.music.bitchord.data.model.CreditSegment
-import com.music.bitchord.data.model.creditSegments
-import com.music.bitchord.sharedui.resources.*
+import com.music.zen.data.model.ArtistCredit
+import com.music.zen.data.model.CreditSegment
+import com.music.zen.data.model.creditSegments
+import com.music.zen.sharedui.resources.*
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.foundation.shape.GenericShape
@@ -19,9 +19,9 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.expandVertically
 import dev.chrisbanes.haze.HazeState
-import com.music.bitchord.ui.components.liveMenuFrost
-import com.music.bitchord.ui.components.MenuFrostDark
-import com.music.bitchord.playback.PlaybackPosition
+import com.music.zen.ui.components.liveMenuFrost
+import com.music.zen.ui.components.MenuFrostDark
+import com.music.zen.playback.PlaybackPosition
 import androidx.compose.ui.semantics.Role
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
@@ -123,18 +123,18 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.music.bitchord.ui.components.LINE_FADE
-import com.music.bitchord.ui.graphics.fadingEdges
-import com.music.bitchord.ui.haptics.Haptic
-import com.music.bitchord.ui.haptics.rememberHaptics
-import com.music.bitchord.ui.icons.BitChordIcons
+import com.music.zen.ui.components.LINE_FADE
+import com.music.zen.ui.graphics.fadingEdges
+import com.music.zen.ui.haptics.Haptic
+import com.music.zen.ui.haptics.rememberHaptics
+import com.music.zen.ui.icons.ZenIcons
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.music.bitchord.data.NerdStats
-import com.music.bitchord.data.listentogether.PartyMember
-import com.music.bitchord.data.settings.TrackAnalysisState
-import com.music.bitchord.data.settings.AudioQuality
-import com.music.bitchord.data.model.Song
-import com.music.bitchord.playback.AutoMixVisualPhase
+import com.music.zen.data.NerdStats
+import com.music.zen.data.listentogether.PartyMember
+import com.music.zen.data.settings.TrackAnalysisState
+import com.music.zen.data.settings.AudioQuality
+import com.music.zen.data.model.Song
+import com.music.zen.playback.AutoMixVisualPhase
 import java.util.Locale
 import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
@@ -424,7 +424,7 @@ private fun NerdStatsLines(song: Song) {
     val smartAnalysis by PlayerSettings.smartAnalysis.collectAsStateWithLifecycle()
     val automixDetail by PlayerSettings.automixDetail.collectAsStateWithLifecycle()
     // A party doesn't mix, and doesn't analyse for one either — see
-    // [com.music.bitchord.playback.CrossfadeController]. So the two flows above
+    // [com.music.zen.playback.CrossfadeController]. So the two flows above
     // simply stop moving there, and the stats line has to say why rather than
     // leave their last values on screen as if they still described something.
     //
@@ -592,7 +592,7 @@ internal fun BestPartPill(
                 modifier = Modifier.padding(start = 12.dp, end = 15.dp, top = 7.dp, bottom = 7.dp),
             ) {
                 Icon(
-                    imageVector = BitChordIcons.MusicNote,
+                    imageVector = ZenIcons.MusicNote,
                     contentDescription = null,
                     tint = Color.White,
                     modifier = Modifier.size(15.dp),
@@ -819,7 +819,7 @@ internal fun PlayerActionRow(
                     .offset { IntOffset((closeIn.toPx() * compactness.value).roundToInt(), 0) },
             ) {
                 BottomGlyph(
-                    icon = BitChordIcons.LyricsQuote,
+                    icon = ZenIcons.LyricsQuote,
                     contentDescription = stringResource(if (lyricsOpen) Res.string.close_lyrics else Res.string.open_lyrics),
                     // Lyrics and the queue are two things to show in one place, so
                     // opening either closes the other; lit to say which is up.
@@ -844,7 +844,7 @@ internal fun PlayerActionRow(
                     // read as one control growing a segment.
                     Pill {
                         PillSegment(
-                            icon = BitChordIcons.Shuffle,
+                            icon = ZenIcons.Shuffle,
                             contentDescription = stringResource(
                                 if (shuffleEnabled) Res.string.shuffle_on else Res.string.shuffle_off,
                             ),
@@ -855,7 +855,7 @@ internal fun PlayerActionRow(
                         )
                         PillDivider()
                         PillSegment(
-                            icon = if (repeatMode == RepeatModes.ONE) null else BitChordIcons.Repeat,
+                            icon = if (repeatMode == RepeatModes.ONE) null else ZenIcons.Repeat,
                             label = if (repeatMode == RepeatModes.ONE) "1" else null,
                             contentDescription = when (repeatMode) {
                                 RepeatModes.ONE -> stringResource(Res.string.repeat_one)
@@ -876,7 +876,7 @@ internal fun PlayerActionRow(
                         )
                         PillDivider()
                         PillSegment(
-                            icon = BitChordIcons.Infinity,
+                            icon = ZenIcons.Infinity,
                             contentDescription = stringResource(
                                 if (autoplayEnabled) Res.string.autoplay_on else Res.string.autoplay_off,
                             ),
@@ -900,7 +900,7 @@ internal fun PlayerActionRow(
                     .offset { IntOffset(-(closeIn.toPx() * compactness.value).roundToInt(), 0) },
             ) {
                 BottomGlyph(
-                    icon = BitChordIcons.Queue,
+                    icon = ZenIcons.Queue,
                     contentDescription = stringResource(Res.string.up_next),
                     onClick = onToggleQueue,
                     highlighted = queueOpen,
@@ -1000,7 +1000,7 @@ private fun sliderInk(): SliderInk? =
  * [active] brightens the disc rather than only the glyph: this sits on album
  * artwork of any colour, and a white icon on a white-ish sleeve has no tint
  * change left to make. The filled star carries the state as a shape too —
- * see [BitChordIcons.StarFilled].
+ * see [ZenIcons.StarFilled].
  */
 @Composable
 internal fun CircleGlyph(
@@ -1436,24 +1436,24 @@ private fun rememberOutputGlyph(): OutputGlyph {
     val watch by PlayerPlatform.host.watchOutput.collectAsStateWithLifecycle()
     val active = rememberAudioOutputs().firstOrNull { it.isActive }
     return when {
-        cast.connectedName != null -> OutputGlyph(BitChordIcons.AirPlay, PILL_OUTPUT_AIRPLAY_SIZE)
-        watch.active -> OutputGlyph(BitChordIcons.AirPlay, PILL_OUTPUT_AIRPLAY_SIZE)
+        cast.connectedName != null -> OutputGlyph(ZenIcons.AirPlay, PILL_OUTPUT_AIRPLAY_SIZE)
+        watch.active -> OutputGlyph(ZenIcons.AirPlay, PILL_OUTPUT_AIRPLAY_SIZE)
         else -> when (active?.kind) {
             // No active row is the phone too — the caption under the pill
             // says "This phone" in the same case. AirPlay rather than a phone:
             // on the phone itself the button's job is to send it elsewhere.
-            null, AudioOutputKind.PHONE -> OutputGlyph(BitChordIcons.AirPlay, PILL_OUTPUT_AIRPLAY_SIZE)
+            null, AudioOutputKind.PHONE -> OutputGlyph(ZenIcons.AirPlay, PILL_OUTPUT_AIRPLAY_SIZE)
             AudioOutputKind.BLUETOOTH -> when (active.form) {
-                BluetoothForm.BUDS -> OutputGlyph(BitChordIcons.AirPlay, PILL_OUTPUT_AIRPLAY_SIZE)
-                BluetoothForm.SPEAKER -> OutputGlyph(BitChordIcons.AirPlay, PILL_OUTPUT_AIRPLAY_SIZE)
-                BluetoothForm.CAR -> OutputGlyph(BitChordIcons.AirPlay, PILL_OUTPUT_AIRPLAY_SIZE)
+                BluetoothForm.BUDS -> OutputGlyph(ZenIcons.AirPlay, PILL_OUTPUT_AIRPLAY_SIZE)
+                BluetoothForm.SPEAKER -> OutputGlyph(ZenIcons.AirPlay, PILL_OUTPUT_AIRPLAY_SIZE)
+                BluetoothForm.CAR -> OutputGlyph(ZenIcons.AirPlay, PILL_OUTPUT_AIRPLAY_SIZE)
                 // Headphones doubles as the neutral "some audio device" glyph:
                 // a device that won't say what it is gets that, not a guess.
-                BluetoothForm.HEADPHONES, BluetoothForm.UNKNOWN -> OutputGlyph(BitChordIcons.AirPlay, PILL_OUTPUT_AIRPLAY_SIZE)
+                BluetoothForm.HEADPHONES, BluetoothForm.UNKNOWN -> OutputGlyph(ZenIcons.AirPlay, PILL_OUTPUT_AIRPLAY_SIZE)
             }
-            AudioOutputKind.WIRED, AudioOutputKind.USB -> OutputGlyph(BitChordIcons.AirPlay, PILL_OUTPUT_AIRPLAY_SIZE)
-            AudioOutputKind.HDMI -> OutputGlyph(BitChordIcons.AirPlay, PILL_OUTPUT_AIRPLAY_SIZE)
-            AudioOutputKind.OTHER -> OutputGlyph(BitChordIcons.AirPlay, PILL_OUTPUT_AIRPLAY_SIZE)
+            AudioOutputKind.WIRED, AudioOutputKind.USB -> OutputGlyph(ZenIcons.AirPlay, PILL_OUTPUT_AIRPLAY_SIZE)
+            AudioOutputKind.HDMI -> OutputGlyph(ZenIcons.AirPlay, PILL_OUTPUT_AIRPLAY_SIZE)
+            AudioOutputKind.OTHER -> OutputGlyph(ZenIcons.AirPlay, PILL_OUTPUT_AIRPLAY_SIZE)
         }
     }
 }

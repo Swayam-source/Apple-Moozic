@@ -1,9 +1,9 @@
-package com.music.bitchord.data.sources
+package com.music.zen.data.sources
 
-import com.music.bitchord.data.TrackLog
-import com.music.bitchord.data.jiosaavn.JioSaavnService
-import com.music.bitchord.data.jiosaavn.prioritizeExplicit
-import com.music.bitchord.data.model.Song
+import com.music.zen.data.TrackLog
+import com.music.zen.data.jiosaavn.JioSaavnService
+import com.music.zen.data.jiosaavn.prioritizeExplicit
+import com.music.zen.data.model.Song
 
 private const val TAG = "Moozic"
 

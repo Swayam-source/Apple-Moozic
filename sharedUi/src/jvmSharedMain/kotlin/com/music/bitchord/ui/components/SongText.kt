@@ -1,4 +1,4 @@
-package com.music.bitchord.ui.components
+package com.music.zen.ui.components
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.border
@@ -35,8 +35,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.music.bitchord.data.model.Song
-import com.music.bitchord.ui.graphics.fadingEdges
+import com.music.zen.data.model.Song
+import com.music.zen.ui.graphics.fadingEdges
 
 fun Modifier.thumbnailBorder(shape: Shape): Modifier = composed {
     this.border(

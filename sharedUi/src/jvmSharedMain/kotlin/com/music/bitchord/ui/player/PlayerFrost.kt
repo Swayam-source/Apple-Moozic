@@ -1,4 +1,4 @@
-package com.music.bitchord.ui.player
+package com.music.zen.ui.player
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -18,9 +18,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.music.bitchord.ui.components.MENU_FROST_ALPHA
-import com.music.bitchord.ui.components.MenuFrostDark
-import com.music.bitchord.ui.components.liveMenuFrost
+import com.music.zen.ui.components.MENU_FROST_ALPHA
+import com.music.zen.ui.components.MenuFrostDark
+import com.music.zen.ui.components.liveMenuFrost
 import dev.chrisbanes.haze.HazeState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest

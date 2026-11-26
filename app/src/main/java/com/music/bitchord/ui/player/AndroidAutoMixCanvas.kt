@@ -1,10 +1,10 @@
-package com.music.bitchord.ui.player
+package com.music.zen.ui.player
 
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import androidx.media3.exoplayer.ExoPlayer
-import com.music.bitchord.playback.AutoMixVisualFeed
+import com.music.zen.playback.AutoMixVisualFeed
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 

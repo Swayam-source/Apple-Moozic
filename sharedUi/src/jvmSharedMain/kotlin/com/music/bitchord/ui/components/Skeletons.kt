@@ -1,4 +1,4 @@
-package com.music.bitchord.ui.components
+package com.music.zen.ui.components
 
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloat

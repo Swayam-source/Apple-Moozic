@@ -1,6 +1,6 @@
-package com.music.bitchord.ui.screens
+package com.music.zen.ui.screens
 
-import com.music.bitchord.sharedui.resources.*
+import com.music.zen.sharedui.resources.*
 import org.jetbrains.compose.resources.stringResource
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -43,16 +43,16 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import com.music.bitchord.data.model.HomeShelf
-import com.music.bitchord.data.model.MoodGenre
-import com.music.bitchord.data.model.MoodGenreSection
-import com.music.bitchord.data.model.ShelfItem
-import com.music.bitchord.data.model.UiState
-import com.music.bitchord.ui.components.MessageState
-import com.music.bitchord.ui.components.PAGE_GUTTER
-import com.music.bitchord.ui.components.PullToRefresh
-import com.music.bitchord.ui.components.ShimmerBox
-import com.music.bitchord.ui.components.feedSkeleton
+import com.music.zen.data.model.HomeShelf
+import com.music.zen.data.model.MoodGenre
+import com.music.zen.data.model.MoodGenreSection
+import com.music.zen.data.model.ShelfItem
+import com.music.zen.data.model.UiState
+import com.music.zen.ui.components.MessageState
+import com.music.zen.ui.components.PAGE_GUTTER
+import com.music.zen.ui.components.PullToRefresh
+import com.music.zen.ui.components.ShimmerBox
+import com.music.zen.ui.components.feedSkeleton
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

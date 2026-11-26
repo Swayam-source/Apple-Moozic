@@ -1,21 +1,21 @@
-package com.music.bitchord.data.sources
+package com.music.zen.data.sources
 
 import android.content.Context
 import android.content.SharedPreferences
 import android.net.Uri
 import android.util.Log
-import com.music.bitchord.auth.EncryptedPrefs
-import com.music.bitchord.data.TrackLog
-import com.music.bitchord.data.settings.AppSettings
-import com.music.bitchord.data.settings.permits
-import com.music.bitchord.data.sources.addon.AddonAuth
-import com.music.bitchord.data.sources.addon.AddonClient
-import com.music.bitchord.data.sources.addon.AddonException
-import com.music.bitchord.data.sources.addon.AddonQualityOption
-import com.music.bitchord.data.sources.addon.DetectedFormat
-import com.music.bitchord.data.sources.addon.SourceFormats
-import com.music.bitchord.data.settings.AudioQuality
-import com.music.bitchord.playback.audio.LosslessOutput
+import com.music.zen.auth.EncryptedPrefs
+import com.music.zen.data.TrackLog
+import com.music.zen.data.settings.AppSettings
+import com.music.zen.data.settings.permits
+import com.music.zen.data.sources.addon.AddonAuth
+import com.music.zen.data.sources.addon.AddonClient
+import com.music.zen.data.sources.addon.AddonException
+import com.music.zen.data.sources.addon.AddonQualityOption
+import com.music.zen.data.sources.addon.DetectedFormat
+import com.music.zen.data.sources.addon.SourceFormats
+import com.music.zen.data.settings.AudioQuality
+import com.music.zen.playback.audio.LosslessOutput
 import kotlinx.coroutines.flow.MutableStateFlow
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import kotlinx.serialization.Serializable
@@ -62,14 +62,14 @@ data class SourceConfig(
     /** Which of [qualityOptions] the user chose, or null for the first one listed. */
     val pickedQuality: String? = null,
     /**
-     * Whether the addon's manifest declares `bitchordAuth`, as it last said;
+     * Whether the addon's manifest declares `zenAuth`, as it last said;
      * null until it has been read. Addons that don't are out of date. They are
      * still searched and streamed from, without credentials, but the sources
      * screen flags them and tells the user to ask the developer to update.
      * Stored so the flag shows while the addon is down, and refreshed whenever
      * the manifest is next read.
      */
-    val bitchordAuth: Boolean? = null,
+    val zenAuth: Boolean? = null,
 ) {
     /** The entry of [qualityOptions] in force: the pick while the addon still lists it, else its first. */
     val activeQuality: AddonQualityOption?
@@ -81,11 +81,11 @@ data class SourceConfig(
 
     /**
      * Whether this is an addon known to be out of date: its manifest doesn't
-     * declare `bitchordAuth`, or it has no manifest at all. Not yet knowing
-     * (null) doesn't count. Only flagged, never gated on: see [bitchordAuth].
+     * declare `zenAuth`, or it has no manifest at all. Not yet knowing
+     * (null) doesn't count. Only flagged, never gated on: see [zenAuth].
      */
     val needsAddonUpdate: Boolean
-        get() = kind == SourceKind.ADDON && bitchordAuth == false
+        get() = kind == SourceKind.ADDON && zenAuth == false
 
     /** What the manifest last said, without the parts of the config the user set. */
     internal fun withPolicyOf(other: SourceConfig) =
@@ -93,7 +93,7 @@ data class SourceConfig(
             allowDownloads = other.allowDownloads,
             checkValidLossless = other.checkValidLossless,
             qualityOptions = other.qualityOptions,
-            bitchordAuth = other.bitchordAuth,
+            zenAuth = other.zenAuth,
         )
 
     /** What the sources screen and the player show. Never blank. */
@@ -142,7 +142,7 @@ object SourceRegistry {
 
     fun init(context: Context) {
         // Same repair and degradation as AuthStore; see EncryptedPrefs.
-        prefs = EncryptedPrefs.open(context, "bitchord_sources", "bitchord_sources_plain")
+        prefs = EncryptedPrefs.open(context, "zen_sources", "zen_sources_plain")
 
         val stored = prefs.getString(KEY_SOURCES, null)?.let(::decodeStored) ?: emptyList()
         val jioOptInMigrationDone = prefs.getBoolean(KEY_JIOSAAVN_OPT_IN_V1, false)
@@ -229,7 +229,7 @@ object SourceRegistry {
             // Nor, for an addon that asks for auth, while this device was just
             // refused verification: back in the walk once the backoff lapses,
             // when the next resolve asks the auth service again.
-            .filterNot { unverified && it.kind == SourceKind.ADDON && it.bitchordAuth == true }
+            .filterNot { unverified && it.kind == SourceKind.ADDON && it.zenAuth == true }
             .sortedBy { it.kind.rank }
             .mapNotNull { instances[it.id] }
     }
@@ -283,13 +283,13 @@ object SourceRegistry {
         allowDownloads: Boolean,
         checkValidLossless: Boolean,
         qualityOptions: List<AddonQualityOption>,
-        bitchordAuth: Boolean,
+        zenAuth: Boolean,
     ) {
         val current = config(configId) ?: return
         if (current.allowDownloads == allowDownloads &&
             current.checkValidLossless == checkValidLossless &&
             current.qualityOptions == qualityOptions &&
-            current.bitchordAuth == bitchordAuth
+            current.zenAuth == zenAuth
         ) {
             return
         }
@@ -297,7 +297,7 @@ object SourceRegistry {
             TAG,
             "${current.displayName}: manifest now says allowDownloads=$allowDownloads " +
                 "checkValidLossless=$checkValidLossless qualityOptions=${qualityOptions.map { it.value }} " +
-                "bitchordAuth=$bitchordAuth",
+                "zenAuth=$zenAuth",
         )
         publish(
             configs.value.map {
@@ -306,7 +306,7 @@ object SourceRegistry {
                         allowDownloads = allowDownloads,
                         checkValidLossless = checkValidLossless,
                         qualityOptions = qualityOptions,
-                        bitchordAuth = bitchordAuth,
+                        zenAuth = zenAuth,
                     )
                 } else {
                     it
@@ -317,14 +317,14 @@ object SourceRegistry {
 
     /**
      * Records that an addon is out of date because it has no usable manifest,
-     * and so cannot declare `bitchordAuth`. The other stored policy is left as
+     * and so cannot declare `zenAuth`. The other stored policy is left as
      * it was: there is nothing new to replace it with.
      */
     fun markAddonOutdated(configId: String) {
         val current = config(configId) ?: return
-        if (current.bitchordAuth == false) return
-        TrackLog.d(TAG, "${current.displayName}: no usable manifest, so it can't declare bitchordAuth")
-        publish(configs.value.map { if (it.id == configId) it.copy(bitchordAuth = false) else it })
+        if (current.zenAuth == false) return
+        TrackLog.d(TAG, "${current.displayName}: no usable manifest, so it can't declare zenAuth")
+        publish(configs.value.map { if (it.id == configId) it.copy(zenAuth = false) else it })
     }
 
     /** The common eligibility gate used by playback and download source walks. */
@@ -339,9 +339,9 @@ object SourceRegistry {
      * [active], so the Wi-Fi and mobile-data rungs stay two independent
      * answers to "what does this minute cost" and switching networks switches
      * between them. Downloads deliberately keep asking [active]: what a saved
-     * file is worth is [DownloadQuality][com.music.bitchord.data.settings.DownloadQuality]'s
+     * file is worth is [DownloadQuality][com.music.zen.data.settings.DownloadQuality]'s
      * question, and when it may be fetched is
-     * [AppSettings.wifiOnlyDownloads][com.music.bitchord.data.settings.AppSettings.wifiOnlyDownloads]'s.
+     * [AppSettings.wifiOnlyDownloads][com.music.zen.data.settings.AppSettings.wifiOnlyDownloads]'s.
      */
     fun activeForPlayback(): List<MusicSource> {
         val ceiling = AppSettings.effectiveAudioQuality
@@ -422,7 +422,7 @@ object SourceRegistry {
      * doesn't even stop it being played, because a YouTube-queued track whose
      * substitutes all miss still falls back to it. A switch that cannot honour
      * its own off position is worse than no switch, so it isn't offered one:
-     * see [SourcesScreen][com.music.bitchord.ui.screens.SourcesScreen].
+     * see [SourcesScreen][com.music.zen.ui.screens.SourcesScreen].
      */
     fun setEnabled(configId: String, enabled: Boolean) {
         if (!enabled && config(configId)?.kind == SourceKind.YOUTUBE) return
@@ -509,7 +509,7 @@ object SourceRegistry {
                     allowDownloads = detected.manifest.downloadsAllowed,
                     checkValidLossless = detected.manifest.requiresLosslessOutput,
                     qualityOptions = detected.manifest.qualityOptions,
-                    bitchordAuth = detected.manifest.requiresBitChordAuth,
+                    zenAuth = detected.manifest.requiresZenAuth,
                     // The address may now name a different addon, whose list
                     // this pick was never on.
                     pickedQuality = existing?.pickedQuality?.takeIf { picked ->
@@ -609,7 +609,7 @@ object SourceRegistry {
     /**
      * A source-backed track's id, as it travels through the queue.
      *
-     * Packed into the existing [Song.videoId][com.music.bitchord.data.model.Song.videoId]
+     * Packed into the existing [Song.videoId][com.music.zen.data.model.Song.videoId]
      * rather than added beside it: that field is the app's media id everywhere —
      * the queue, the notification, the history, the like state — and a second
      * identity field would have to be threaded through every one of them, with
@@ -624,7 +624,7 @@ object SourceRegistry {
     /** The playback URI for a source-backed track; [PlaybackService] resolves it at open time. */
     fun trackUri(configId: String, trackId: String): String =
         Uri.Builder()
-            .scheme("bitchord")
+            .scheme("zen")
             .authority("source")
             .appendQueryParameter("s", configId)
             .appendQueryParameter("t", trackId)

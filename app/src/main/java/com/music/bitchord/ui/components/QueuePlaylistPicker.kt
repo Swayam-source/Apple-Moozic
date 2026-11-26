@@ -1,4 +1,4 @@
-package com.music.bitchord.ui.components
+package com.music.zen.ui.components
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -8,11 +8,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
-import com.music.bitchord.R
-import com.music.bitchord.data.OfflinePlaylists
-import com.music.bitchord.data.model.Song
-import com.music.bitchord.data.model.UserPlaylist
-import com.music.bitchord.ui.MainViewModel
+import com.music.zen.R
+import com.music.zen.data.OfflinePlaylists
+import com.music.zen.data.model.Song
+import com.music.zen.data.model.UserPlaylist
+import com.music.zen.ui.MainViewModel
 
 /**
  * One picker transaction over a frozen queue selection. Submission removes the

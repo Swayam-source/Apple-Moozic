@@ -1,4 +1,4 @@
-package com.music.bitchord.ui.theme
+package com.music.zen.ui.theme
 
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.statusBars

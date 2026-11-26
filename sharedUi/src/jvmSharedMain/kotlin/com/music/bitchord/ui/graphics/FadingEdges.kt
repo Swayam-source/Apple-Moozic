@@ -1,4 +1,4 @@
-package com.music.bitchord.ui.graphics
+package com.music.zen.ui.graphics
 
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache

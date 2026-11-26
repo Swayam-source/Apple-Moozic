@@ -1,23 +1,23 @@
-package com.music.bitchord.data.settings
+package com.music.zen.data.settings
 
-import com.music.bitchord.data.webdav.update
-import com.music.bitchord.ui.components.VideoThumbnails
+import com.music.zen.data.webdav.update
+import com.music.zen.ui.components.VideoThumbnails
 import android.content.Context
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import androidx.media3.common.Player
-import com.music.bitchord.BuildConfig
-import com.music.bitchord.auth.AuthStore
-import com.music.bitchord.data.canvas.SpotifyToken
-import com.music.bitchord.data.innertube.StreamResolver
-import com.music.bitchord.data.lyrics.LyricsSource
-import com.music.bitchord.data.sources.SourceKind
-import com.music.bitchord.playback.AutoMixVisualFeed
-import com.music.bitchord.playback.EqLayout
-import com.music.bitchord.playback.EqualizerPreset
-import com.music.bitchord.ui.player.AutoMixArtworkPreferences
+import com.music.zen.BuildConfig
+import com.music.zen.auth.AuthStore
+import com.music.zen.data.canvas.SpotifyToken
+import com.music.zen.data.innertube.StreamResolver
+import com.music.zen.data.lyrics.LyricsSource
+import com.music.zen.data.sources.SourceKind
+import com.music.zen.playback.AutoMixVisualFeed
+import com.music.zen.playback.EqLayout
+import com.music.zen.playback.EqualizerPreset
+import com.music.zen.ui.player.AutoMixArtworkPreferences
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
@@ -26,7 +26,7 @@ import kotlinx.coroutines.flow.asStateFlow
  * Whether a stream started under this ceiling may be served by [kind].
  *
  * Asked per stream rather than written into
- * [SourceConfig.enabled][com.music.bitchord.data.sources.SourceConfig.enabled],
+ * [SourceConfig.enabled][com.music.zen.data.sources.SourceConfig.enabled],
  * which is what this used to do — an `applyQualityPreset` call flipped the
  * module and JioSaavn switches the moment a rung was picked. Two things
  * were wrong with that and both were reported together: picking a rung for
@@ -72,13 +72,13 @@ enum class OutputPcmMode(val label: String) {
  * crossfade, Automix, playback speed and software volume: any of them would
  * change the samples. Volume belongs to the DAC.
  *
- * See [com.music.bitchord.playback.audio.bitperfect.BitPerfectOutput].
+ * See [com.music.zen.playback.audio.bitperfect.BitPerfectOutput].
  */
 enum class BitPerfectMode {
     OFF,
 
     /**
-     * BitChord's own USB Audio Class driver on libusb: any Android version,
+     * Zen's own USB Audio Class driver on libusb: any Android version,
      * volume set on the DAC itself. Requires USB permission.
      */
     USB_DIRECT,
@@ -101,7 +101,7 @@ enum class BitPerfectMode {
  *
  * The rungs themselves differ too. On the YouTube fallback path a download is
  * Opus-in-WebM (see
- * [StreamResolver.resolveForDownload][com.music.bitchord.data.innertube.StreamResolver.resolveForDownload]),
+ * [StreamResolver.resolveForDownload][com.music.zen.data.innertube.StreamResolver.resolveForDownload]),
  * while configured sources can supply their own AAC or lossless copy. And
  * [LOSSLESS] has no streaming counterpart at all: it is the only rung that lets
  * a configured source's bit-exact file end up as a file on disk.
@@ -258,7 +258,7 @@ object AppSettings {
     /**
      * Check the playlists downloaded whole for newly added songs and download
      * them, in the background. Off by default: it spends data and storage
-     * without being asked each time. See [com.music.bitchord.download.PlaylistSync].
+     * without being asked each time. See [com.music.zen.download.PlaylistSync].
      */
     val syncDownloadedPlaylists = MutableStateFlow(false)
 
@@ -266,7 +266,7 @@ object AppSettings {
      * Keep every liked song downloaded: the account's Liked Music is fetched
      * whole once, then each new like follows it. Off by default for the same
      * reason as [syncDownloadedPlaylists], which does the work for it — see
-     * [com.music.bitchord.download.PlaylistSync].
+     * [com.music.zen.download.PlaylistSync].
      */
     val downloadLikedSongs = MutableStateFlow(false)
 
@@ -277,7 +277,7 @@ object AppSettings {
     // the Sources screen. It is gone: sources are asked for their best and each
     // degrades on its own terms, so the switch's only real effect was to ask a
     // module for a worse file than it was holding. See
-    // [SourceResolver.requestForNow][com.music.bitchord.data.sources.SourceResolver.requestForNow],
+    // [SourceResolver.requestForNow][com.music.zen.data.sources.SourceResolver.requestForNow],
     // which now reads [effectiveAudioQuality] and nothing else.
 
     val crossfadeSeconds = MutableStateFlow(0)
@@ -290,7 +290,7 @@ object AppSettings {
      * still being analysed. Off by default: analysis costs a background
      * decode per track.
      *
-     * See [com.music.bitchord.playback.smart.TransitionPlanner].
+     * See [com.music.zen.playback.smart.TransitionPlanner].
      */
     val smartFadeEnabled = MutableStateFlow(false)
     private val _autoMixArtwork = MutableStateFlow(AutoMixArtworkPreferences())
@@ -327,7 +327,7 @@ object AppSettings {
     /**
      * Level every track to the same loudness, using YouTube's own
      * normalization figure for it — see
-     * [com.music.bitchord.playback.PlaybackService.setupLoudnessEnhancer].
+     * [com.music.zen.playback.PlaybackService.setupLoudnessEnhancer].
      *
      * On by default, which is the one genuinely contentious thing about it.
      * The case for it: a queue drawn from several sources is a queue of
@@ -361,11 +361,11 @@ object AppSettings {
      * as a FLAC, and someone listening on wired headphones may well prefer the
      * bit-exact stereo copy to a spatial mix their output can't render. Turning
      * this off is how they say so; see
-     * [ModuleSource.unplayable][com.music.bitchord.data.sources.ModuleSource],
+     * [ModuleSource.unplayable][com.music.zen.data.sources.ModuleSource],
      * which is where the refusal is applied.
      *
      * Independent of whether the device *can* decode it — that question is
-     * [DeviceCodecs.playsDolbyAtmos][com.music.bitchord.data.sources.DeviceCodecs],
+     * [DeviceCodecs.playsDolbyAtmos][com.music.zen.data.sources.DeviceCodecs],
      * and the two are deliberately not folded together: this one is the
      * listener's answer, is persisted, and must survive being read on a phone
      * that cannot honour it (a restored backup, a swapped device) without
@@ -378,8 +378,8 @@ object AppSettings {
      * rather than starting it on YouTube and swapping up mid-song.
      *
      * Also narrows read-ahead to the next track only, and only once the
-     * playing one is within [DirectSourceGate.WINDOW_MS][com.music.bitchord.playback.DirectSourceGate.WINDOW_MS]
-     * of its transition — see [DirectSourceGate][com.music.bitchord.playback.DirectSourceGate].
+     * playing one is within [DirectSourceGate.WINDOW_MS][com.music.zen.playback.DirectSourceGate.WINDOW_MS]
+     * of its transition — see [DirectSourceGate][com.music.zen.playback.DirectSourceGate].
      * Automix analysis is untouched: it keeps reading its own YouTube Opus copy.
      */
     val directSourceStream = MutableStateFlow(false)
@@ -389,7 +389,7 @@ object AppSettings {
      * YouTube playback should take the signed-in route that reaches Premium's
      * ~256kbps Opus (itag 774) instead of the anonymous 251 — the route
      * age-restricted tracks already take. See
-     * [InnerTubeXResolver.extract][com.music.bitchord.data.innertube.InnerTubeXResolver.extract].
+     * [InnerTubeXResolver.extract][com.music.zen.data.innertube.InnerTubeXResolver.extract].
      *
      * Off by default and asked rather than detected: nothing InnerTubeX
      * exposes confirms the entitlement, and claiming it for an account
@@ -398,7 +398,7 @@ object AppSettings {
     val youtubePremiumAudio = MutableStateFlow(false)
 
     /**
-     * Widens stereo output via [com.music.bitchord.playback.SpatialAudioProcessor],
+     * Widens stereo output via [com.music.zen.playback.SpatialAudioProcessor],
      * a stereo widening + cross-feed effect running inside ExoPlayer's own
      * pipeline. Not true object-based spatial audio — YouTube only ever hands
      * us a stereo stream, so there's no Atmos-style source to render.
@@ -510,7 +510,7 @@ object AppSettings {
     /** Once a song has been suggested or played this session, AutoPlay won't offer it again. */
     val dontRepeatSuggestions = MutableStateFlow(false)
 
-    /** Music videos play as their audio version — see [com.music.bitchord.playback.MusicOnlyPlayback]. */
+    /** Music videos play as their audio version — see [com.music.zen.playback.MusicOnlyPlayback]. */
     val preferMusicOnly = MutableStateFlow(true)
 
     /** Home's Recents shelf. */
@@ -525,7 +525,7 @@ object AppSettings {
     /** Home's Find Your Mood shelf. Explore's moods are a page the listener opened, so they stay. */
     val hideHomeMoods = MutableStateFlow(false)
 
-    /** Music videos are square wherever they show — see [com.music.bitchord.ui.components.VideoThumbnails]. */
+    /** Music videos are square wherever they show — see [com.music.zen.ui.components.VideoThumbnails]. */
     val squareVideoThumbnails = MutableStateFlow(false)
 
     /** Analyzes audio waveform/envelope to align matching playback moment between versions. */
@@ -582,7 +582,7 @@ object AppSettings {
      * Costs a video stream on top of the audio one and reaches three
      * services that have nothing to do with playback, so it stays a switch —
      * but it is the better default, and most tracks resolve to no canvas at
-     * all. See [CanvasRepository][com.music.bitchord.data.canvas.CanvasRepository].
+     * all. See [CanvasRepository][com.music.zen.data.canvas.CanvasRepository].
      */
     val animatedCanvas = MutableStateFlow(false)
 
@@ -593,7 +593,7 @@ object AppSettings {
      *
      * Off by default. A canvas clip loops for as long as its track plays,
      * and every loop past the first re-fetches the same few seconds of video
-     * — see [CanvasCache][com.music.bitchord.data.canvas.CanvasCache] for why
+     * — see [CanvasCache][com.music.zen.data.canvas.CanvasCache] for why
      * that costs network at all rather than being answered from a buffer —
      * so a few-second clip behind a four-minute track on cellular is not a
      * flat video cost, it is that cost repeated dozens of times per song.
@@ -633,7 +633,7 @@ object AppSettings {
      * Off restores the card: the sleeve keeps its corners, its shadow and its
      * shrink-while-paused, and only a clip goes full-bleed. Phones only either
      * way — see the hero notes in
-     * [NowPlayingScreen][com.music.bitchord.ui.player.NowPlayingScreen].
+     * [NowPlayingScreen][com.music.zen.ui.player.NowPlayingScreen].
      */
     val fullBleedArtwork = MutableStateFlow(false)
 
@@ -654,10 +654,10 @@ object AppSettings {
      *
      * [PlayerTheme.DEFAULT] because that is the look people asked to have back,
      * and because the alternatives each give something up: see
-     * [ArtworkMesh][com.music.bitchord.ui.player.ArtworkMesh] for what
+     * [ArtworkMesh][com.music.zen.ui.player.ArtworkMesh] for what
      * [PlayerTheme.LEGACY]'s quantiser does to a cover that is nine-tenths black
      * with a red stripe (a red screen), and
-     * [ArtworkMeshBackdrop][com.music.bitchord.ui.player.ArtworkMeshBackdrop] for
+     * [ArtworkMeshBackdrop][com.music.zen.ui.player.ArtworkMeshBackdrop] for
      * its cost (blobs that drift are a full-screen blur redrawn while they move,
      * where a mesh is drawn once per track and then composited).
      */
@@ -679,7 +679,7 @@ object AppSettings {
     val lyricsSources = MutableStateFlow(LyricsSource.offered.toSet())
 
     /**
-     * The order [lyricsSources] are asked in — see [LyricsRepository][com.music.bitchord.data.lyrics.LyricsRepository]:
+     * The order [lyricsSources] are asked in — see [LyricsRepository][com.music.zen.data.lyrics.LyricsRepository]:
      * every enabled source is asked at once, but a higher-priority one still
      * pending is never preempted by a lower one that happened to answer first.
      * Reordered from Settings, so this is a full permutation of
@@ -702,7 +702,7 @@ object AppSettings {
     val paxSenixApiKey = MutableStateFlow("")
 
     /**
-     * Disk budget for cached audio. [AudioCache][com.music.bitchord.playback.AudioCache] evicts past it.
+     * Disk budget for cached audio. [AudioCache][com.music.zen.playback.AudioCache] evicts past it.
      * [UNLIMITED_CACHE_LIMIT_BYTES] means no ceiling of the app's own.
      */
     val audioCacheLimitBytes = MutableStateFlow(DEFAULT_CACHE_LIMIT_BYTES)
@@ -723,7 +723,7 @@ object AppSettings {
      * Its own switch because it is the one part of Replay that isn't purely
      * local: everything else on that page is counted on this device and never
      * leaves it, while a genre has to be looked up by artist name — see
-     * [ArtistFacts][com.music.bitchord.data.stats.ArtistFacts]. On by default,
+     * [ArtistFacts][com.music.zen.data.stats.ArtistFacts]. On by default,
      * since it sends a name and nothing else and the answer is what makes a
      * quarter of the page exist; off, the genre chart simply isn't drawn.
      */
@@ -821,7 +821,7 @@ object AppSettings {
 
     /**
      * The connected Discord account's token, mirrored out of [AuthStore] so
-     * [PlaybackService][com.music.bitchord.playback.PlaybackService] can pick
+     * [PlaybackService][com.music.zen.playback.PlaybackService] can pick
      * up a login without polling for one. Empty means not connected.
      *
      * Only the mirror is here — the persisted copy is encrypted, because unlike
@@ -989,13 +989,13 @@ object AppSettings {
      * one here was a measurable slice of cold start.
      */
     fun init(context: Context, authStore: AuthStore) {
-        prefs = context.getSharedPreferences("bitchord_settings", Context.MODE_PRIVATE)
+        prefs = context.getSharedPreferences("zen_settings", Context.MODE_PRIVATE)
         this.authStore = authStore
         moveSecretsOutOfSettings()
-        com.music.bitchord.data.spotify.LocalPlaylistStore.init(context)
-        com.music.bitchord.data.OfflinePlaylists.init(
+        com.music.zen.data.spotify.LocalPlaylistStore.init(context)
+        com.music.zen.data.OfflinePlaylists.init(
             context,
-            likedTitle = context.getString(com.music.bitchord.R.string.auto_liked),
+            likedTitle = context.getString(com.music.zen.R.string.auto_liked),
         )
         readAll()
         watchConnection(context)
@@ -1004,7 +1004,7 @@ object AppSettings {
     /**
      * Re-reads every setting off disk.
      *
-     * The one caller is an import ([Backup][com.music.bitchord.data.stats.Backup]),
+     * The one caller is an import ([Backup][com.music.zen.data.stats.Backup]),
      * which writes the whole preference file underneath these flows. Nothing
      * else in the app changes a preference without going through the setter
      * beside it, so nothing else has a reason to ask.
@@ -1174,7 +1174,7 @@ object AppSettings {
         lyricsSourceOrder.value = readLyricsSourceOrder()
         prioritizeSyllableSync.value = prefs.getBoolean(KEY_PRIORITIZE_SYLLABLE_SYNC, false)
         paxSenixApiKey.value = secret(KEY_PAXSENIX_API_KEY)
-        com.music.bitchord.data.lyrics.PaxSenix.setApiKey(paxSenixApiKey.value)
+        com.music.zen.data.lyrics.PaxSenix.setApiKey(paxSenixApiKey.value)
         audioCacheLimitBytes.value = clampCacheLimit(prefs.getLong(KEY_CACHE_LIMIT, DEFAULT_CACHE_LIMIT_BYTES))
         showCacheFolder.value = prefs.getBoolean(KEY_SHOW_CACHE_FOLDER, false)
         lastfmEnabled.value = prefs.getBoolean(KEY_LASTFM_ENABLED, false)
@@ -1212,14 +1212,14 @@ object AppSettings {
         smbBasePath.value = prefs.getString(KEY_SMB_BASE_PATH, "").orEmpty()
         smbUsername.value = prefs.getString(KEY_SMB_USERNAME, "").orEmpty()
         smbPassword.value = authStore.smbPassword.orEmpty()
-        com.music.bitchord.data.smb.SmbAuth.update(
+        com.music.zen.data.smb.SmbAuth.update(
             smbHost.value,
             smbShare.value,
             smbBasePath.value,
             smbUsername.value,
             smbPassword.value,
         )
-        com.music.bitchord.data.webdav.WebDavAuth.update(
+        com.music.zen.data.webdav.WebDavAuth.update(
             webdavUrl.value,
             webdavUsername.value,
             webdavPassword.value,
@@ -1250,7 +1250,7 @@ object AppSettings {
      * the very first call seeds the stored value from [currentVersionCode]
      * rather than reporting an update.
      *
-     * Moozic ships sideloaded (see [com.music.bitchord.data.AppUpdateChecker]),
+     * Moozic ships sideloaded (see [com.music.zen.data.AppUpdateChecker]),
      * so installing a new APK over the old one is the only "update" there is —
      * app data, this pref included, survives it exactly like a Play Store
      * update. Call once per process start, before anything reads a cache that
@@ -1802,10 +1802,10 @@ object AppSettings {
     }
 
     fun setPaxSenixApiKey(value: String) {
-        val normalized = com.music.bitchord.data.lyrics.normalizePaxSenixApiKey(value)
+        val normalized = com.music.zen.data.lyrics.normalizePaxSenixApiKey(value)
         paxSenixApiKey.value = normalized
         putSecret(KEY_PAXSENIX_API_KEY, normalized)
-        com.music.bitchord.data.lyrics.PaxSenix.setApiKey(normalized)
+        com.music.zen.data.lyrics.PaxSenix.setApiKey(normalized)
     }
 
     /**
@@ -2237,7 +2237,7 @@ object AppSettings {
 
     private fun publishSmbAuth() {
         if (!this::prefs.isInitialized || !this::authStore.isInitialized) return
-        com.music.bitchord.data.smb.SmbAuth.update(
+        com.music.zen.data.smb.SmbAuth.update(
             smbHost.value,
             smbShare.value,
             smbBasePath.value,
@@ -2248,7 +2248,7 @@ object AppSettings {
 
     private fun publishWebDavAuth() {
         if (!this::prefs.isInitialized || !this::authStore.isInitialized) return
-        com.music.bitchord.data.webdav.WebDavAuth.update(
+        com.music.zen.data.webdav.WebDavAuth.update(
             webdavUrl.value,
             webdavUsername.value,
             webdavPassword.value,
@@ -2378,7 +2378,7 @@ object AppSettings {
      * Preferences that describe *this device* rather than this configuration,
      * and so are neither exported nor overwritten by an import.
      *
-     * [Downloads][com.music.bitchord.download.Downloads] keeps its record of
+     * [Downloads][com.music.zen.download.Downloads] keeps its record of
      * what is saved in this same preference file, and that record is a list of
      * files on this phone's storage. Carrying it into a backup would restore a
      * folder full of tracks that are not here; clearing it on import would leave

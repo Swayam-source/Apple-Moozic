@@ -1,17 +1,17 @@
-package com.music.bitchord.data.sources
+package com.music.zen.data.sources
 
-import com.music.bitchord.data.TrackLog
-import com.music.bitchord.data.model.Song
-import com.music.bitchord.data.settings.AppSettings
-import com.music.bitchord.data.sources.addon.AddonAuth
-import com.music.bitchord.data.sources.addon.AddonClient
-import com.music.bitchord.data.sources.addon.AddonException
-import com.music.bitchord.data.sources.addon.AddonManifest
-import com.music.bitchord.data.sources.addon.AddonNotFound
-import com.music.bitchord.data.sources.addon.AddonStream
-import com.music.bitchord.data.sources.addon.AddonTrack
-import com.music.bitchord.data.sources.addon.AddonUnavailable
-import com.music.bitchord.playback.StreamContainer
+import com.music.zen.data.TrackLog
+import com.music.zen.data.model.Song
+import com.music.zen.data.settings.AppSettings
+import com.music.zen.data.sources.addon.AddonAuth
+import com.music.zen.data.sources.addon.AddonClient
+import com.music.zen.data.sources.addon.AddonException
+import com.music.zen.data.sources.addon.AddonManifest
+import com.music.zen.data.sources.addon.AddonNotFound
+import com.music.zen.data.sources.addon.AddonStream
+import com.music.zen.data.sources.addon.AddonTrack
+import com.music.zen.data.sources.addon.AddonUnavailable
+import com.music.zen.playback.StreamContainer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.Collections
@@ -48,7 +48,7 @@ class AddonSource(
      *
      * Two things need them after the fact and neither is reachable from a bare
      * id. The first is the duration the catalogue claimed, which
-     * [QualityUpgrade][com.music.bitchord.playback.QualityUpgrade] checks a
+     * [QualityUpgrade][com.music.zen.playback.QualityUpgrade] checks a
      * substitute against before cutting it into a track already playing — a
      * match on title and artist alone has put a 189s cut under a 163s
      * recording before. The second is the row's own `streamURL`, which the
@@ -87,7 +87,7 @@ class AddonSource(
      * rather than after it. The manifest is the client's shared, cached copy,
      * which the request was about to read for its settings anyway.
      *
-     * An addon that doesn't declare `bitchordAuth` is out of date but still
+     * An addon that doesn't declare `zenAuth` is out of date but still
      * used: the sources screen flags it, and nothing is sent to it but the
      * plain requests it has always had. One that declares it needs this device
      * verified. While the device was just refused, every request would fail
@@ -98,7 +98,7 @@ class AddonSource(
         if (shutOut(what)) return false
         val declared = refreshPolicy()
         if (shutOut(what)) return false
-        if ((declared ?: live.bitchordAuth) != true) return true
+        if ((declared ?: live.zenAuth) != true) return true
         AddonAuth.standingRefusal()?.let { reason ->
             if (reason != loggedRefusal) {
                 loggedRefusal = reason
@@ -117,7 +117,7 @@ class AddonSource(
     /**
      * Reads the manifest (the client's cached copy when there is one) and
      * stores what it says. An addon with no usable manifest is recorded as out
-     * of date, since it has nowhere to declare `bitchordAuth`; a manifest that
+     * of date, since it has nowhere to declare `zenAuth`; a manifest that
      * merely couldn't be fetched just now changes nothing.
      *
      * Returns whether the addon is up to date by what was just read, or null
@@ -127,7 +127,7 @@ class AddonSource(
         client.manifest().fold(
             onSuccess = { manifest ->
                 recordPolicy(manifest)
-                manifest.requiresBitChordAuth
+                manifest.requiresZenAuth
             },
             onFailure = { failure ->
                 if (failure is AddonException) {
@@ -145,7 +145,7 @@ class AddonSource(
             manifest.downloadsAllowed,
             manifest.requiresLosslessOutput,
             manifest.qualityOptions,
-            manifest.requiresBitChordAuth,
+            manifest.requiresZenAuth,
         )
 
     // ── Health ────────────────────────────────────────────────────────────
@@ -175,7 +175,7 @@ class AddonSource(
                 // because otherwise the row reads healthy while every search
                 // fails, and the reason is only in the log. One that doesn't ask
                 // is out of date, which the row flags on its own line, but works.
-                if (manifest.requiresBitChordAuth) client.checkAuth().exceptionOrNull()?.let { failure ->
+                if (manifest.requiresZenAuth) client.checkAuth().exceptionOrNull()?.let { failure ->
                     val reason = failure.message ?: "Moozic couldn't verify this device"
                     return@fold if (failure is AddonUnavailable) {
                         SourceHealth.Unreachable(reason)
@@ -194,7 +194,7 @@ class AddonSource(
                 // No readable manifest is not the same as no addon: one that
                 // never published a manifest still answers a search, and is
                 // healthy the moment it does. It has nowhere to declare
-                // `bitchordAuth`, though, so it is recorded as out of date and
+                // `zenAuth`, though, so it is recorded as out of date and
                 // the row flags that on its own line.
                 if (failure is AddonException) SourceRegistry.markAddonOutdated(config.id)
                 if (client.probeSearch().isSuccess) {
@@ -246,7 +246,7 @@ class AddonSource(
      * where the best the catalogue holds is exactly what should be shown.
      *
      * The order is left exactly as it arrived.
-     * [TrackMatcher][com.music.bitchord.data.sources.TrackMatcher] decides which
+     * [TrackMatcher][com.music.zen.data.sources.TrackMatcher] decides which
      * rows are the recording and [SourceResolver] decides which to open; an
      * addon knows its own catalogue better than a re-sort here would.
      */
