@@ -1949,14 +1949,14 @@ fun SettingsScreen(
         if (section == null && searchQuery.isBlank()) {
         Text(
             text = buildAnnotatedString {
-                append("Apple Moozic $version  ")
+                append("Zen $version  ")
                 val linkStyles = TextLinkStyles(
                     style = SpanStyle(
                         color = MaterialTheme.colorScheme.primary,
                         textDecoration = TextDecoration.Underline,
                     ),
                 )
-                withLink(LinkAnnotation.Url("https://github.com/Swayam-source/Apple-Moozic", linkStyles)) {
+                withLink(LinkAnnotation.Url("https://github.com/Swayam-source/Zen", linkStyles)) {
                     append("GitHub")
                 }
             },

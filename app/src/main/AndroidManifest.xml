@@ -243,7 +243,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
-                    android:scheme="bitchord"
+                    android:scheme="zen"
                     android:host="party" />
             </intent-filter>
 
@@ -282,7 +282,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
-                    android:scheme="applemoozic"
+                    android:scheme="zen"
                     android:host="discord"
                     android:pathPrefix="/callback" />
             </intent-filter>
