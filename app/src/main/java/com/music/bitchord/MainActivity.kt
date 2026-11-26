@@ -519,6 +519,13 @@ class MainActivity : AppCompatActivity() {
     private var activePerfEnabled: Boolean = false
     private var activePerfRate: Int = 120
 
+    override fun onResume() {
+        super.onResume()
+        if (activePerfEnabled) {
+            window?.decorView?.let { applyPerformanceMode(true, activePerfRate, it) }
+        }
+    }
+
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
         if (hasFocus && activePerfEnabled) {

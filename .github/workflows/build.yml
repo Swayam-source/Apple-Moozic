@@ -31,11 +31,11 @@ jobs:
       - name: Build Universal Debug APK
         env:
           DISCORD_CLIENT_ID: ${{ vars.DISCORD_CLIENT_ID || secrets.DISCORD_CLIENT_ID || '1350000000000000000' }}
-        run: gradle :app:assembleProdDebug -Pbitchord.bundleWear=false --no-daemon --stacktrace
+        run: gradle :app:assembleProdRelease -Pbitchord.bundleWear=false --no-daemon --stacktrace
 
       - name: Upload Debug APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: app-debug
-          path: app/build/outputs/apk/prod/debug/app-prod-universal-debug.apk
+          name: zen-release
+          path: app/build/outputs/apk/prod/release/app-prod-universal-release.apk
           if-no-files-found: error

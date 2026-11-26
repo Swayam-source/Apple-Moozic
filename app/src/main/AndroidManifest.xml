@@ -295,7 +295,7 @@
         -->
         <activity-alias
             android:name=".LauncherDefault"
-            android:enabled="true"
+            android:enabled="false"
             android:exported="true"
             android:icon="@mipmap/ic_launcher"
             android:roundIcon="@mipmap/ic_launcher"
@@ -449,7 +449,7 @@
 
         <activity-alias
             android:name=".LauncherPixelGlassDark"
-            android:enabled="false"
+            android:enabled="true"
             android:exported="true"
             android:icon="@mipmap/ic_pixel_glass_dark"
             android:roundIcon="@mipmap/ic_pixel_glass_dark"

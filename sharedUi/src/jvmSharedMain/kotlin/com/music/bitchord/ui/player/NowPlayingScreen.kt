@@ -1472,7 +1472,7 @@ fun NowPlayingScreen(
 
     // Signature Apple Music touch: the sleeve shrinks back while paused.
     val artScale by animateFloatAsState(
-        targetValue = if (isPlaying) 1f else 0.86f,
+        targetValue = 1f,
         animationSpec = spring(
             dampingRatio = Spring.DampingRatioLowBouncy,
             stiffness = Spring.StiffnessLow,
@@ -1910,19 +1910,7 @@ fun NowPlayingScreen(
         // a phone on its side: its left column is only a phone's width tall,
         // and the sleeve needs that room more than the caption does. A
         // tablet's landscape has room for both.
-        if (!(sideways && !fullscreenInPlace)) {
-            Spacer(Modifier.height(18.dp))
-            Box(
-                modifier = Modifier.fillMaxWidth().height(20.dp),
-                contentAlignment = Alignment.TopCenter,
-            ) {
-                OutputCaption(
-                    accountName = accountName,
-                    onOpenOutput = openAudioOutput,
-                    onOpenMembers = openListenTogetherMembers,
-                )
-            }
-        }
+
     }
 
     // The drawers and dialogs the player raises over itself. Mounted beside
@@ -3193,15 +3181,7 @@ fun NowPlayingScreen(
                         // entirely once lyrics or the queue owns the player.
                         if (!hideSongStatus) {
                             WhileShown({ !collapseAlmostDone }) {
-                                PlaybackOriginCaption(
-                                    text = playbackOriginText(song, playedBy),
-                                    onClick = openPlaybackOrigin,
-                                    textAlign = TextAlign.Center,
-                                    contentPadding = PaddingValues(start = PLAYER_GUTTER, end = PLAYER_GUTTER, bottom = 1.dp),
-                                    modifier = Modifier
-                                        .align(Alignment.BottomCenter)
-                                        .graphicsLayer { alpha = (1f - p()) * spotifyChromeAlpha },
-                                )
+                                Unit /* PlaybackOriginCaption hidden */
                             }
                         }
                     }
