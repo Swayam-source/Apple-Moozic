@@ -424,7 +424,7 @@ private fun NerdStatsLines(song: Song) {
     val smartAnalysis by PlayerSettings.smartAnalysis.collectAsStateWithLifecycle()
     val automixDetail by PlayerSettings.automixDetail.collectAsStateWithLifecycle()
     // A party doesn't mix, and doesn't analyse for one either — see
-    // [com.music.Zen.playback.CrossfadeController]. So the two flows above
+    // [com.music.bitchord.playback.CrossfadeController]. So the two flows above
     // simply stop moving there, and the stats line has to say why rather than
     // leave their last values on screen as if they still described something.
     //
