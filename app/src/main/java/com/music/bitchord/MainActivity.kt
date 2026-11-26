@@ -516,7 +516,19 @@ class MainActivity : AppCompatActivity() {
      * resolution. Android may still lower it for temperature, battery state or
      * hardware limits, which is why Settings describes this as a preference.
      */
+    private var activePerfEnabled: Boolean = false
+    private var activePerfRate: Int = 120
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if (hasFocus && activePerfEnabled) {
+            window?.decorView?.let { applyPerformanceMode(true, activePerfRate, it) }
+        }
+    }
+
     private fun applyPerformanceMode(enabled: Boolean, refreshRate: Int, composeView: View) {
+        activePerfEnabled = enabled
+        activePerfRate = refreshRate
         val activeDisplay = composeView.display
             ?: if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) display
             else @Suppress("DEPRECATION") windowManager.defaultDisplay

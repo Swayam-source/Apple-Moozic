@@ -100,7 +100,7 @@ fun TopFadeBlur(
                 tints = emptyList()
                 blurRadius = BLUR_MAX
                 noiseFactor = 0f
-                inputScale = HazeInputScale.Fixed(0.33f)
+                inputScale = HazeInputScale.Fixed(0.2f)
                 progressive = HazeProgressive.verticalGradient(
                     easing = EaseInOut,
                     startIntensity = 1f,

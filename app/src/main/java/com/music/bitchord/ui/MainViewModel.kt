@@ -2011,7 +2011,22 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     private fun isCurrentHomeLoad(identity: String?, generation: Long) =
         identity == listenerKey() && generation == homeLoadGeneration.get()
 
+    private fun isRemovedHomeShelfTitle(rawTitle: String?): Boolean {
+        val t = rawTitle?.trim()?.lowercase() ?: return false
+        return t == "trending" ||
+            t == "trending for you" ||
+            t.startsWith("trending ") ||
+            t.endsWith(" trending") ||
+            t.contains("trending for you") ||
+            t == "live performances" ||
+            t == "live performance" ||
+            t.startsWith("live performance") ||
+            t.contains("live performance")
+    }
+
     private fun publishHomeShelves(shelves: List<HomeShelf>, prepend: Boolean = false) {
+        @Suppress("NAME_SHADOWING")
+        val shelves = shelves.filterNot { isRemovedHomeShelfTitle(it.title) }
         val existing = (_home.value as? UiState.Success)?.data.orEmpty()
         if (prepend) {
             // YouTube's core home can also contain a stale "Recently played"
@@ -2061,7 +2076,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
             YtMusicRepository.moreHome(token).onSuccess { feed ->
                 if (identity == listenerKey()) {
                     val existing = (_home.value as? UiState.Success)?.data ?: emptyList()
-                    val added = feed.shelves.withoutRepeatsOf(existing)
+                    val added = feed.shelves.filterNot { isRemovedHomeShelfTitle(it.title) }.withoutRepeatsOf(existing)
                         .filter { homeSeenTitles.add(it.title.lowercase(Locale.ROOT)) }
                     // A page with nothing new signals the feed has looped back on
                     // itself rather than run dry with a token still attached —
