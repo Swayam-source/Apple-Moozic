@@ -1303,7 +1303,7 @@ internal fun List<Song>.sortedForDetail(sort: SongSort): List<Song> = when (sort
     }
     SongSort.TITLE_ASC -> sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.title })
     SongSort.TITLE_DESC -> sortedWith(compareByDescending(String.CASE_INSENSITIVE_ORDER) { it.title })
-    SongSort.ARTIST_ASC -> sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.artist }.thenBy(String.CASE_INSENSITIVE_ORDER) { it.title })
+    SongSort.ARTIST_ASC -> sortedWith(compareBy<Song>(String.CASE_INSENSITIVE_ORDER) { it.artist }.thenBy(String.CASE_INSENSITIVE_ORDER) { it.title })
     // A catalogue row carries no added date, so its place in the running
     // order stands in for one: a playlist is appended to as songs are added,
     // and reversed that puts the most recent addition on top. Rows that do
