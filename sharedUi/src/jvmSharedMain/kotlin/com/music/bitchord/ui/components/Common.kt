@@ -174,7 +174,7 @@ fun Modifier.trackArtSize(height: Dp, isVideo: Boolean): Modifier =
 /**
  * The "Square video thumbnails" setting, as every surface that sizes a music
  * video reads it. Compose state rather than a flow so a plain read anywhere in
- * composition follows it, [trackArtSize] and [VIDEO_CARD_WIDTH][com.music.bitchord.ui.screens.VIDEO_CARD_WIDTH]
+ * composition follows it, [trackArtSize] and [VIDEO_CARD_WIDTH][com.music.Zen.ui.screens.VIDEO_CARD_WIDTH]
  * included, without each caller collecting it.
  */
 object VideoThumbnails {
@@ -552,7 +552,7 @@ private fun SongRowContent(
         } else {
             Box(Modifier.trackArtSize(52.dp, song.isVideo)) {
                 AsyncImage(
-                    model = com.music.bitchord.ui.player.rememberRemoteArtworkUrl(song)?.artworkAt(ROW_ART_PX),
+                    model = com.music.Zen.ui.player.rememberRemoteArtworkUrl(song)?.artworkAt(ROW_ART_PX),
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
