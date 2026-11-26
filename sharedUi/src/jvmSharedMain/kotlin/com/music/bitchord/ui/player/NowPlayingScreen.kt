@@ -3426,7 +3426,12 @@ fun NowPlayingScreen(
                         // player and has to be centred in it; collapsed, it belongs
                         // hard against the left edge with the credits beside it.
                         fun artStart(): Dp = lerp((maxWidth - fullArt) / 2, 0.dp, p())
-                        fun regularTitleTop(): Dp = lerp(groupTop + fullArt + ART_TITLE_GAP, 0.dp, p())
+                        val expandedTitleTop = (
+                            groupTop + fullArt +
+                                ((maxHeight + 12.dp - (groupTop + fullArt) - HEADER_HEIGHT) / 2)
+                                    .coerceAtLeast(ART_TITLE_GAP)
+                        ).coerceAtMost((maxHeight - HEADER_HEIGHT).coerceAtLeast(0.dp))
+                        fun regularTitleTop(): Dp = lerp(expandedTitleTop, 0.dp, p())
                         // Once Spotify's control deck has left, keep the only remaining
                         // player chrome against the bottom edge instead of stranding it
                         // where the artwork's title normally sits near mid-screen.
