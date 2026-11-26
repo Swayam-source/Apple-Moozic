@@ -384,6 +384,7 @@ import com.music.bitchord.data.canvas.keyColors
 import com.music.bitchord.ui.theme.SystemBarIcons
 import com.music.bitchord.ui.utils.guardSheetFromContentTouches
 import com.music.bitchord.ui.utils.rememberIosOverscrollFactory
+import com.music.bitchord.ui.performance.resolvePerformanceDisplayModeId
 import com.music.bitchord.ui.performance.resolvePerformanceRefreshRate
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.hazeSource
@@ -516,9 +517,18 @@ class MainActivity : AppCompatActivity() {
      * hardware limits, which is why Settings describes this as a preference.
      */
     private fun applyPerformanceMode(enabled: Boolean, refreshRate: Int, composeView: View) {
-        val supportedRefreshRate = composeView.display.resolvePerformanceRefreshRate(refreshRate)
+        val activeDisplay = composeView.display
+            ?: if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) display
+            else @Suppress("DEPRECATION") windowManager.defaultDisplay
+        val supportedRefreshRate = activeDisplay.resolvePerformanceRefreshRate(refreshRate)
+        val targetModeId = if (enabled) {
+            activeDisplay.resolvePerformanceDisplayModeId(supportedRefreshRate)
+        } else {
+            0
+        }
         window.attributes = window.attributes.apply {
             preferredRefreshRate = if (enabled) supportedRefreshRate.toFloat() else 0f
+            preferredDisplayModeId = targetModeId
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
             window.setFrameRatePowerSavingsBalanced(!enabled)
@@ -6484,6 +6494,7 @@ private fun SongSort.localizedLabel(): String = when (this) {
     SongSort.TRACK_NUMBER -> stringResource(R.string.sort_track_number)
     SongSort.TITLE_ASC -> stringResource(R.string.sort_title_ascending)
     SongSort.TITLE_DESC -> stringResource(R.string.sort_title_descending)
+    SongSort.ARTIST_ASC -> "Artist (A–Z)"
     SongSort.DATE_ADDED_ASC -> stringResource(R.string.sort_date_added_oldest)
     SongSort.DATE_ADDED_DESC -> stringResource(R.string.sort_date_added)
 }

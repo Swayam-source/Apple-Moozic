@@ -157,6 +157,7 @@ enum class EqualizerMode {
 enum class LocalMusicSort {
     TITLE_ASC,
     TITLE_DESC,
+    ARTIST_ASC,
     DATE_ADDED,
     DATE_MODIFIED,
 }

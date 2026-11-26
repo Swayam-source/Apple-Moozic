@@ -24,3 +24,14 @@ fun Display?.supportedPerformanceRefreshRates(): List<Int> {
 /** Maps a saved preference to a real mode, including preferences restored on another device. */
 fun Display?.resolvePerformanceRefreshRate(preferred: Int): Int =
     supportedPerformanceRefreshRates().minBy { abs(it - preferred) }
+
+
+/** Finds the display mode ID matching current resolution at the requested refresh rate. */
+fun Display?.resolvePerformanceDisplayModeId(preferred: Int): Int {
+    val display = this ?: return 0
+    val current = display.mode ?: return 0
+    val sameRes = display.supportedModes.filter {
+        it.physicalWidth == current.physicalWidth && it.physicalHeight == current.physicalHeight
+    }.ifEmpty { display.supportedModes.toList() }
+    return sameRes.minByOrNull { abs(it.refreshRate.roundToInt() - preferred) }?.modeId ?: 0
+}

@@ -250,8 +250,8 @@ internal fun PlayerScrubber(
             mixing = mixing,
             mixPulse = mixPulse,
             transitionWindow = transitionWindow,
-            vibrant = ink != null,
-            activeColor = ink?.active ?: Color.White.copy(alpha = 0.92f),
+            vibrant = false,
+            activeColor = Color.White,
             inactiveColor = ink?.inactive ?: Color.White.copy(alpha = 0.26f),
             markerColor = ink?.marker ?: Color.White.copy(alpha = 0.5f),
         )
