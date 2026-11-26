@@ -103,7 +103,7 @@ internal fun AndroidLyricsShareSheet(
     // sheet opens; the card cut to its lines is one tap away.
     var story by remember(request) { mutableStateOf(true) }
     // Remembered across shares: someone who takes the mark off wants it off.
-    val showLogo by AppSettings.lyricsCardLogo.collectAsStateWithLifecycle()
+    val showLogo = false
 
     // The song's animated covers, each offered as a background when it exists.
     // The player's own gradient is the default, and all there is until these
@@ -281,31 +281,6 @@ internal fun AndroidLyricsShareSheet(
                 },
             )
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(14.dp))
-                    .background(PlainFill)
-                    .toggleable(
-                        value = showLogo,
-                        role = Role.Switch,
-                        onValueChange = {
-                            haptics.play(Haptic.Tap)
-                            AppSettings.setLyricsCardLogo(it)
-                        },
-                    )
-                    .padding(start = 18.dp, end = 12.dp, top = 10.dp, bottom = 10.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text(
-                    text = stringResource(R.string.lyrics_share_show_logo),
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = Color.White,
-                    modifier = Modifier.weight(1f),
-                )
-                // The row is the toggle; the switch only shows its state.
-                IosSwitch(checked = showLogo, onCheckedChange = null)
-            }
 
             if (failed) {
                 Text(
