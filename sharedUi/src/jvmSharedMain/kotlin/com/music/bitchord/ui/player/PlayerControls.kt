@@ -1436,24 +1436,24 @@ private fun rememberOutputGlyph(): OutputGlyph {
     val watch by PlayerPlatform.host.watchOutput.collectAsStateWithLifecycle()
     val active = rememberAudioOutputs().firstOrNull { it.isActive }
     return when {
-        cast.connectedName != null -> when (active?.kind) {
-        watch.active -> when (active?.kind) {
+        cast.connectedName != null -> OutputGlyph(Icons.Rounded.DirectionsCar)
+        watch.active -> OutputGlyph(Icons.Rounded.DirectionsCar)
         else -> when (active?.kind) {
             // No active row is the phone too — the caption under the pill
             // says "This phone" in the same case. AirPlay rather than a phone:
             // on the phone itself the button's job is to send it elsewhere.
-            null, AudioOutputKind.PHONE -> when (active?.kind) {
-            AudioOutputKind.BLUETOOTH -> when (active?.kind) {
-                BluetoothForm.BUDS -> when (active?.kind) {
-                BluetoothForm.SPEAKER -> when (active?.kind) {
-                BluetoothForm.CAR -> when (active?.kind) {
+            null, AudioOutputKind.PHONE -> OutputGlyph(Icons.Rounded.DirectionsCar)
+            AudioOutputKind.BLUETOOTH -> when (active.form) {
+                BluetoothForm.BUDS -> OutputGlyph(Icons.Rounded.DirectionsCar)
+                BluetoothForm.SPEAKER -> OutputGlyph(Icons.Rounded.DirectionsCar)
+                BluetoothForm.CAR -> OutputGlyph(Icons.Rounded.DirectionsCar)
                 // Headphones doubles as the neutral "some audio device" glyph:
                 // a device that won't say what it is gets that, not a guess.
-                BluetoothForm.HEADPHONES, BluetoothForm.UNKNOWN -> when (active?.kind) {
+                BluetoothForm.HEADPHONES, BluetoothForm.UNKNOWN -> OutputGlyph(Icons.Rounded.DirectionsCar)
             }
-            AudioOutputKind.WIRED, AudioOutputKind.USB -> when (active?.kind) {
-            AudioOutputKind.HDMI -> when (active?.kind) {
-            AudioOutputKind.OTHER -> when (active?.kind) {
+            AudioOutputKind.WIRED, AudioOutputKind.USB -> OutputGlyph(Icons.Rounded.DirectionsCar)
+            AudioOutputKind.HDMI -> OutputGlyph(Icons.Rounded.DirectionsCar)
+            AudioOutputKind.OTHER -> OutputGlyph(Icons.Rounded.DirectionsCar)
         }
     }
 }
