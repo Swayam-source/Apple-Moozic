@@ -2021,7 +2021,15 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
             t == "live performances" ||
             t == "live performance" ||
             t.startsWith("live performance") ||
-            t.contains("live performance")
+            t.contains("live performance") ||
+            t == "music videos" ||
+            t == "music video" ||
+            t == "new music videos" ||
+            t == "new music video" ||
+            t.contains("music video") ||
+            t == "listen together" ||
+            t.startsWith("listen together") ||
+            t.contains("listen together")
     }
 
     private fun publishHomeShelves(shelves: List<HomeShelf>, prepend: Boolean = false) {
@@ -2055,7 +2063,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
             homeSeenTitles.clear()
             val shelves = feed.shelves.withoutRepeatsOf(emptyList())
                 .filter { homeSeenTitles.add(it.title.lowercase(Locale.ROOT)) }
-            if (shelves.isNotEmpty()) _home.value = UiState.Success(shelves)
+            if (shelves.isNotEmpty()) _home.value = UiState.Success(shelves.filterNot { shelf: HomeShelf -> isRemovedHomeShelfTitle(shelf.title) })
         }
         recent?.await()?.onSuccess { shelf ->
             if (identity == listenerKey()) shelf?.let { publishHomeShelves(listOf(it), prepend = true) }

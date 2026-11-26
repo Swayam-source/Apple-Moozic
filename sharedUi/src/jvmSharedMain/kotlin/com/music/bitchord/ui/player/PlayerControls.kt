@@ -749,8 +749,8 @@ internal fun VolumeRow(
             idleHeight = 6.dp,
             activeHeight = 10.dp,
             modifier = Modifier.weight(1f),
-            vibrant = ink != null,
-            activeColor = ink?.active ?: Color.White.copy(alpha = 0.92f),
+            vibrant = false,
+            activeColor = Color.White,
             inactiveColor = ink?.inactive ?: Color.White.copy(alpha = 0.26f),
         )
         Spacer(Modifier.width(10.dp))
@@ -1436,24 +1436,24 @@ private fun rememberOutputGlyph(): OutputGlyph {
     val watch by PlayerPlatform.host.watchOutput.collectAsStateWithLifecycle()
     val active = rememberAudioOutputs().firstOrNull { it.isActive }
     return when {
-        cast.connectedName != null -> OutputGlyph(Icons.Rounded.CastConnected, PILL_OUTPUT_WIDE_SIZE)
-        watch.active -> OutputGlyph(Icons.Rounded.Watch, PILL_OUTPUT_TALL_SIZE)
+        cast.connectedName != null -> when (active?.kind) {
+        watch.active -> when (active?.kind) {
         else -> when (active?.kind) {
             // No active row is the phone too — the caption under the pill
             // says "This phone" in the same case. AirPlay rather than a phone:
             // on the phone itself the button's job is to send it elsewhere.
-            null, AudioOutputKind.PHONE -> OutputGlyph(BitChordIcons.AirPlay, PILL_OUTPUT_AIRPLAY_SIZE)
-            AudioOutputKind.BLUETOOTH -> when (active.form) {
-                BluetoothForm.BUDS -> OutputGlyph(vectorResource(Res.drawable.ic_output_buds), PILL_OUTPUT_BUDS_SIZE)
-                BluetoothForm.SPEAKER -> OutputGlyph(vectorResource(Res.drawable.ic_output_speaker))
-                BluetoothForm.CAR -> OutputGlyph(Icons.Rounded.DirectionsCar)
+            null, AudioOutputKind.PHONE -> when (active?.kind) {
+            AudioOutputKind.BLUETOOTH -> when (active?.kind) {
+                BluetoothForm.BUDS -> when (active?.kind) {
+                BluetoothForm.SPEAKER -> when (active?.kind) {
+                BluetoothForm.CAR -> when (active?.kind) {
                 // Headphones doubles as the neutral "some audio device" glyph:
                 // a device that won't say what it is gets that, not a guess.
-                BluetoothForm.HEADPHONES, BluetoothForm.UNKNOWN -> OutputGlyph(Icons.Rounded.Headphones)
+                BluetoothForm.HEADPHONES, BluetoothForm.UNKNOWN -> when (active?.kind) {
             }
-            AudioOutputKind.WIRED, AudioOutputKind.USB -> OutputGlyph(Icons.Rounded.Headphones)
-            AudioOutputKind.HDMI -> OutputGlyph(Icons.Rounded.Tv, PILL_OUTPUT_WIDE_SIZE)
-            AudioOutputKind.OTHER -> OutputGlyph(vectorResource(Res.drawable.ic_output_speaker))
+            AudioOutputKind.WIRED, AudioOutputKind.USB -> when (active?.kind) {
+            AudioOutputKind.HDMI -> when (active?.kind) {
+            AudioOutputKind.OTHER -> when (active?.kind) {
         }
     }
 }
