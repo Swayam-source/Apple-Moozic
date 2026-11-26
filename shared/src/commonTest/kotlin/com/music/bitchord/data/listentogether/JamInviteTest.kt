@@ -25,7 +25,7 @@ class JamInviteTest {
         // QR codes often carry URLs upper-cased; this used to fall through and
         // the desktop field kept the first six letters, "HTTPSB".
         assertEquals("ABC123", JamInvite.parse("HTTPS://BITCHORD.KUSHAGRASINGH.IN/INVITE/ABC123"))
-        assertEquals("ABC123", JamInvite.parse("Https://BitChord.kushagrasingh.in/invite/abc123"))
+        assertEquals("ABC123", JamInvite.parse("Https://Zen.kushagrasingh.in/invite/abc123"))
     }
 
     @Test

@@ -228,7 +228,7 @@ class BeatTracker(
     }
 
     companion object {
-        private const val TAG = "BitChordBeatTracker"
+        private const val TAG = "ZenBeatTracker"
         /**
          * The weights this tracker needs, named once for every build that ships them.
          *

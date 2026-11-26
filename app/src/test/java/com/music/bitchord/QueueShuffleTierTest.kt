@@ -661,7 +661,7 @@ class QueueShuffleTierTest {
         assertEquals(true, QueueShuffle.enabled.value)
 
         // Simulate playing 28 tracks.
-        // In BitChord's QueueCoordinator / PlaybackService, history trims when exceeding 25 tracks:
+        // In Zen's QueueCoordinator / PlaybackService, history trims when exceeding 25 tracks:
         // Older tracks are removed from the head so at most 25 history items remain.
         repeat(28) {
             state.currentIndex++
