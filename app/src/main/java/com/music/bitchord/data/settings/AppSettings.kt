@@ -511,7 +511,7 @@ object AppSettings {
     val dontRepeatSuggestions = MutableStateFlow(false)
 
     /** Music videos play as their audio version — see [com.music.bitchord.playback.MusicOnlyPlayback]. */
-    val preferMusicOnly = MutableStateFlow(false)
+    val preferMusicOnly = MutableStateFlow(true)
 
     /** Home's Recents shelf. */
     val hideRecents = MutableStateFlow(false)
@@ -622,8 +622,8 @@ object AppSettings {
      * Apple Music has no title logo. Blank URL means unconfigured and the
      * lookup is skipped entirely — there is no hosted default.
      */
-    val signatureApiEnabled = MutableStateFlow(false)
-    val signatureApiUrl = MutableStateFlow("")
+    val signatureApiEnabled = MutableStateFlow(true)
+    val signatureApiUrl = MutableStateFlow("https://artistsignature.velixir.run")
 
     /**
      * Blows the player's cover art out to a full-bleed banner running off the
@@ -1126,7 +1126,7 @@ object AppSettings {
         showQueueHistory.value = prefs.getBoolean(KEY_SHOW_QUEUE_HISTORY, false)
         swipeToPlayNext.value = prefs.getBoolean(KEY_SWIPE_TO_PLAY_NEXT, false)
         dontRepeatSuggestions.value = prefs.getBoolean(KEY_DONT_REPEAT_SUGGESTIONS, false)
-        preferMusicOnly.value = prefs.getBoolean(KEY_PREFER_MUSIC_ONLY, false)
+        preferMusicOnly.value = prefs.getBoolean(KEY_PREFER_MUSIC_ONLY, true)
         hideRecents.value = prefs.getBoolean(KEY_HIDE_RECENTS, false)
         hideHomeVideos.value = prefs.getBoolean(KEY_HIDE_HOME_VIDEOS, false)
         hideTopPicks.value = prefs.getBoolean(KEY_HIDE_TOP_PICKS, false)
@@ -1153,8 +1153,8 @@ object AppSettings {
         spotifyCanvasAutoHide.value = prefs.getBoolean(KEY_SPOTIFY_CANVAS_AUTO_HIDE, true)
         prioritizeSpotifyCanvas.value = prefs.getBoolean(KEY_PRIORITIZE_SPOTIFY_CANVAS, false)
         updateEffectiveSpotifyCanvasSettings()
-        signatureApiEnabled.value = prefs.getBoolean(KEY_SIGNATURE_API_ENABLED, false)
-        signatureApiUrl.value = normalizeSignatureApiUrl(prefs.getString(KEY_SIGNATURE_API_URL, "").orEmpty())
+        signatureApiEnabled.value = prefs.getBoolean(KEY_SIGNATURE_API_ENABLED, true)
+        signatureApiUrl.value = normalizeSignatureApiUrl(prefs.getString(KEY_SIGNATURE_API_URL, "https://artistsignature.velixir.run").orEmpty())
         fullBleedArtwork.value = prefs.getBoolean(KEY_FULL_BLEED_ARTWORK, false)
         fullBleedDetailArtwork.value = prefs.getBoolean(KEY_FULL_BLEED_DETAIL_ARTWORK, false)
         showTotalDuration.value = prefs.getBoolean(KEY_SHOW_TOTAL_DURATION, false)
