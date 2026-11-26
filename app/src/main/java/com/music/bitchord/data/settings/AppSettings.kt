@@ -500,7 +500,7 @@ object AppSettings {
     val hideLyricsPreview = MutableStateFlow(true)
 
     /** Draws the Moozic mark at the top of a shared lyrics card. */
-    val lyricsCardLogo = MutableStateFlow(true)
+    val lyricsCardLogo = MutableStateFlow(false)
 
     val showQueueHistory = MutableStateFlow(false)
 
@@ -1122,7 +1122,7 @@ object AppSettings {
         hideStatusBarInPlayer.value = prefs.getBoolean(KEY_HIDE_STATUS_BAR_IN_PLAYER, false)
         hideSongStatus.value = prefs.getBoolean(KEY_HIDE_SONG_STATUS, false)
         hideLyricsPreview.value = prefs.getBoolean(KEY_HIDE_LYRICS_PREVIEW, true)
-        lyricsCardLogo.value = prefs.getBoolean(KEY_LYRICS_CARD_LOGO, true)
+        lyricsCardLogo.value = false
         showQueueHistory.value = prefs.getBoolean(KEY_SHOW_QUEUE_HISTORY, false)
         swipeToPlayNext.value = prefs.getBoolean(KEY_SWIPE_TO_PLAY_NEXT, false)
         dontRepeatSuggestions.value = prefs.getBoolean(KEY_DONT_REPEAT_SUGGESTIONS, false)
