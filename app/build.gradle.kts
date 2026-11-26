@@ -177,7 +177,6 @@ android {
 
     buildTypes {
         debug {
-            isDebuggable = false
             if (betaSuffix.isNotEmpty()) versionNameSuffix = "-$betaSuffix"
         }
         release {

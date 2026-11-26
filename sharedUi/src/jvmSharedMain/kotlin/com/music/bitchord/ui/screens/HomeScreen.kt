@@ -156,14 +156,6 @@ fun HomeScreen(
     /** The Replay year story's button beside the wordmark, or null for none. See [ReplayYearButton]. */
     replayYear: ReplayYearBadge? = null,
 ) {
-    @Suppress("NAME_SHADOWING")
-    val shelves = shelves.filterNot { shelf ->
-        val t = shelf.title.trim().lowercase()
-        t == "trending" || t == "trending for you" || t.startsWith("trending ") ||
-            t.endsWith(" trending") || t.contains("trending for you") ||
-            t == "live performances" || t == "live performance" ||
-            t.startsWith("live performance") || t.contains("live performance")
-    }
     // Top Picks' pictures and motion wait for the feed — see LocalArtworkImages.
     val feedReady = state !is UiState.Loading
     CompositionLocalProvider(

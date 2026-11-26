@@ -2026,7 +2026,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
 
     private fun publishHomeShelves(shelves: List<HomeShelf>, prepend: Boolean = false) {
         @Suppress("NAME_SHADOWING")
-        val shelves = shelves.filterNot { isRemovedHomeShelfTitle(it.title) }
+        val shelves: List<HomeShelf> = shelves.filterNot { shelf: HomeShelf -> isRemovedHomeShelfTitle(shelf.title) }
         val existing = (_home.value as? UiState.Success)?.data.orEmpty()
         if (prepend) {
             // YouTube's core home can also contain a stale "Recently played"
@@ -2076,7 +2076,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
             YtMusicRepository.moreHome(token).onSuccess { feed ->
                 if (identity == listenerKey()) {
                     val existing = (_home.value as? UiState.Success)?.data ?: emptyList()
-                    val added = feed.shelves.filterNot { isRemovedHomeShelfTitle(it.title) }.withoutRepeatsOf(existing)
+                    val added = feed.shelves.filterNot { shelf: HomeShelf -> isRemovedHomeShelfTitle(shelf.title) }.withoutRepeatsOf(existing)
                         .filter { homeSeenTitles.add(it.title.lowercase(Locale.ROOT)) }
                     // A page with nothing new signals the feed has looped back on
                     // itself rather than run dry with a token still attached —

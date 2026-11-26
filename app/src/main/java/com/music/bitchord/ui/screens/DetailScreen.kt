@@ -664,16 +664,15 @@ fun DetailScreen(
             // than sitting between the action row and the songs.
             // The artist's counts close it, under the text, so a page whose blurb is
             // empty still gets the section for them.
-            // Strip Videos, Live performances, and Playlists sections on Artist pages
             @Suppress("NAME_SHADOWING")
-            val page = if (isArtist) {
+            val page: DetailPage = if (isArtist) {
                 page.copy(
-                    sections = page.sections.filterNot { sec ->
-                    val t = sec.title.trim().lowercase()
-                    t == "videos" || t == "music videos" || t.startsWith("videos ") || t.contains("videos from") || t.contains("videos by") ||
-                        t == "live performances" || t == "live performance" || t.startsWith("live performance") || t.contains("live performance") ||
-                        t == "playlists" || t == "playlist" || t == "featured on" || t.startsWith("playlist") || t.contains("playlists by") || t.contains("playlist by")
-                }
+                    sections = page.sections.filterNot { sec: HomeShelf ->
+        val t = sec.title.trim().lowercase()
+        t == "videos" || t == "music videos" || t.startsWith("videos ") || t.contains("videos from") || t.contains("videos by") ||
+            t == "live performances" || t == "live performance" || t.startsWith("live performance") || t.contains("live performance") ||
+            t == "playlists" || t == "playlist" || t == "featured on" || t.startsWith("playlist") || t.contains("playlists by") || t.contains("playlist by")
+    }
                 )
             } else {
                 page
