@@ -2043,24 +2043,52 @@ class PlaybackService : MediaLibraryService() {
                 }
             }
         }
-        com.music.bitchord.playback.cast.WebCastServer.snapshotProvider = {
-            val exo = player
-            val item = exo?.currentMediaItem
-            val meta = item?.mediaMetadata
-            val pos = crossfade?.loopPositionMs() ?: exo?.currentPosition ?: 0L
-            val dur = (exo?.duration ?: 0L).coerceAtLeast(0L)
-            com.music.bitchord.playback.cast.WebCastServer.TrackSnapshot(
-                trackId = item?.mediaId.orEmpty(),
-                title = meta?.title?.toString()?.takeIf { it.isNotBlank() } ?: "Ready to Cast",
-                artist = meta?.artist?.toString().orEmpty(),
-                artworkUri = meta?.artworkUri,
-                positionMs = pos.coerceAtLeast(0L),
-                durationMs = dur,
-                isPlaying = exo?.isPlaying == true,
-                lyrics = serviceLyrics.orEmpty().map {
-                    com.music.bitchord.playback.cast.WebCastServer.LyricEntry(it.timeMs, it.text)
-                },
-            )
+        com.music.bitchord.playback.cast.WebCastServer.snapshotProvider = { latestWebCastSnapshot }
+        startWebCastTicker()
+    }
+
+    private fun refreshWebCastSnapshotOnMain() {
+        val exo = player
+        val item = exo?.currentMediaItem
+        val meta = item?.mediaMetadata
+        val pos = (crossfade?.loopPositionMs() ?: exo?.currentPosition ?: 0L).coerceAtLeast(0L)
+        val dur = (exo?.duration ?: 0L).coerceAtLeast(0L)
+        val mid = item?.mediaId.orEmpty()
+        val cachedAudio = if (mid.isNotEmpty()) webCastAudioUrls[mid].orEmpty() else ""
+        if (mid.isNotEmpty() && cachedAudio.isEmpty() && item != null &&
+            com.music.bitchord.playback.cast.WebCastServer.state.value.clientConnected &&
+            webCastResolving.add(mid)
+        ) {
+            scope.launch {
+                try {
+                    resolveForCast(item)?.let { webCastAudioUrls[mid] = it.url }
+                } finally {
+                    webCastResolving.remove(mid)
+                }
+            }
+        }
+        latestWebCastSnapshot = com.music.bitchord.playback.cast.WebCastServer.TrackSnapshot(
+            trackId = mid,
+            title = meta?.title?.toString()?.takeIf { it.isNotBlank() } ?: "Ready to Cast",
+            artist = meta?.artist?.toString().orEmpty(),
+            artworkUri = meta?.artworkUri,
+            audioUrl = cachedAudio,
+            positionMs = pos,
+            durationMs = dur,
+            isPlaying = exo?.isPlaying == true,
+            lyrics = serviceLyrics.orEmpty().map {
+                com.music.bitchord.playback.cast.WebCastServer.LyricEntry(it.timeMs, it.text)
+            },
+        )
+    }
+
+    private fun startWebCastTicker() {
+        if (webCastTickerJob?.isActive == true) return
+        webCastTickerJob = scope.launch(kotlinx.coroutines.Dispatchers.Main) {
+            while (kotlinx.coroutines.isActive) {
+                refreshWebCastSnapshotOnMain()
+                kotlinx.coroutines.delay(250L)
+            }
         }
     }
 
@@ -8658,6 +8686,8 @@ class PlaybackService : MediaLibraryService() {
         // Let go of the receiver's player but leave its session alone: a
         // service that idles out while casting is not the listener choosing to
         // stop, and the next one picks the session up where it was.
+        webCastTickerJob?.cancel()
+        webCastTickerJob = null
         com.music.bitchord.playback.cast.WebCastServer.controlHandler = null
         com.music.bitchord.playback.cast.WebCastServer.snapshotProvider = null
         com.music.bitchord.playback.cast.WebCastServer.stop()
