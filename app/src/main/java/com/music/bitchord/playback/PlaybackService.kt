@@ -2019,6 +2019,30 @@ class PlaybackService : MediaLibraryService() {
         // whose queue is already restored.
         CastController.ensureStarted(this)
         CastController.attach(castPlayback)
+        com.music.bitchord.playback.cast.WebCastServer.controlHandler = { cmd, delta ->
+            scope.launch(kotlinx.coroutines.Dispatchers.Main) {
+                when (cmd) {
+                    "seek" -> {
+                        if (castPlayback.active) {
+                            castPlayback.seekTo((castPlayback.positionMs + delta).coerceAtLeast(0L))
+                        } else {
+                            val exo = player ?: return@launch
+                            val dur = exo.duration
+                            val next = (exo.currentPosition + delta).coerceAtLeast(0L)
+                            exo.seekTo(if (dur > 0L) next.coerceAtMost(dur) else next)
+                        }
+                    }
+                    "toggle" -> {
+                        if (castPlayback.active) {
+                            if (castPlayback.isPlaying) castPlayback.pause() else castPlayback.play()
+                        } else {
+                            val exo = player ?: return@launch
+                            if (exo.isPlaying) exo.pause() else exo.play()
+                        }
+                    }
+                }
+            }
+        }
         com.music.bitchord.playback.cast.WebCastServer.snapshotProvider = {
             val exo = player
             val item = exo?.currentMediaItem
@@ -8634,6 +8658,7 @@ class PlaybackService : MediaLibraryService() {
         // Let go of the receiver's player but leave its session alone: a
         // service that idles out while casting is not the listener choosing to
         // stop, and the next one picks the session up where it was.
+        com.music.bitchord.playback.cast.WebCastServer.controlHandler = null
         com.music.bitchord.playback.cast.WebCastServer.snapshotProvider = null
         com.music.bitchord.playback.cast.WebCastServer.stop()
         CastController.detach(castPlayback)

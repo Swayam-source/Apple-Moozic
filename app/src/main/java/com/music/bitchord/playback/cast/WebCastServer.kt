@@ -54,6 +54,7 @@ object WebCastServer {
     private val localStreams = ConcurrentHashMap<String, Uri>()
 
     @Volatile var snapshotProvider: (() -> TrackSnapshot)? = null
+    @Volatile var controlHandler: ((cmd: String, value: Long) -> Unit)? = null
     private var serverJob: Job? = null
     private var serverSocket: ServerSocket? = null
     private var appContext: Context? = null
@@ -133,6 +134,17 @@ object WebCastServer {
                     "/", "/index.html" -> serveReceiverHtml(out)
                     "/api/state" -> serveStateJson(out)
                     "/api/artwork" -> serveLocalArtwork(out)
+                    "/api/control" -> {
+                        val params = query.split("&").mapNotNull {
+                            val eq = it.indexOf('=')
+                            if (eq > 0) it.substring(0, eq) to URLDecoder.decode(it.substring(eq + 1), "UTF-8") else null
+                        }.toMap()
+                        val cmd = params["cmd"].orEmpty()
+                        val value = params["delta"]?.toLongOrNull() ?: 0L
+                        if (cmd.isNotEmpty()) controlHandler?.invoke(cmd, value)
+                        writeHeaders(out, "200 OK", "application/json; charset=utf-8", 2L)
+                        out.write("{}".toByteArray(StandardCharsets.UTF_8))
+                    }
                     "/api/stream" -> {
                         val rawId = query.split("&").firstOrNull { it.startsWith("id=") }?.removePrefix("id=").orEmpty()
                         serveLocalAudio(out, method, URLDecoder.decode(rawId, "UTF-8"), headers["range"])
