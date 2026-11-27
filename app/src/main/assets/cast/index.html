@@ -124,6 +124,22 @@
       margin-top: 10px; display: flex; justify-content: space-between; font-size: 14px; font-weight: 600;
       font-variant-numeric: tabular-nums; color: rgba(255,255,255,0.78);
     }
+  
+    .tv-ctrl-btn {
+      width: 48px; height: 48px; border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.22);
+      background: rgba(255,255,255,0.12);
+      backdrop-filter: blur(14px); color: #fff;
+      display: inline-flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    }
+    .tv-focus, button:focus-visible {
+      outline: none !important;
+      transform: scale(1.12);
+      background: rgba(255,255,255,0.28) !important;
+      box-shadow: 0 0 0 3px #ffffff, 0 8px 24px rgba(0,0,0,0.45) !important;
+    }
+
   </style>
 </head>
 <body>
@@ -149,7 +165,8 @@
           <h1 id="track-title">Ready to Cast</h1>
           <p id="track-artist">Select a song in Zen</p>
         </div>
-        <button id="lyrics-btn" type="button" tabindex="0" aria-pressed="false" aria-label="Toggle lyrics" title="Lyrics">
+        <button id="tv-play-pause" class="tv-ctrl-btn" tabindex="0" aria-label="Play or Pause" title="Play/Pause">⏸</button>
+      <button id="lyrics-btn" type="button" tabindex="0" aria-pressed="false" aria-label="Toggle lyrics" title="Lyrics">
           <svg viewBox="0 0 24 24" aria-hidden="true">
             <path d="M4 4h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H8l-4 4v-4H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm3 5v2h10V9H7zm0 4v2h7v-2H7z"/>
           </svg>
@@ -390,35 +407,107 @@
       setInterval(() => { if (isPlaying) { currentTimeMs = (currentTimeMs + 250) % durationMs; updateProgress(currentTimeMs, durationMs); } }, 250);
     }
     
-    // TV Remote D-Pad Left/Right (-10s / +10s) & Media Keys
+    // TV Remote D-Pad: OK=Play/Pause, Down=Highlight Lyrics/Controls, Left/Right=-10s/+10s
     const seekHud = document.createElement("div");
-    seekHud.style.cssText = "position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);padding:16px 28px;border-radius:999px;background:rgba(0,0,0,0.65);backdrop-filter:blur(16px);color:#fff;font-size:28px;font-weight:700;letter-spacing:0.5px;opacity:0;pointer-events:none;transition:opacity 0.18s ease;z-index:99;";
+    seekHud.style.cssText = "position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);padding:16px 28px;border-radius:999px;background:rgba(0,0,0,0.68);backdrop-filter:blur(16px);color:#fff;font-size:28px;font-weight:700;letter-spacing:0.5px;opacity:0;pointer-events:none;transition:opacity 0.18s ease;z-index:99;";
     document.body.appendChild(seekHud);
     let hudTimer = null;
     function flashHud(label) {
       seekHud.textContent = label;
       seekHud.style.opacity = "1";
       clearTimeout(hudTimer);
-      hudTimer = setTimeout(() => { seekHud.style.opacity = "0"; }, 850);
+      hudTimer = setTimeout(() => { seekHud.style.opacity = "0"; }, 900);
     }
+
+    const playPauseBtn = document.getElementById("tv-play-pause");
+    const lyricsBtn = document.querySelector('[id*="lyric" i]') || document.querySelector("button:last-of-type");
+    const remoteButtons = [playPauseBtn, lyricsBtn].filter(Boolean);
+    let focusedBtnIdx = -1;
+
+    function updateFocusRing() {
+      remoteButtons.forEach((btn, idx) => {
+        if (idx === focusedBtnIdx) {
+          btn.classList.add("tv-focus");
+          btn.focus({ preventScroll: true });
+        } else {
+          btn.classList.remove("tv-focus");
+        }
+      });
+    }
+
     function sendRemoteControl(cmd, delta = 0) {
-      if (cmd === "seek" && delta !== 0) {
+      const aud = document.getElementById("tv-audio");
+      if (cmd === "toggle") {
+        const willPlay = aud ? aud.paused : (playPauseBtn && playPauseBtn.textContent.trim() === "▶");
+        flashHud(willPlay ? "▶ Playing" : "⏸ Paused");
+        if (playPauseBtn) playPauseBtn.textContent = willPlay ? "⏸" : "▶";
+        if (aud && aud.src) {
+          if (willPlay) aud.play().catch(() => {});
+          else aud.pause();
+        }
+      } else if (cmd === "seek" && delta !== 0) {
         flashHud(delta > 0 ? "+10s ⏩" : "⏪ -10s");
         currentTimeMs = Math.max(0, Math.min(durationMs || Infinity, (currentTimeMs || 0) + delta));
         updateProgress(currentTimeMs, durationMs);
-        const aud = document.getElementById("tv-audio");
         if (aud && isFinite(aud.duration)) {
           aud.currentTime = Math.max(0, Math.min(aud.duration, aud.currentTime + delta / 1000));
         }
       }
       fetch(`/api/control?cmd=${cmd}&delta=${delta}`, { cache: "no-store" }).catch(() => {});
     }
+
+    if (playPauseBtn) {
+      playPauseBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        sendRemoteControl("toggle", 0);
+      });
+    }
+
     document.addEventListener("keydown", (e) => {
-      if (e.key === "ArrowLeft" || e.key === "MediaRewind" || e.keyCode === 37 || e.keyCode === 227) {
+      const k = e.key;
+      const c = e.keyCode;
+      if (k === "ArrowDown" || c === 40) {
+        e.preventDefault();
+        focusedBtnIdx = remoteButtons.indexOf(lyricsBtn) !== -1 ? remoteButtons.indexOf(lyricsBtn) : 0;
+        updateFocusRing();
+      } else if (k === "ArrowUp" || k === "Escape" || k === "Backspace" || c === 38 || c === 27) {
+        if (focusedBtnIdx !== -1) {
+          e.preventDefault();
+          focusedBtnIdx = -1;
+          updateFocusRing();
+        }
+      } else if (k === "ArrowLeft" || c === 37) {
+        e.preventDefault();
+        if (focusedBtnIdx !== -1 && remoteButtons.length > 1) {
+          focusedBtnIdx = (focusedBtnIdx - 1 + remoteButtons.length) % remoteButtons.length;
+          updateFocusRing();
+        } else {
+          sendRemoteControl("seek", -10000);
+        }
+      } else if (k === "ArrowRight" || c === 39) {
+        e.preventDefault();
+        if (focusedBtnIdx !== -1 && remoteButtons.length > 1) {
+          focusedBtnIdx = (focusedBtnIdx + 1) % remoteButtons.length;
+          updateFocusRing();
+        } else {
+          sendRemoteControl("seek", 10000);
+        }
+      } else if (k === "Enter" || k === " " || c === 13 || c === 23 || c === 32) {
+        e.preventDefault();
+        if (focusedBtnIdx !== -1 && remoteButtons[focusedBtnIdx]) {
+          remoteButtons[focusedBtnIdx].click();
+          if (remoteButtons[focusedBtnIdx] === lyricsBtn) {
+            const isOpen = lyricsBtn.getAttribute("aria-pressed") === "true" || document.body.classList.contains("lyrics-open");
+            flashHud("Lyrics");
+          }
+        } else {
+          sendRemoteControl("toggle", 0);
+        }
+      } else if (k === "MediaRewind" || c === 227) {
         e.preventDefault(); sendRemoteControl("seek", -10000);
-      } else if (e.key === "ArrowRight" || e.key === "MediaFastForward" || e.keyCode === 39 || e.keyCode === 228) {
+      } else if (k === "MediaFastForward" || c === 228) {
         e.preventDefault(); sendRemoteControl("seek", 10000);
-      } else if (e.key === "MediaPlayPause" || e.keyCode === 179) {
+      } else if (k === "MediaPlayPause" || k === "MediaPlay" || k === "MediaPause" || c === 179 || c === 126 || c === 127) {
         e.preventDefault(); sendRemoteControl("toggle", 0);
       }
     });
