@@ -185,48 +185,78 @@ object WebCastServer {
         if (bytes.isNotEmpty()) out.write(bytes)
     }
 
+    private fun resolveMimeType(ctx: Context, uri: Uri): String {
+        if (uri.scheme == "content") ctx.contentResolver.getType(uri)?.let { return it }
+        val path = uri.lastPathSegment?.lowercase().orEmpty()
+        return when {
+            path.endsWith(".webm") -> "audio/webm"
+            path.endsWith(".flac") -> "audio/flac"
+            path.endsWith(".mp3") -> "audio/mpeg"
+            path.endsWith(".ogg") || path.endsWith(".opus") -> "audio/ogg"
+            path.endsWith(".wav") -> "audio/wav"
+            else -> CastPlayback.mimeTypeOf(uri)
+        }
+    }
+
     private fun serveLocalAudio(out: BufferedOutputStream, method: String, streamId: String, rangeHeader: String?) {
         val ctx = appContext ?: return
         val uri = localStreams[streamId] ?: run { writeHeaders(out, "404 Not Found", "text/plain", 0L); return }
+        val mime = resolveMimeType(ctx, uri)
+        if (uri.scheme == "file" && uri.path != null) {
+            val file = File(uri.path!!)
+            if (!file.exists() || !file.isFile || file.length() <= 0L) {
+                writeHeaders(out, "404 Not Found", "text/plain", 0L); return
+            }
+            streamBytes(out, method, mime, file.length(), rangeHeader) { start ->
+                FileInputStream(file).also { if (start > 0L) it.channel.position(start) }
+            }
+            return
+        }
         val afd = runCatching { ctx.contentResolver.openAssetFileDescriptor(uri, "r") }.getOrNull() ?: run {
             writeHeaders(out, "404 Not Found", "text/plain", 0L); return
         }
         afd.use { descriptor ->
-            val mime = ctx.contentResolver.getType(uri) ?: CastPlayback.mimeTypeOf(uri)
-            val total = descriptor.length.takeIf { it >= 0L }
-                ?: uri.path?.takeIf { uri.scheme == "file" }?.let { File(it).length().takeIf { l -> l > 0L } }
-                ?: -1L
+            val total = descriptor.length
             if (total <= 0L) { writeHeaders(out, "404 Not Found", "text/plain", 0L); return }
-            val match = rangeHeader?.let { RANGE_REGEX.find(it) }
-            val start = match?.groupValues?.get(1)?.toLongOrNull()?.coerceIn(0L, total - 1L) ?: 0L
-            val end = match?.groupValues?.get(2)?.toLongOrNull()?.coerceIn(start, total - 1L) ?: (total - 1L)
-            val length = end - start + 1L
-            if (match != null) {
-                writeHeaders(out, "206 Partial Content", mime, length, "Content-Range: bytes $start-$end/$total\r\nAccept-Ranges: bytes\r\n")
-            } else {
-                writeHeaders(out, "200 OK", mime, total, "Accept-Ranges: bytes\r\n")
-            }
-            if (method == "HEAD") return
-            descriptor.createInputStream().use { input ->
-                if (start > 0L) {
-                    if (input is FileInputStream) input.channel.position(start)
-                    else {
-                        var skipped = 0L
-                        while (skipped < start) {
-                            val s = input.skip(start - skipped)
-                            if (s <= 0L) break
-                            skipped += s
-                        }
+            streamBytes(out, method, mime, total, rangeHeader) { start ->
+                descriptor.createInputStream().also { input ->
+                    var skipped = 0L
+                    while (skipped < start) {
+                        val s = input.skip(start - skipped)
+                        if (s <= 0L) break
+                        skipped += s
                     }
                 }
-                val buf = ByteArray(65_536)
-                var remaining = length
-                while (remaining > 0L) {
-                    val read = input.read(buf, 0, minOf(buf.size.toLong(), remaining).toInt())
-                    if (read <= 0) break
-                    out.write(buf, 0, read)
-                    remaining -= read
-                }
+            }
+        }
+    }
+
+    private inline fun streamBytes(
+        out: BufferedOutputStream,
+        method: String,
+        mime: String,
+        total: Long,
+        rangeHeader: String?,
+        openAt: (Long) -> java.io.InputStream,
+    ) {
+        val match = rangeHeader?.let { RANGE_REGEX.find(it) }
+        val start = match?.groupValues?.get(1)?.toLongOrNull()?.coerceIn(0L, total - 1L) ?: 0L
+        val end = match?.groupValues?.get(2)?.toLongOrNull()?.coerceIn(start, total - 1L) ?: (total - 1L)
+        val length = end - start + 1L
+        if (match != null) {
+            writeHeaders(out, "206 Partial Content", mime, length, "Content-Range: bytes $start-$end/$total\r\nAccept-Ranges: bytes\r\n")
+        } else {
+            writeHeaders(out, "200 OK", mime, total, "Accept-Ranges: bytes\r\n")
+        }
+        if (method == "HEAD") return
+        openAt(start).use { input ->
+            val buf = ByteArray(65_536)
+            var remaining = length
+            while (remaining > 0L) {
+                val read = input.read(buf, 0, minOf(buf.size.toLong(), remaining).toInt())
+                if (read <= 0) break
+                out.write(buf, 0, read)
+                remaining -= read
             }
         }
     }
