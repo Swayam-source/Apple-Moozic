@@ -4,29 +4,30 @@ import android.content.Context
 import android.net.Uri
 import android.os.SystemClock
 import android.util.Log
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.BufferedOutputStream
 import java.io.BufferedReader
+import java.io.File
+import java.io.FileInputStream
 import java.io.InputStreamReader
 import java.net.Inet4Address
 import java.net.NetworkInterface
 import java.net.ServerSocket
 import java.net.Socket
+import java.net.URLDecoder
+import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
+import java.util.concurrent.ConcurrentHashMap
 
 object WebCastServer {
     private const val TAG = "ZenWebCast"
     private const val DEFAULT_PORT = 8765
+    private val RANGE_REGEX = Regex("""bytes=(\d+)-(\d*)""")
 
     data class LyricEntry(val timeMs: Long, val text: String)
 
@@ -50,21 +51,36 @@ object WebCastServer {
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     private val _state = MutableStateFlow(UiState())
     val state: StateFlow<UiState> = _state.asStateFlow()
+    private val localStreams = ConcurrentHashMap<String, Uri>()
 
-    @Volatile
-    var snapshotProvider: (() -> TrackSnapshot)? = null
-
+    @Volatile var snapshotProvider: (() -> TrackSnapshot)? = null
     private var serverJob: Job? = null
     private var serverSocket: ServerSocket? = null
     private var appContext: Context? = null
+    @Volatile private var lastClientPingMs: Long = 0L
 
-    @Volatile
-    private var lastClientPingMs: Long = 0L
+    suspend fun registerLocalStream(context: Context, trackId: String, uri: Uri): String? {
+        if (serverJob?.isActive != true) start(context)
+        var port = serverSocket?.localPort
+        var tries = 0
+        while (port == null && tries++ < 25) {
+            delay(20L)
+            port = serverSocket?.localPort
+        }
+        val activePort = port ?: return null
+        val ip = localWifiIp() ?: return null
+        val key = trackId.ifBlank { uri.toString().hashCode().toString() }
+        localStreams[key] = uri
+        return "http://$ip:$activePort/api/stream?id=${URLEncoder.encode(key, "UTF-8")}"
+    }
 
     fun start(context: Context) {
         appContext = context.applicationContext
         if (serverJob?.isActive == true) {
-            refreshUrl()
+            val p = serverSocket?.localPort ?: return
+            val ip = localWifiIp() ?: return
+            val connected = SystemClock.elapsedRealtime() - lastClientPingMs < 5_000L
+            _state.value = UiState(running = true, url = "http://$ip:$p", clientConnected = connected)
             return
         }
         serverJob = scope.launch {
@@ -94,90 +110,131 @@ object WebCastServer {
         _state.value = UiState()
     }
 
-    private fun refreshUrl() {
-        val port = serverSocket?.localPort ?: return
-        val ip = localWifiIp() ?: return
-        val connected = SystemClock.elapsedRealtime() - lastClientPingMs < 5_000L
-        _state.value = UiState(running = true, url = "http://$ip:$port", clientConnected = connected)
-    }
-
     private fun handleClient(socket: Socket) {
-        socket.use { s ->
-            s.soTimeout = 5_000
-            val reader = BufferedReader(InputStreamReader(s.getInputStream(), StandardCharsets.UTF_8))
-            val requestLine = reader.readLine() ?: return
-            while (true) {
-                val line = reader.readLine() ?: break
-                if (line.isEmpty()) break
+        runCatching {
+            socket.use { s ->
+                s.soTimeout = 10_000
+                val reader = BufferedReader(InputStreamReader(s.getInputStream(), StandardCharsets.UTF_8))
+                val requestLine = reader.readLine() ?: return
+                val headers = mutableMapOf<String, String>()
+                while (true) {
+                    val line = reader.readLine() ?: break
+                    if (line.isEmpty()) break
+                    val sep = line.indexOf(':')
+                    if (sep > 0) headers[line.substring(0, sep).trim().lowercase()] = line.substring(sep + 1).trim()
+                }
+                val parts = requestLine.split(" ")
+                val method = parts.getOrNull(0) ?: "GET"
+                val rawTarget = parts.getOrNull(1) ?: "/"
+                val path = rawTarget.substringBefore("?")
+                val query = rawTarget.substringAfter("?", "")
+                val out = BufferedOutputStream(s.getOutputStream())
+                when (path) {
+                    "/", "/index.html" -> serveReceiverHtml(out)
+                    "/api/state" -> serveStateJson(out)
+                    "/api/artwork" -> serveLocalArtwork(out)
+                    "/api/stream" -> {
+                        val rawId = query.split("&").firstOrNull { it.startsWith("id=") }?.removePrefix("id=").orEmpty()
+                        serveLocalAudio(out, method, URLDecoder.decode(rawId, "UTF-8"), headers["range"])
+                    }
+                    else -> writeHeaders(out, "404 Not Found", "text/plain", 0L)
+                }
+                out.flush()
             }
-            val path = requestLine.split(" ").getOrNull(1)?.substringBefore("?") ?: "/"
-            val out = BufferedOutputStream(s.getOutputStream())
-            when (path) {
-                "/", "/index.html" -> serveReceiverHtml(out)
-                "/api/state" -> serveStateJson(out)
-                "/api/artwork" -> serveLocalArtwork(out)
-                else -> writeBytes(out, "404 Not Found", "text/plain", ByteArray(0))
-            }
-            out.flush()
         }
     }
 
     private fun serveReceiverHtml(out: BufferedOutputStream) {
         val ctx = appContext ?: return
-        val html = runCatching {
-            ctx.assets.open("cast/index.html").use { it.readBytes() }
-        }.getOrElse { "<h1>Zen Cast Receiver missing</h1>".toByteArray() }
-        writeBytes(out, "200 OK", "text/html; charset=utf-8", html)
+        val html = runCatching { ctx.assets.open("cast/index.html").use { it.readBytes() } }
+            .getOrElse { "<h1>Zen Cast Receiver missing</h1>".toByteArray() }
+        writeHeaders(out, "200 OK", "text/html; charset=utf-8", html.size.toLong())
+        out.write(html)
     }
 
     private fun serveStateJson(out: BufferedOutputStream) {
         lastClientPingMs = SystemClock.elapsedRealtime()
         val cur = _state.value
-        if (cur.running && !cur.clientConnected) {
-            _state.value = cur.copy(clientConnected = true)
-        }
+        if (cur.running && !cur.clientConnected) _state.value = cur.copy(clientConnected = true)
         val snap = snapshotProvider?.invoke() ?: TrackSnapshot()
         val artUrl = when (snap.artworkUri?.scheme) {
             "http", "https" -> snap.artworkUri.toString()
             "content", "file" -> "/api/artwork?t=${snap.trackId.hashCode()}"
             else -> ""
         }
-        val lyricsArr = JSONArray()
-        for (line in snap.lyrics) {
-            lyricsArr.put(JSONObject().put("timeMs", line.timeMs).put("text", line.text))
+        val lyricsArr = JSONArray().apply {
+            snap.lyrics.forEach { put(JSONObject().put("timeMs", it.timeMs).put("text", it.text)) }
         }
         val json = JSONObject()
-            .put("trackId", snap.trackId)
-            .put("title", snap.title)
-            .put("artist", snap.artist)
-            .put("artworkUrl", artUrl)
-            .put("positionMs", snap.positionMs)
-            .put("durationMs", snap.durationMs)
-            .put("isPlaying", snap.isPlaying)
-            .put("lyrics", lyricsArr)
-            .toString()
-            .toByteArray(StandardCharsets.UTF_8)
-        writeBytes(out, "200 OK", "application/json; charset=utf-8", json)
+            .put("trackId", snap.trackId).put("title", snap.title).put("artist", snap.artist)
+            .put("artworkUrl", artUrl).put("positionMs", snap.positionMs)
+            .put("durationMs", snap.durationMs).put("isPlaying", snap.isPlaying)
+            .put("lyrics", lyricsArr).toString().toByteArray(StandardCharsets.UTF_8)
+        writeHeaders(out, "200 OK", "application/json; charset=utf-8", json.size.toLong())
+        out.write(json)
     }
 
     private fun serveLocalArtwork(out: BufferedOutputStream) {
         val ctx = appContext ?: return
         val uri = snapshotProvider?.invoke()?.artworkUri ?: return
         val bytes = runCatching {
-            ctx.contentResolver.openInputStream(uri)?.use { it.readBytes() }
+            if (uri.scheme == "file" && uri.path != null) File(uri.path!!).readBytes()
+            else ctx.contentResolver.openInputStream(uri)?.use { it.readBytes() }
         }.getOrNull() ?: ByteArray(0)
-        writeBytes(out, if (bytes.isNotEmpty()) "200 OK" else "404 Not Found", "image/jpeg", bytes)
+        writeHeaders(out, if (bytes.isNotEmpty()) "200 OK" else "404 Not Found", "image/jpeg", bytes.size.toLong())
+        if (bytes.isNotEmpty()) out.write(bytes)
     }
 
-    private fun writeBytes(out: BufferedOutputStream, status: String, contentType: String, body: ByteArray) {
-        val header = "HTTP/1.1 $status\r\n" +
-            "Content-Type: $contentType\r\n" +
-            "Content-Length: ${body.size}\r\n" +
-            "Cache-Control: no-store\r\n" +
-            "Access-Control-Allow-Origin: *\r\n" +
-            "Connection: close\r\n\r\n"
+    private fun serveLocalAudio(out: BufferedOutputStream, method: String, streamId: String, rangeHeader: String?) {
+        val ctx = appContext ?: return
+        val uri = localStreams[streamId] ?: run { writeHeaders(out, "404 Not Found", "text/plain", 0L); return }
+        val afd = runCatching { ctx.contentResolver.openAssetFileDescriptor(uri, "r") }.getOrNull() ?: run {
+            writeHeaders(out, "404 Not Found", "text/plain", 0L); return
+        }
+        afd.use { descriptor ->
+            val mime = ctx.contentResolver.getType(uri) ?: CastPlayback.mimeTypeOf(uri)
+            val total = descriptor.length.takeIf { it >= 0L }
+                ?: uri.path?.takeIf { uri.scheme == "file" }?.let { File(it).length().takeIf { l -> l > 0L } }
+                ?: -1L
+            if (total <= 0L) { writeHeaders(out, "404 Not Found", "text/plain", 0L); return }
+            val match = rangeHeader?.let { RANGE_REGEX.find(it) }
+            val start = match?.groupValues?.get(1)?.toLongOrNull()?.coerceIn(0L, total - 1L) ?: 0L
+            val end = match?.groupValues?.get(2)?.toLongOrNull()?.coerceIn(start, total - 1L) ?: (total - 1L)
+            val length = end - start + 1L
+            if (match != null) {
+                writeHeaders(out, "206 Partial Content", mime, length, "Content-Range: bytes $start-$end/$total\r\nAccept-Ranges: bytes\r\n")
+            } else {
+                writeHeaders(out, "200 OK", mime, total, "Accept-Ranges: bytes\r\n")
+            }
+            if (method == "HEAD") return
+            descriptor.createInputStream().use { input ->
+                if (start > 0L) {
+                    if (input is FileInputStream) input.channel.position(start)
+                    else {
+                        var skipped = 0L
+                        while (skipped < start) {
+                            val s = input.skip(start - skipped)
+                            if (s <= 0L) break
+                            skipped += s
+                        }
+                    }
+                }
+                val buf = ByteArray(65_536)
+                var remaining = length
+                while (remaining > 0L) {
+                    val read = input.read(buf, 0, minOf(buf.size.toLong(), remaining).toInt())
+                    if (read <= 0) break
+                    out.write(buf, 0, read)
+                    remaining -= read
+                }
+            }
+        }
+    }
+
+    private fun writeHeaders(out: BufferedOutputStream, status: String, contentType: String, contentLength: Long, extra: String = "") {
+        val header = "HTTP/1.1 $status\r\nContent-Type: $contentType\r\nContent-Length: $contentLength\r\n" +
+            extra + "Cache-Control: no-store\r\nAccess-Control-Allow-Origin: *\r\nConnection: close\r\n\r\n"
         out.write(header.toByteArray(StandardCharsets.UTF_8))
-        if (body.isNotEmpty()) out.write(body)
     }
 
     private fun localWifiIp(): String? = runCatching {
