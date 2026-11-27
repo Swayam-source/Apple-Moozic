@@ -4,522 +4,226 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Zen Cast Receiver</title>
-  <script src="//www.gstatic.com/cast/sdk/libs/caf_receiver/v3/cast_receiver_framework.js"></script>
   <style>
     :root {
       --bg-base: #0c0b10;
-      --c1: rgba(94, 72, 148, 0.68);
-      --c2: rgba(52, 88, 138, 0.62);
-      --c3: rgba(128, 64, 96, 0.56);
-      --c4: rgba(42, 54, 82, 0.64);
-      --text-primary: #ffffff;
-      --text-secondary: rgba(255, 255, 255, 0.68);
-      --text-muted: rgba(255, 255, 255, 0.30);
-      --pill-bg: rgba(255, 255, 255, 0.12);
-      --pill-border: rgba(255, 255, 255, 0.18);
+      --c1: rgba(94, 72, 148, 0.68); --c2: rgba(52, 88, 138, 0.62);
+      --c3: rgba(128, 64, 96, 0.56); --c4: rgba(42, 54, 82, 0.64);
       --ease-fluid: cubic-bezier(0.22, 1, 0.36, 1);
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body {
       width: 100%; height: 100%; overflow: hidden;
-      background-color: var(--bg-base); color: var(--text-primary);
+      background-color: var(--bg-base); color: #fff;
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", system-ui, sans-serif;
-      transition: background-color 1.1s ease; user-select: none;
+      user-select: none;
     }
     #mesh-bg { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
-    .mesh-orb {
-      position: absolute; border-radius: 50%; filter: blur(110px); opacity: 0.92;
-      transition: background 1.1s ease; will-change: transform;
-    }
-    #orb-1 { width: 68vw; height: 68vw; top: -18%; left: -12%; background: radial-gradient(circle, var(--c1) 0%, transparent 70%); animation: driftA 18s ease-in-out infinite alternate; }
-    #orb-2 { width: 64vw; height: 64vw; top: -10%; right: -14%; background: radial-gradient(circle, var(--c2) 0%, transparent 70%); animation: driftB 22s ease-in-out infinite alternate; }
-    #orb-3 { width: 66vw; height: 66vw; bottom: -22%; left: 10%; background: radial-gradient(circle, var(--c3) 0%, transparent 70%); animation: driftB 20s ease-in-out infinite alternate-reverse; }
-    #orb-4 { width: 60vw; height: 60vw; bottom: -16%; right: -8%; background: radial-gradient(circle, var(--c4) 0%, transparent 70%); animation: driftA 24s ease-in-out infinite alternate-reverse; }
-    @keyframes driftA { 0% { transform: translate3d(0,0,0) scale(1); } 100% { transform: translate3d(4vw,3vh,0) scale(1.08); } }
-    @keyframes driftB { 0% { transform: translate3d(0,0,0) scale(1.04); } 100% { transform: translate3d(-4vw,-3vh,0) scale(0.96); } }
+    .mesh-orb { position: absolute; border-radius: 50%; filter: blur(110px); opacity: 0.92; transition: background 1.1s ease; }
+    #orb-1 { width: 68vw; height: 68vw; top: -18%; left: -12%; background: radial-gradient(circle, var(--c1) 0%, transparent 70%); }
+    #orb-2 { width: 64vw; height: 64vw; top: -10%; right: -14%; background: radial-gradient(circle, var(--c2) 0%, transparent 70%); }
+    #orb-3 { width: 66vw; height: 66vw; bottom: -22%; left: 10%; background: radial-gradient(circle, var(--c3) 0%, transparent 70%); }
+    #orb-4 { width: 60vw; height: 60vw; bottom: -16%; right: -8%; background: radial-gradient(circle, var(--c4) 0%, transparent 70%); }
     #backdrop-fallback {
       position: fixed; inset: -14%; background-size: cover; background-position: center;
       filter: blur(95px) saturate(1.5) brightness(0.42); transform: scale(1.1);
-      opacity: 0; transition: opacity 0.9s ease, background-image 0.9s ease; z-index: 1; pointer-events: none;
+      opacity: 0; transition: opacity 0.9s ease; z-index: 1; pointer-events: none;
     }
-    #scrim {
-      position: fixed; inset: 0;
-      background: radial-gradient(circle at 50% 45%, rgba(8,8,12,0.14) 0%, rgba(8,8,12,0.56) 100%);
-      z-index: 2; pointer-events: none;
-    }
-    #brand-badge {
-      position: fixed; top: 36px; right: 48px; z-index: 20;
-      display: flex; align-items: center; gap: 10px; opacity: 0.94; letter-spacing: -0.02em;
-    }
-    #brand-badge svg { width: 26px; height: 26px; }
-    #brand-badge span { font-size: 22px; font-weight: 700; color: #ffffff; }
+    #scrim { position: fixed; inset: 0; background: radial-gradient(circle at 50% 45%, rgba(8,8,12,0.14) 0%, rgba(8,8,12,0.58) 100%); z-index: 2; pointer-events: none; }
+    #brand-badge { position: fixed; top: 28px; right: 36px; z-index: 20; display: flex; align-items: center; gap: 9px; }
+    #brand-badge svg { width: 24px; height: 24px; }
+    #brand-badge span { font-size: 20px; font-weight: 700; }
     #stage {
-      position: relative; z-index: 10; width: 100%; height: 100%; padding: 64px 72px;
+      position: relative; z-index: 10; width: 100%; height: 100%; padding: 48px 32px;
       display: grid; grid-template-columns: 1fr; grid-template-rows: 1fr auto;
       grid-template-areas: "art" "progress"; align-items: center; justify-items: center;
     }
     body.lyrics-on #stage {
-      grid-template-columns: 42fr 58fr; grid-template-rows: 1fr auto; column-gap: 56px;
-      grid-template-areas: "art lyrics" "art progress"; align-items: center; justify-items: stretch;
+      grid-template-columns: 42fr 58fr; column-gap: 48px;
+      grid-template-areas: "art lyrics" "art progress";
     }
-    #art-block {
-      grid-area: art; width: min(39vh, 360px); display: flex; flex-direction: column;
-      justify-self: center; align-self: end; margin-bottom: 28px; transition: width 0.45s var(--ease-fluid);
-    }
-    body.lyrics-on #art-block {
-      width: min(43vh, 410px); justify-self: center; align-self: center; margin-bottom: 0;
-    }
-    #art-frame {
-      width: 100%; aspect-ratio: 1 / 1; border-radius: 24px; overflow: hidden;
-      background: rgba(255,255,255,0.08); box-shadow: 0 28px 70px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.14);
-    }
+    #art-block { grid-area: art; width: min(38vh, 340px); display: flex; flex-direction: column; align-self: end; margin-bottom: 18px; }
+    body.lyrics-on #art-block { align-self: center; margin-bottom: 0; }
+    #art-frame { width: 100%; aspect-ratio: 1/1; border-radius: 22px; overflow: hidden; background: rgba(255,255,255,0.08); box-shadow: 0 24px 64px rgba(0,0,0,0.55); }
     #cover-img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    #art-footer {
-      width: 100%; margin-top: 14px; display: flex; align-items: flex-start; justify-content: space-between; gap: 14px;
-    }
-    #meta-block { flex: 1; min-width: 0; text-align: left; }
-    #track-title {
-      font-size: clamp(21px, 2.2vw, 28px); font-weight: 700; letter-spacing: -0.02em; line-height: 1.22;
-      color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    }
-    #track-artist {
-      margin-top: 4px; font-size: clamp(15px, 1.55vw, 19px); font-weight: 500; line-height: 1.25;
-      color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    }
+    #art-footer { width: 100%; margin-top: 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    #meta-block { flex: 1; min-width: 0; }
+    #track-title { font-size: clamp(20px, 2.2vw, 27px); font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    #track-artist { margin-top: 4px; font-size: clamp(14px, 1.5vw, 18px); font-weight: 500; color: rgba(255,255,255,0.68); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     #lyrics-btn {
-      flex-shrink: 0; appearance: none; border: 1px solid var(--pill-border); background: var(--pill-bg);
-      backdrop-filter: blur(18px); color: rgba(255,255,255,0.90); width: 44px; height: 44px; border-radius: 999px;
-      display: inline-flex; align-items: center; justify-content: center; cursor: pointer; outline: none;
-      transition: background-color 0.25s ease, color 0.25s ease, transform 0.2s var(--ease-fluid), box-shadow 0.25s ease;
+      width: 42px; height: 42px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.12); backdrop-filter: blur(18px); color: #fff;
+      display: inline-flex; align-items: center; justify-content: center; cursor: pointer;
     }
-    #lyrics-btn svg { width: 21px; height: 21px; fill: currentColor; }
-    #lyrics-btn:hover, #lyrics-btn:focus-visible { transform: scale(1.08); box-shadow: 0 0 0 3px rgba(255,255,255,0.35); }
-    body.lyrics-on #lyrics-btn {
-      background: #ffffff; color: #0b0b0e; border-color: #ffffff; box-shadow: 0 6px 22px rgba(255,255,255,0.28);
-    }
-    #lyrics-panel {
-      grid-area: lyrics; display: none; height: min(64vh, 620px); overflow: hidden; position: relative;
-      align-self: end; margin-bottom: 20px;
-      mask-image: linear-gradient(to bottom, transparent 0%, #000 14%, #000 84%, transparent 100%);
-      -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 14%, #000 84%, transparent 100%);
-    }
-    body.lyrics-on #lyrics-panel { display: block; animation: fadeSlideIn 0.45s var(--ease-fluid) forwards; }
-    @keyframes fadeSlideIn { from { opacity: 0; transform: translateX(24px); } to { opacity: 1; transform: translateX(0); } }
-    #lyrics-track {
-      display: flex; flex-direction: column; gap: 22px; padding: 24vh 12px;
-      transition: transform 0.55s var(--ease-fluid); will-change: transform;
-    }
-    .lyric-line {
-      font-size: clamp(24px, 2.6vw, 34px); font-weight: 700; line-height: 1.28; letter-spacing: -0.015em;
-      color: var(--text-muted); transform-origin: left center; transform: scale(0.96); filter: blur(0.6px);
-      transition: color 0.35s ease, transform 0.45s var(--ease-fluid), filter 0.35s ease;
-    }
-    .lyric-line.past { color: rgba(255,255,255,0.38); filter: blur(0px); }
-    .lyric-line.active { color: #ffffff; transform: scale(1.03); filter: blur(0px); }
-    #progress-block { grid-area: progress; justify-self: center; align-self: start; width: min(560px, 62vw); }
-    body.lyrics-on #progress-block { justify-self: stretch; align-self: start; width: 100%; }
-    #progress-track { width: 100%; height: 8px; border-radius: 999px; background: rgba(255,255,255,0.24); overflow: hidden; }
-    #progress-fill { width: 0%; height: 100%; background: #ffffff; border-radius: 999px; transition: width 0.25s linear; }
-    #time-row {
-      margin-top: 10px; display: flex; justify-content: space-between; font-size: 14px; font-weight: 600;
-      font-variant-numeric: tabular-nums; color: rgba(255,255,255,0.78);
-    }
-  
-    .tv-ctrl-btn {
-      width: 44px; height: 44px; border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.22);
-      background: rgba(255,255,255,0.12);
-      backdrop-filter: blur(14px); color: #fff;
+    #lyrics-btn svg { width: 20px; height: 20px; fill: currentColor; }
+    body.lyrics-on #lyrics-btn { background: #fff; color: #0c0b10; border-color: #fff; }
+    #progress-block { grid-area: progress; width: min(520px, 84vw); align-self: start; }
+    body.lyrics-on #progress-block { width: 100%; }
+    #progress-track { width: 100%; height: 7px; border-radius: 999px; background: rgba(255,255,255,0.24); overflow: hidden; }
+    #progress-fill { width: 0%; height: 100%; background: #fff; border-radius: 999px; transition: width 0.2s linear; }
+    #time-row { margin-top: 8px; display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.75); font-variant-numeric: tabular-nums; }
+    #transport-row { margin-top: 18px; display: flex; align-items: center; justify-content: center; gap: 48px; }
+    .zen-transport-btn {
+      appearance: none; border: none; background: transparent; color: #fff;
       display: inline-flex; align-items: center; justify-content: center;
-      cursor: pointer; transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+      padding: 8px; border-radius: 16px; cursor: pointer;
+      transition: transform 0.16s ease, opacity 0.16s ease, box-shadow 0.16s ease;
     }
-    .tv-focus, button:focus-visible {
-      outline: none !important;
-      transform: scale(1.12);
-      background: rgba(255,255,255,0.28) !important;
-      box-shadow: 0 0 0 3px #ffffff, 0 8px 24px rgba(0,0,0,0.45) !important;
+    .zen-transport-btn:active { transform: scale(0.9); opacity: 0.8; }
+    .tv-focus, button:focus-visible { outline: none !important; transform: scale(1.14); box-shadow: 0 0 0 3px rgba(255,255,255,0.85); }
+    #lyrics-panel {
+      grid-area: lyrics; display: none; height: min(62vh, 580px); overflow: hidden;
+      mask-image: linear-gradient(to bottom, transparent 0%, #000 15%, #000 85%, transparent 100%);
+      -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 15%, #000 85%, transparent 100%);
     }
-
+    body.lyrics-on #lyrics-panel { display: block; }
+    #lyrics-track { display: flex; flex-direction: column; gap: 20px; padding: 22vh 12px; transition: transform 0.5s var(--ease-fluid); }
+    .lyric-line { font-size: clamp(22px, 2.5vw, 32px); font-weight: 700; color: rgba(255,255,255,0.3); transition: color 0.3s ease, transform 0.35s ease; }
+    .lyric-line.past { color: rgba(255,255,255,0.42); }
+    .lyric-line.active { color: #fff; transform: scale(1.03); }
   </style>
 </head>
 <body>
-  <div id="mesh-bg" aria-hidden="true">
-    <div id="orb-1" class="mesh-orb"></div><div id="orb-2" class="mesh-orb"></div>
-    <div id="orb-3" class="mesh-orb"></div><div id="orb-4" class="mesh-orb"></div>
-  </div>
-  <div id="backdrop-fallback" aria-hidden="true"></div>
-  <div id="scrim" aria-hidden="true"></div>
-  <header id="brand-badge" aria-label="Zen">
-    <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-      <circle cx="12" cy="12" r="9"></circle><path d="M8.5 9.5h7l-7 5h7"></path>
-    </svg>
+  <div id="mesh-bg"><div id="orb-1" class="mesh-orb"></div><div id="orb-2" class="mesh-orb"></div><div id="orb-3" class="mesh-orb"></div><div id="orb-4" class="mesh-orb"></div></div>
+  <div id="backdrop-fallback"></div><div id="scrim"></div>
+  <header id="brand-badge">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#FFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 9.5h7l-7 5h7"/></svg>
     <span>Zen</span>
   </header>
+  <audio id="tv-audio" preload="auto"></audio>
   <main id="stage">
     <section id="art-block">
       <div id="art-frame">
-        <img id="cover-img" alt="Album Cover" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23433466'/%3E%3Cstop offset='100%25' stop-color='%23161824'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='600' height='600' fill='url(%23g)'/%3E%3C/svg%3E" />
+        <img id="cover-img" alt="Cover" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600'%3E%3Crect width='600' height='600' fill='%232b2240'/%3E%3C/svg%3E" />
       </div>
       <div id="art-footer">
         <div id="meta-block">
           <h1 id="track-title">Ready to Cast</h1>
           <p id="track-artist">Select a song in Zen</p>
         </div>
-        <div id="tv-actions" style="display:flex;align-items:center;gap:10px;flex-shrink:0;">
-          <button id="tv-rew-btn" class="tv-ctrl-btn" type="button" tabindex="0" aria-label="Rewind 10 seconds" title="-10s"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M11.99 5V1l-5 5 5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6h-2c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8zm-1.1 11h-.85v-3.26l-1.01.31v-.69l1.77-.63h.09V16zm4.28-1.76c0 .32-.03.6-.1.82s-.17.42-.29.57-.28.26-.45.33-.37.1-.59.1-.41-.03-.59-.1-.33-.18-.46-.33-.23-.34-.3-.57-.11-.5-.11-.82v-.74c0-.32.03-.6.1-.82s.17-.42.29-.57.28-.26.45-.33.37-.1.59-.1.41.03.59.1.33.18.46.33.23.34.3.57.11.5.11.82v.74zm-.85-.84c0-.19-.01-.35-.04-.48s-.07-.24-.12-.32-.11-.14-.19-.17-.16-.05-.25-.05-.18.02-.25.05-.14.09-.19.17-.09.19-.12.32-.04.29-.04.48v.97c0 .19.01.35.04.48s.07.24.12.32.11.14.19.17.16.05.25.05.18-.02.25-.05.14-.09.19-.17.09-.19.12-.32.04-.29.04-.48v-.97z"/></svg></button>
-          <button id="tv-play-pause" class="tv-ctrl-btn" type="button" tabindex="0" aria-label="Play or Pause" title="Play/Pause" style="background:#ffffff;color:#0b0b0e;border-color:#ffffff;"><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg></button>
-          <button id="tv-fwd-btn" class="tv-ctrl-btn" type="button" tabindex="0" aria-label="Forward 10 seconds" title="+10s"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12.01 5V1l5 5-5 5V7c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6h2c0 4.42-3.58 8-8 8s-8-3.58-8-8 3.58-8 8-8zm-1.1 11h-.85v-3.26l-1.01.31v-.69l1.77-.63h.09V16zm4.28-1.76c0 .32-.03.6-.1.82s-.17.42-.29.57-.28.26-.45.33-.37.1-.59.1-.41-.03-.59-.1-.33-.18-.46-.33-.23-.34-.3-.57-.11-.5-.11-.82v-.74c0-.32.03-.6.1-.82s.17-.42.29-.57.28-.26.45-.33.37-.1.59-.1.41.03.59.1.33.18.46.33.23.34.3.57.11.5.11.82v.74zm-.85-.84c0-.19-.01-.35-.04-.48s-.07-.24-.12-.32-.11-.14-.19-.17-.16-.05-.25-.05-.18.02-.25.05-.14.09-.19.17-.09.19-.12.32-.04.29-.04.48v.97c0 .19.01.35.04.48s.07.24.12.32.11.14.19.17.16.05.25.05.18-.02.25-.05.14-.09.19-.17.09-.19.12-.32.04-.29.04-.48v-.97z"/></svg></button>
-          <button id="lyrics-btn" type="button" tabindex="0" aria-pressed="false" aria-label="Toggle lyrics" title="Lyrics">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M4 4h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H8l-4 4v-4H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm3 5v2h10V9H7zm0 4v2h7v-2H7z"/>
-          </svg>
+        <button id="lyrics-btn" type="button" tabindex="0" title="Lyrics">
+          <svg viewBox="0 0 24 24"><path d="M4 4h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H8l-4 4v-4H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm3 5v2h10V9H7zm0 4v2h7v-2H7z"/></svg>
         </button>
-        </div>
       </div>
     </section>
-    <section id="lyrics-panel" aria-live="polite"><div id="lyrics-track"></div></section>
+    <section id="lyrics-panel"><div id="lyrics-track"></div></section>
     <section id="progress-block">
       <div id="progress-track"><div id="progress-fill"></div></div>
       <div id="time-row"><span id="time-elapsed">0:00</span><span id="time-total">0:00</span></div>
+      <div id="transport-row">
+        <button id="tv-rew-btn" class="zen-transport-btn" type="button" tabindex="0" title="-10s">
+          <svg width="38" height="26" viewBox="0 0 38 26" fill="#fff"><path d="M16.2 4.2c1.2-.8 2.8.1 2.8 1.5v14.6c0 1.4-1.6 2.3-2.8 1.5L5.2 14.5c-1.1-.7-1.1-2.3 0-3l11-7.3zm15.5 0c1.2-.8 2.8.1 2.8 1.5v14.6c0 1.4-1.6 2.3-2.8 1.5l-11-7.3c-1.1-.7-1.1-2.3 0-3l11-7.3z"/></svg>
+        </button>
+        <button id="tv-play-pause" class="zen-transport-btn" type="button" tabindex="0" title="Play/Pause"></button>
+        <button id="tv-fwd-btn" class="zen-transport-btn" type="button" tabindex="0" title="+10s">
+          <svg width="38" height="26" viewBox="0 0 38 26" fill="#fff"><path d="M6.3 4.2c-1.2-.8-2.8.1-2.8 1.5v14.6c0 1.4 1.6 2.3 2.8 1.5l11-7.3c1.1-.7 1.1-2.3 0-3l-11-7.3zm15.5 0c-1.2-.8-2.8.1-2.8 1.5v14.6c0 1.4 1.6 2.3 2.8 1.5l11-7.3c1.1-.7 1.1-2.3 0-3l-11-7.3z"/></svg>
+        </button>
+      </div>
     </section>
   </main>
   <script>
-    const LYRICS_NS = "urn:x-cast:com.music.zen.lyrics";
-    const rootStyle = document.documentElement.style;
-    const lyricsBtn = document.getElementById("lyrics-btn");
-    const lyricsPanel = document.getElementById("lyrics-panel");
-    const lyricsTrack = document.getElementById("lyrics-track");
-    const coverImg = document.getElementById("cover-img");
-    const fallbackBackdrop = document.getElementById("backdrop-fallback");
-    const titleEl = document.getElementById("track-title");
-    const artistEl = document.getElementById("track-artist");
-    const fillEl = document.getElementById("progress-fill");
-    const elapsedEl = document.getElementById("time-elapsed");
-    const totalEl = document.getElementById("time-total");
-
+    const PLAY_SVG = '<svg width="42" height="42" viewBox="0 0 36 36" fill="#fff"><path d="M9.5 6.8c0-1.7 1.9-2.7 3.3-1.8l17 11.2c1.3.8 1.3 2.8 0 3.6l-17 11.2c-1.4.9-3.3-.1-3.3-1.8V6.8z"/></svg>';
+    const PAUSE_SVG = '<svg width="42" height="42" viewBox="0 0 36 36" fill="#fff"><rect x="8.5" y="6" width="6.5" height="24" rx="2.8"/><rect x="21" y="6" width="6.5" height="24" rx="2.8"/></svg>';
+    const lyricsBtn = document.getElementById("lyrics-btn"), lyricsTrack = document.getElementById("lyrics-track");
+    const coverImg = document.getElementById("cover-img"), backdrop = document.getElementById("backdrop-fallback");
+    const titleEl = document.getElementById("track-title"), artistEl = document.getElementById("track-artist");
+    const fillEl = document.getElementById("progress-fill"), elapsedEl = document.getElementById("time-elapsed"), totalEl = document.getElementById("time-total");
+    const rewBtn = document.getElementById("tv-rew-btn"), playPauseBtn = document.getElementById("tv-play-pause"), fwdBtn = document.getElementById("tv-fwd-btn");
+    const aud = document.getElementById("tv-audio");
+    const isLocalPreview = location.hostname === "127.0.0.1" || location.hostname === "localhost";
     let lyricsLines = [], activeLineIdx = -1, currentTimeMs = 0, durationMs = 0, isPlaying = false;
+    playPauseBtn.innerHTML = PLAY_SVG;
 
-    function rgbToHsl(r, g, b) {
-      r /= 255; g /= 255; b /= 255;
-      const max = Math.max(r, g, b), min = Math.min(r, g, b);
-      let h = 0, s = 0, l = (max + min) / 2;
-      if (max !== min) {
-        const d = max - min;
-        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-        if (max === r) h = ((g - b) / d + (g < b ? 6 : 0)) / 6;
-        else if (max === g) h = ((b - r) / d + 2) / 6;
-        else h = ((r - g) / d + 4) / 6;
-      }
-      return [h, s, l];
+    function fmt(ms) {
+      const s = Math.max(0, Math.floor((ms || 0) / 1000));
+      return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0");
     }
-
-    function hslToRgb(h, s, l) {
-      if (s === 0) { const v = Math.round(l * 255); return [v, v, v]; }
-      const hue2rgb = (p, q, t) => {
-        if (t < 0) t += 1; if (t > 1) t -= 1;
-        if (t < 1/6) return p + (q - p) * 6 * t;
-        if (t < 1/2) return q;
-        if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
-        return p;
-      };
-      const q = l < 0.5 ? l * (1 + s) : l + s - l * s, p = 2 * l - q;
-      return [Math.round(hue2rgb(p,q,h+1/3)*255), Math.round(hue2rgb(p,q,h)*255), Math.round(hue2rgb(p,q,h-1/3)*255)];
-    }
-
-    function tuneAccentColor(r, g, b, targetL) {
-      let [h, s] = rgbToHsl(r, g, b);
-      s = s < 0.08 ? 0.14 : Math.min(0.86, Math.max(0.42, s * 1.25));
-      return hslToRgb(h, s, Math.min(0.48, Math.max(0.20, targetL)));
-    }
-
-    function applyCoverPalette(artworkUrl) {
-      if (!artworkUrl) return;
-      fallbackBackdrop.style.backgroundImage = `url("${artworkUrl}")`;
-      const probe = new Image();
-      probe.crossOrigin = "anonymous";
-      probe.onload = () => {
-        try {
-          const size = 32, canvas = document.createElement("canvas");
-          canvas.width = size; canvas.height = size;
-          const ctx = canvas.getContext("2d", { willReadFrequently: true });
-          ctx.drawImage(probe, 0, 0, size, size);
-          const data = ctx.getImageData(0, 0, size, size).data;
-          const quads = [[0,16,0,16],[16,32,0,16],[0,16,16,32],[16,32,16,32]];
-          const colors = quads.map(([x0,x1,y0,y1], idx) => {
-            let rS = 0, gS = 0, bS = 0, wS = 0;
-            for (let y = y0; y < y1; y++) {
-              for (let x = x0; x < x1; x++) {
-                const i = (y * size + x) * 4, r = data[i], g = data[i+1], b = data[i+2];
-                const [, sat, lum] = rgbToHsl(r, g, b);
-                const w = Math.max(0.15, (0.35 + sat * 1.8) * Math.max(0.2, 1 - Math.abs(lum - 0.5) * 1.4));
-                rS += r * w; gS += g * w; bS += b * w; wS += w;
-              }
-            }
-            return tuneAccentColor(rS/wS, gS/wS, bS/wS, idx % 2 === 0 ? 0.36 : 0.30);
-          });
-          const [h, s] = rgbToHsl(colors[0][0], colors[0][1], colors[0][2]);
-          const [br, bg, bb] = hslToRgb(h, Math.min(0.45, s * 0.65), 0.08);
-          rootStyle.setProperty("--bg-base", `rgb(${br}, ${bg}, ${bb})`);
-          rootStyle.setProperty("--c1", `rgba(${colors[0][0]}, ${colors[0][1]}, ${colors[0][2]}, 0.72)`);
-          rootStyle.setProperty("--c2", `rgba(${colors[1][0]}, ${colors[1][1]}, ${colors[1][2]}, 0.66)`);
-          rootStyle.setProperty("--c3", `rgba(${colors[2][0]}, ${colors[2][1]}, ${colors[2][2]}, 0.62)`);
-          rootStyle.setProperty("--c4", `rgba(${colors[3][0]}, ${colors[3][1]}, ${colors[3][2]}, 0.68)`);
-          fallbackBackdrop.style.opacity = "0";
-        } catch (_) { fallbackBackdrop.style.opacity = "1"; }
-      };
-      probe.onerror = () => { fallbackBackdrop.style.opacity = "1"; };
-      probe.src = artworkUrl;
-    }
-    function formatTime(ms) {
-      const sec = Math.max(0, Math.floor(ms / 1000));
-      return `${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, "0")}`;
-    }
-
-    function toggleLyrics(forceState) {
-      const targets = [document.getElementById("art-block"), document.getElementById("progress-block")];
-      const firstRects = targets.map(el => el.getBoundingClientRect());
-      const nextState = typeof forceState === "boolean" ? forceState : !document.body.classList.contains("lyrics-on");
-      document.body.classList.toggle("lyrics-on", nextState);
-      lyricsBtn.setAttribute("aria-pressed", String(nextState));
-      const lastRects = targets.map(el => el.getBoundingClientRect());
-      targets.forEach((el, i) => {
-        const dx = firstRects[i].left - lastRects[i].left, dy = firstRects[i].top - lastRects[i].top;
-        if (Math.abs(dx) > 1 || Math.abs(dy) > 1) {
-          el.animate([{ transform: `translate(${dx}px, ${dy}px)` }, { transform: "translate(0, 0)" }],
-            { duration: 460, easing: "cubic-bezier(0.22, 1, 0.36, 1)" });
-        }
-      });
-      if (nextState) requestAnimationFrame(() => syncLyricsScroll(true));
-    }
-
-    lyricsBtn.addEventListener("click", () => toggleLyrics());
-    document.addEventListener("keydown", (e) => { if (e.key === "l" || e.key === "L") toggleLyrics(); });
-
-    function setMetadata({ title, artist, artworkUrl }) {
-      if (title) titleEl.textContent = title;
-      if (artist) artistEl.textContent = artist;
-      if (artworkUrl) { coverImg.src = artworkUrl; applyCoverPalette(artworkUrl); }
-    }
-
     function setLyrics(lines) {
       lyricsLines = Array.isArray(lines) ? lines : [];
-      activeLineIdx = -1; lyricsTrack.innerHTML = "";
+      lyricsTrack.innerHTML = "";
+      activeLineIdx = -1;
       if (!lyricsLines.length) {
-        const empty = document.createElement("div");
-        empty.className = "lyric-line active";
-        empty.textContent = "No synced lyrics available for this track";
-        lyricsTrack.appendChild(empty); return;
+        const d = document.createElement("div"); d.className = "lyric-line active"; d.textContent = " ♪ ";
+        lyricsTrack.appendChild(d); return;
       }
-      lyricsLines.forEach((line, idx) => {
-        const div = document.createElement("div");
-        div.className = "lyric-line"; div.dataset.idx = String(idx);
-        div.textContent = line.text || "♪"; lyricsTrack.appendChild(div);
+      lyricsLines.forEach((l) => {
+        const d = document.createElement("div"); d.className = "lyric-line"; d.textContent = l.text || "♪";
+        lyricsTrack.appendChild(d);
       });
-      syncLyricsScroll(true);
     }
-
-    function syncLyricsScroll(force = false) {
+    function updateProgress(pos, dur) {
+      currentTimeMs = pos || 0; durationMs = dur || 0;
+      fillEl.style.width = (durationMs > 0 ? Math.min(100, (currentTimeMs / durationMs) * 100) : 0) + "%";
+      elapsedEl.textContent = fmt(currentTimeMs); totalEl.textContent = fmt(durationMs);
       if (!lyricsLines.length) return;
-      let idx = 0;
-      for (let i = 0; i < lyricsLines.length; i++) {
-        if (currentTimeMs >= lyricsLines[i].timeMs) idx = i; else break;
-      }
-      if (idx === activeLineIdx && !force) return;
-      activeLineIdx = idx;
-      const children = lyricsTrack.children;
-      for (let i = 0; i < children.length; i++) {
-        children[i].classList.toggle("active", i === idx);
-        children[i].classList.toggle("past", i < idx);
-      }
-      const activeEl = children[idx];
-      if (activeEl && document.body.classList.contains("lyrics-on")) {
-        const offset = Math.max(0, activeEl.offsetTop + activeEl.offsetHeight / 2 - lyricsPanel.clientHeight * 0.44);
-        lyricsTrack.style.transform = `translateY(${-offset}px)`;
-      }
-    }
-
-    function updateProgress(posMs, durMs) {
-      currentTimeMs = posMs;
-      if (durMs > 0) durationMs = durMs;
-      fillEl.style.width = `${durationMs > 0 ? Math.min(100, (currentTimeMs / durationMs) * 100) : 0}%`;
-      elapsedEl.textContent = formatTime(currentTimeMs);
-      totalEl.textContent = formatTime(durationMs);
-      syncLyricsScroll(false);
-    }
-
-    function initCastReceiver() {
-      if (!window.cast || !cast.framework) return false;
-      const context = cast.framework.CastReceiverContext.getInstance();
-      const playerManager = context.getPlayerManager();
-      playerManager.setMessageInterceptor(cast.framework.messages.MessageType.LOAD, (req) => {
-        const meta = req.media && req.media.metadata;
-        if (meta) setMetadata({ title: meta.title || "Unknown Track", artist: meta.artist || meta.subtitle || "", artworkUrl: (meta.images && meta.images[0] && meta.images[0].url) || "" });
-        const custom = req.media && req.media.customData;
-        if (custom && Array.isArray(custom.lyrics)) setLyrics(custom.lyrics);
-        return req;
-      });
-      context.addCustomMessageListener(LYRICS_NS, (e) => {
-        const d = e.data || {};
-        if (d.type === "METADATA") setMetadata(d);
-        if (d.type === "LYRICS") setLyrics(d.lines || []);
-        if (d.type === "POSITION") updateProgress(d.positionMs || 0, d.durationMs || durationMs);
-      });
-      setInterval(() => {
-        if (playerManager.getPlayerState() === cast.framework.messages.PlayerState.PLAYING) {
-          updateProgress(playerManager.getCurrentTimeSec() * 1000, playerManager.getDurationSec() * 1000);
+      let idx = -1;
+      for (let i = 0; i < lyricsLines.length; i++) { if (currentTimeMs >= lyricsLines[i].timeMs) idx = i; else break; }
+      if (idx !== activeLineIdx) {
+        activeLineIdx = idx;
+        const nodes = lyricsTrack.children;
+        for (let i = 0; i < nodes.length; i++) {
+          nodes[i].className = i === idx ? "lyric-line active" : (i < idx ? "lyric-line past" : "lyric-line");
         }
-      }, 250);
-      const opts = new cast.framework.CastReceiverOptions();
-      opts.disableIdleTimeout = false; context.start(opts);
-      return true;
+        if (idx >= 0 && nodes[idx]) {
+          lyricsTrack.style.transform = `translate3d(0, ${-nodes[idx].offsetTop + 140}px, 0)`;
+        }
+      }
     }
+    lyricsBtn.addEventListener("click", () => document.body.classList.toggle("lyrics-on"));
+    function sendCmd(cmd, delta = 0) {
+      if (cmd === "toggle") {
+        isPlaying = !isPlaying;
+        playPauseBtn.innerHTML = isPlaying ? PAUSE_SVG : PLAY_SVG;
+      } else if (cmd === "seek") {
+        updateProgress(Math.max(0, Math.min(durationMs || Infinity, currentTimeMs + delta)), durationMs);
+      }
+      fetch(`/api/control?cmd=${cmd}&delta=${delta}`, { cache: "no-store" }).catch(() => {});
+    }
+    rewBtn.addEventListener("click", () => sendCmd("seek", -10000));
+    playPauseBtn.addEventListener("click", () => sendCmd("toggle", 0));
+    fwdBtn.addEventListener("click", () => sendCmd("seek", 10000));
 
-    
-    // Local Wi-Fi Web Cast live sync (no Cast Console registration required)
-    let lastTrackId = "", lastArtworkUrl = "", lastLyricsSig = "";
-    setInterval(async () => {
+    const btns = [rewBtn, playPauseBtn, fwdBtn, lyricsBtn];
+    let fIdx = -1;
+    function syncFocus() { btns.forEach((b, i) => b.classList.toggle("tv-focus", i === fIdx)); }
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowDown" || e.keyCode === 40) { e.preventDefault(); fIdx = fIdx === -1 ? 1 : (fIdx + 1) % btns.length; syncFocus(); }
+      else if (e.key === "ArrowUp" || e.keyCode === 38) { e.preventDefault(); fIdx = -1; syncFocus(); }
+      else if (e.key === "ArrowLeft" || e.keyCode === 37) { e.preventDefault(); if (fIdx !== -1) { fIdx = (fIdx + 3) % 4; syncFocus(); } else sendCmd("seek", -10000); }
+      else if (e.key === "ArrowRight" || e.keyCode === 39) { e.preventDefault(); if (fIdx !== -1) { fIdx = (fIdx + 1) % 4; syncFocus(); } else sendCmd("seek", 10000); }
+      else if (e.key === "Enter" || e.key === " " || e.keyCode === 13 || e.keyCode === 23) { e.preventDefault(); if (fIdx !== -1) btns[fIdx].click(); else sendCmd("toggle", 0); }
+    });
+
+    let lastArt = "", lastSig = "";
+    async function pollState() {
       try {
         const res = await fetch("/api/state", { cache: "no-store" });
         if (!res.ok) return;
         const d = await res.json();
-        const artChanged = d.artworkUrl && d.artworkUrl !== lastArtworkUrl;
-        if (d.trackId !== lastTrackId || artChanged) {
-          lastTrackId = d.trackId || "";
-          lastArtworkUrl = d.artworkUrl || "";
-          setMetadata({ title: d.title, artist: d.artist, artworkUrl: d.artworkUrl });
+        titleEl.textContent = d.title || "Ready to Cast";
+        artistEl.textContent = d.artist || "Select a song in Zen";
+        isPlaying = !!d.isPlaying;
+        playPauseBtn.innerHTML = isPlaying ? PAUSE_SVG : PLAY_SVG;
+        if (d.artworkUrl && d.artworkUrl !== lastArt) {
+          lastArt = d.artworkUrl;
+          coverImg.src = d.artworkUrl;
+          backdrop.style.backgroundImage = `url("${d.artworkUrl}")`;
+          backdrop.style.opacity = "0.75";
         }
         const sig = (d.lyrics || []).length + ":" + ((d.lyrics && d.lyrics[0] && d.lyrics[0].text) || "");
-        if (sig !== lastLyricsSig) {
-          lastLyricsSig = sig;
-          setLyrics(d.lyrics || []);
-        }
+        if (sig !== lastSig) { lastSig = sig; setLyrics(d.lyrics || []); }
         updateProgress(d.positionMs || 0, d.durationMs || 0);
+        if (!isLocalPreview && aud && d.audioUrl) {
+          if (aud.dataset.src !== d.audioUrl) { aud.dataset.src = d.audioUrl; aud.src = d.audioUrl; }
+          const sec = (d.positionMs || 0) / 1000;
+          if (Math.abs((aud.currentTime || 0) - sec) > 1.5 && isFinite(aud.duration)) aud.currentTime = sec;
+          if (d.isPlaying && aud.paused) aud.play().catch(() => {});
+          else if (!d.isPlaying && !aud.paused) aud.pause();
+        }
       } catch (_) {}
-    }, 300);
-
-    if (false && !initCastReceiver() || window.location.search.includes("preview=1")) {
-      setMetadata({ title: "The Less I Know The Better", artist: "Tame Impala" });
-      setLyrics([
-        { timeMs: 0, text: "Someone said they left together" },
-        { timeMs: 4000, text: "I ran out the door to get her" },
-        { timeMs: 8000, text: "She was holding hands with Trevor" },
-        { timeMs: 12000, text: "Not the greatest feeling ever" },
-        { timeMs: 16000, text: "Said, \"Pull yourself together\"" },
-        { timeMs: 20000, text: "You should try your luck with Heather" },
-      ]);
-      durationMs = 24000; isPlaying = true;
-      setInterval(() => { if (isPlaying) { currentTimeMs = (currentTimeMs + 250) % durationMs; updateProgress(currentTimeMs, durationMs); } }, 250);
     }
-    
-    // TV Remote D-Pad: OK=Play/Pause, Down=Highlight Lyrics/Controls, Left/Right=-10s/+10s
-    const seekHud = document.createElement("div");
-    seekHud.style.cssText = "position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);padding:16px 28px;border-radius:999px;background:rgba(0,0,0,0.68);backdrop-filter:blur(16px);color:#fff;font-size:28px;font-weight:700;letter-spacing:0.5px;opacity:0;pointer-events:none;transition:opacity 0.18s ease;z-index:99;";
-    document.body.appendChild(seekHud);
-    let hudTimer = null;
-    function flashHud(label) {
-      seekHud.textContent = label;
-      seekHud.style.opacity = "1";
-      clearTimeout(hudTimer);
-      hudTimer = setTimeout(() => { seekHud.style.opacity = "0"; }, 900);
-    }
-
-    const playPauseBtn = document.getElementById("tv-play-pause");
-    const lyricsBtn = document.querySelector('[id*="lyric" i]') || document.querySelector("button:last-of-type");
-    const rewBtn = document.getElementById("tv-rew-btn"); const fwdBtn = document.getElementById("tv-fwd-btn");
-    if (rewBtn) rewBtn.addEventListener("click", (e) => { e.stopPropagation(); sendRemoteControl("seek", -10000); });
-    if (fwdBtn) fwdBtn.addEventListener("click", (e) => { e.stopPropagation(); sendRemoteControl("seek", 10000); });
-    const remoteButtons = [rewBtn, playPauseBtn, fwdBtn, lyricsBtn].filter(Boolean);
-    let focusedBtnIdx = -1;
-
-    function updateFocusRing() {
-      remoteButtons.forEach((btn, idx) => {
-        if (idx === focusedBtnIdx) {
-          btn.classList.add("tv-focus");
-          btn.focus({ preventScroll: true });
-        } else {
-          btn.classList.remove("tv-focus");
-        }
-      });
-    }
-
-    function sendRemoteControl(cmd, delta = 0) {
-      const aud = document.getElementById("tv-audio");
-      if (cmd === "toggle") {
-        const willPlay = aud ? aud.paused : (playPauseBtn && playPauseBtn.textContent.trim() === "▶");
-        flashHud(willPlay ? "▶ Playing" : "⏸ Paused");
-        if (playPauseBtn) playPauseBtn.innerHTML = willPlay ? `<svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>` : `<svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M8 5.14v14l11-7-11-7z"/></svg>`;
-        if (aud && aud.src) {
-          if (willPlay) aud.play().catch(() => {});
-          else aud.pause();
-        }
-      } else if (cmd === "seek" && delta !== 0) {
-        flashHud(delta > 0 ? "+10s ⏩" : "⏪ -10s");
-        currentTimeMs = Math.max(0, Math.min(durationMs || Infinity, (currentTimeMs || 0) + delta));
-        updateProgress(currentTimeMs, durationMs);
-        if (aud && isFinite(aud.duration)) {
-          aud.currentTime = Math.max(0, Math.min(aud.duration, aud.currentTime + delta / 1000));
-        }
-      }
-      fetch(`/api/control?cmd=${cmd}&delta=${delta}`, { cache: "no-store" }).catch(() => {});
-    }
-
-    if (playPauseBtn) {
-      playPauseBtn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        sendRemoteControl("toggle", 0);
-      });
-    }
-
-    document.addEventListener("keydown", (e) => {
-      const k = e.key;
-      const c = e.keyCode;
-      if (k === "ArrowDown" || c === 40) {
-        e.preventDefault();
-        focusedBtnIdx = remoteButtons.indexOf(lyricsBtn) !== -1 ? remoteButtons.indexOf(lyricsBtn) : 0;
-        updateFocusRing();
-      } else if (k === "ArrowUp" || k === "Escape" || k === "Backspace" || c === 38 || c === 27) {
-        if (focusedBtnIdx !== -1) {
-          e.preventDefault();
-          focusedBtnIdx = -1;
-          updateFocusRing();
-        }
-      } else if (k === "ArrowLeft" || c === 37) {
-        e.preventDefault();
-        if (focusedBtnIdx !== -1 && remoteButtons.length > 1) {
-          focusedBtnIdx = (focusedBtnIdx - 1 + remoteButtons.length) % remoteButtons.length;
-          updateFocusRing();
-        } else {
-          sendRemoteControl("seek", -10000);
-        }
-      } else if (k === "ArrowRight" || c === 39) {
-        e.preventDefault();
-        if (focusedBtnIdx !== -1 && remoteButtons.length > 1) {
-          focusedBtnIdx = (focusedBtnIdx + 1) % remoteButtons.length;
-          updateFocusRing();
-        } else {
-          sendRemoteControl("seek", 10000);
-        }
-      } else if (k === "Enter" || k === " " || c === 13 || c === 23 || c === 32) {
-        e.preventDefault();
-        if (focusedBtnIdx !== -1 && remoteButtons[focusedBtnIdx]) {
-          remoteButtons[focusedBtnIdx].click();
-          if (remoteButtons[focusedBtnIdx] === lyricsBtn) {
-            const isOpen = lyricsBtn.getAttribute("aria-pressed") === "true" || document.body.classList.contains("lyrics-open");
-            flashHud("Lyrics");
-          }
-        } else {
-          sendRemoteControl("toggle", 0);
-        }
-      } else if (k === "MediaRewind" || c === 227) {
-        e.preventDefault(); sendRemoteControl("seek", -10000);
-      } else if (k === "MediaFastForward" || c === 228) {
-        e.preventDefault(); sendRemoteControl("seek", 10000);
-      } else if (k === "MediaPlayPause" || k === "MediaPlay" || k === "MediaPause" || c === 179 || c === 126 || c === 127) {
-        e.preventDefault(); sendRemoteControl("toggle", 0);
-      }
-    });
-
-    window.addEventListener("load", () => lyricsBtn.focus());
+    setInterval(pollState, 300);
+    pollState();
   </script>
 </body>
 </html>
