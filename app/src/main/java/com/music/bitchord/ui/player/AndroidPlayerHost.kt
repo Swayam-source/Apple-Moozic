@@ -239,9 +239,16 @@ class AndroidPlayerHost(context: Context) : PlayerHost {
 
     override val castState: StateFlow<CastUi> by lazy {
         CastController.ensureStarted(app)
-        CastController.state
-            .map { CastUi(supported = it.supported, connectedName = it.connectedName, connecting = it.connecting) }
-            .stateIn(scope, SharingStarted.Eagerly, CastUi())
+        kotlinx.coroutines.flow.combine(
+            CastController.state,
+            com.music.bitchord.playback.cast.WebCastServer.state,
+        ) { cast, web ->
+            CastUi(
+                supported = true,
+                connectedName = cast.connectedName ?: if (web.running && web.clientConnected) "TV Browser" else null,
+                connecting = cast.connecting,
+            )
+        }.stateIn(scope, SharingStarted.Eagerly, CastUi(supported = true))
     }
 
     @Composable
