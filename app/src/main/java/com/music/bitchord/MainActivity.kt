@@ -6156,6 +6156,8 @@ private fun BitChordApp(
             }
         }
 
+        com.music.bitchord.update.AppUpdaterHost()
+
         if (showSpotifyCanvasAuth) {
             BackHandler { showSpotifyCanvasAuth = false }
             SpotifyCanvasAuthScreen(
