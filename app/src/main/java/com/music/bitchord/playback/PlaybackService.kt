@@ -2022,6 +2022,17 @@ class PlaybackService : MediaLibraryService() {
         com.music.bitchord.playback.cast.WebCastServer.controlHandler = { cmd, delta ->
             scope.launch(kotlinx.coroutines.Dispatchers.Main) {
                 when (cmd) {
+                    "seekTo" -> {
+                        val target = delta.coerceAtLeast(0L)
+                        if (castPlayback.active) {
+                            castPlayback.seekTo(target)
+                        } else {
+                            val exo = player ?: return@launch
+                            val dur = exo.duration
+                            exo.seekTo(if (dur > 0L) target.coerceAtMost(dur) else target)
+                        }
+                        refreshWebCastSnapshotOnMain()
+                    }
                     "seek" -> {
                         if (castPlayback.active) {
                             castPlayback.seekTo((castPlayback.positionMs + delta).coerceAtLeast(0L))
