@@ -2047,6 +2047,11 @@ class PlaybackService : MediaLibraryService() {
         startWebCastTicker()
     }
 
+    private val webCastAudioUrls = java.util.concurrent.ConcurrentHashMap<String, String>()
+    private val webCastResolving = java.util.concurrent.ConcurrentHashMap.newKeySet<String>()
+    @Volatile private var latestWebCastSnapshot = com.music.bitchord.playback.cast.WebCastServer.TrackSnapshot()
+    private var webCastTickerJob: Job? = null
+
     private fun refreshWebCastSnapshotOnMain() {
         val exo = player
         val item = exo?.currentMediaItem
@@ -2085,7 +2090,7 @@ class PlaybackService : MediaLibraryService() {
     private fun startWebCastTicker() {
         if (webCastTickerJob?.isActive == true) return
         webCastTickerJob = scope.launch(kotlinx.coroutines.Dispatchers.Main) {
-            while (kotlinx.coroutines.isActive) {
+            while (true) {
                 refreshWebCastSnapshotOnMain()
                 kotlinx.coroutines.delay(250L)
             }

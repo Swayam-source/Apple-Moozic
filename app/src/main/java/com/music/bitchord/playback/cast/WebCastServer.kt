@@ -36,6 +36,7 @@ object WebCastServer {
         val title: String = "Ready to Cast",
         val artist: String = "Select a song in Zen",
         val artworkUri: Uri? = null,
+        val audioUrl: String = "",
         val positionMs: Long = 0L,
         val durationMs: Long = 0L,
         val isPlaying: Boolean = false,
@@ -179,7 +180,7 @@ object WebCastServer {
         }
         val json = JSONObject()
             .put("trackId", snap.trackId).put("title", snap.title).put("artist", snap.artist)
-            .put("artworkUrl", artUrl).put("positionMs", snap.positionMs)
+            .put("artworkUrl", artUrl).put("audioUrl", snap.audioUrl).put("positionMs", snap.positionMs)
             .put("durationMs", snap.durationMs).put("isPlaying", snap.isPlaying)
             .put("lyrics", lyricsArr).toString().toByteArray(StandardCharsets.UTF_8)
         writeHeaders(out, "200 OK", "application/json; charset=utf-8", json.size.toLong())
