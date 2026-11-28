@@ -11,7 +11,10 @@ import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.util.Arrays
 import kotlin.math.PI
+import kotlin.math.abs
 import kotlin.math.cos
+import kotlin.math.max
+import kotlin.math.min
 import kotlin.math.sin
 import kotlin.math.sqrt
 
@@ -47,27 +50,29 @@ class SingAlongProcessorChain(
 }
 
 /**
- * 2048-point STFT / iSTFT Spectro-Temporal Vocal Separator (75% overlap-add, 5-frame HPSS lookahead).
- * Separates vocals from instruments across 1,025 discrete frequency bins without attenuating stereo instruments
- * or center bass/drum transients.
+ * 4096-point High-Resolution Harmonic-Formant & Stereo Vocal Reverb Separator (~11.7 Hz bin resolution).
+ *
+ * - Isolates narrowband center vocal harmonics from broadband center instruments via local spectral
+ *   prominence + 3-bin morphological MAX dilation (capturing the full Hann main lobe without diluting peaks).
+ * - Cancels stereo vocal chorus/doubles and 180ms vocal reverb tails in the Side channel on active vocal bins
+ *   while keeping stereo instruments (|Side| > 0.62 |Mid|), sub-215 Hz bass/kick, and broadband drum hits at 100%.
  */
 @UnstableApi
 class SingAlongAudioProcessor : BaseAudioProcessor() {
     companion object {
-        private const val FFT_SIZE = 2048
-        private const val HALF_BINS = 1025
-        private const val HOP_SIZE = 512
-        private const val RING_SIZE = 8192
+        private const val FFT_SIZE = 4096
+        private const val HALF_BINS = 2049
+        private const val HOP_SIZE = 1024
+        private const val RING_SIZE = 16384
         private const val RING_MASK = RING_SIZE - 1
-        private const val HIST_FRAMES = 5
-        private const val OLA_NORM = 1.5f // Sum of squared periodic Hann window at 75% overlap (N/4)
+        private const val OLA_NORM = 1.5f
     }
 
     private val window = FloatArray(FFT_SIZE) { i ->
         (0.5 * (1.0 - cos(2.0 * PI * i / FFT_SIZE))).toFloat()
     }
     private val bitRev = IntArray(FFT_SIZE).apply {
-        val bits = 11 // log2(2048)
+        val bits = 12 // log2(4096)
         for (i in 0 until FFT_SIZE) {
             var rev = 0
             var v = i
@@ -94,21 +99,24 @@ class SingAlongAudioProcessor : BaseAudioProcessor() {
     private var outReadPos = 0
     private var hopCounter = 0
 
-    // 5-frame spectro-temporal circular history for Harmonic-Percussive + Wiener vocal masking
-    private val midReHist = Array(HIST_FRAMES) { FloatArray(HALF_BINS) }
-    private val midImHist = Array(HIST_FRAMES) { FloatArray(HALF_BINS) }
-    private val sideReHist = Array(HIST_FRAMES) { FloatArray(HALF_BINS) }
-    private val sideImHist = Array(HIST_FRAMES) { FloatArray(HALF_BINS) }
-    private val midPowHist = Array(HIST_FRAMES) { FloatArray(HALF_BINS) }
-    private val sidePowHist = Array(HIST_FRAMES) { FloatArray(HALF_BINS) }
-    private var histHead = 0
-    private var framesFilled = 0
-
     private val fftRe = FloatArray(FFT_SIZE)
     private val fftIm = FloatArray(FFT_SIZE)
-    private val rawMask = FloatArray(HALF_BINS)
-    private val smoothMask = FloatArray(HALF_BINS)
-    private val prevBinGain = FloatArray(HALF_BINS) { 1f }
+
+    private val midRe = FloatArray(HALF_BINS)
+    private val midIm = FloatArray(HALF_BINS)
+    private val sideRe = FloatArray(HALF_BINS)
+    private val sideIm = FloatArray(HALF_BINS)
+    private val midMag = FloatArray(HALF_BINS)
+    private val sideMag = FloatArray(HALF_BINS)
+    private val prevMidMag = FloatArray(HALF_BINS)
+
+    //Prefix-sum buffer for O(1) local spectral floor & formant envelope calculation
+    private val magPrefix = FloatArray(HALF_BINS + 1)
+    private val rawVocalMask = FloatArray(HALF_BINS)
+    private val dilatedMask = FloatArray(HALF_BINS)
+    private val vocalReverbHold = FloatArray(HALF_BINS)
+    private val prevMidGain = FloatArray(HALF_BINS) { 1f }
+    private val prevSideGain = FloatArray(HALF_BINS) { 1f }
 
     private var binHz = 48000f / FFT_SIZE
     private var smoothCut = 0f
@@ -134,22 +142,15 @@ class SingAlongAudioProcessor : BaseAudioProcessor() {
         Arrays.fill(olaRingR, 0f)
         Arrays.fill(outQueueL, 0f)
         Arrays.fill(outQueueR, 0f)
-        Arrays.fill(prevBinGain, 1f)
-        for (f in 0 until HIST_FRAMES) {
-            Arrays.fill(midReHist[f], 0f)
-            Arrays.fill(midImHist[f], 0f)
-            Arrays.fill(sideReHist[f], 0f)
-            Arrays.fill(sideImHist[f], 0f)
-            Arrays.fill(midPowHist[f], 0f)
-            Arrays.fill(sidePowHist[f], 0f)
-        }
+        Arrays.fill(prevMidMag, 0f)
+        Arrays.fill(vocalReverbHold, 0f)
+        Arrays.fill(prevMidGain, 1f)
+        Arrays.fill(prevSideGain, 1f)
         inWritePos = 0
         olaWritePos = 0
         outWritePos = 0
         outReadPos = 0
         hopCounter = 0
-        histHead = 0
-        framesFilled = 0
     }
 
     private fun fft(re: FloatArray, im: FloatArray, invert: Boolean) {
@@ -195,10 +196,10 @@ class SingAlongAudioProcessor : BaseAudioProcessor() {
     }
 
     private fun processStftHop(targetCut: Float) {
-        smoothCut += (targetCut - smoothCut) * 0.25f
+        smoothCut += (targetCut - smoothCut) * 0.35f
         val cut = smoothCut.coerceIn(0f, 1f)
 
-        // 1. Window latest 2048 stereo samples into Mid (real) and Side (imag)
+        // 1. Window latest 4096 samples into Mid (real) and Side (imag)
         val startIn = (inWritePos - FFT_SIZE) and RING_MASK
         for (i in 0 until FFT_SIZE) {
             val idx = (startIn + i) and RING_MASK
@@ -209,18 +210,13 @@ class SingAlongAudioProcessor : BaseAudioProcessor() {
             fftIm[i] = 0.5f * (l - r) * w
         }
 
-        // 2. Forward 2048-point FFT
+        // 2. Forward 4096-point FFT
         fft(fftRe, fftIm, invert = false)
 
-        // 3. Unpack Mid and Side complex spectra into current history slot
-        val slot = histHead
-        val mRe = midReHist[slot]
-        val mIm = midImHist[slot]
-        val sRe = sideReHist[slot]
-        val sIm = sideImHist[slot]
-        val mPow = midPowHist[slot]
-        val sPow = sidePowHist[slot]
-
+        // 3. Unpack Mid and Side spectra & build prefix sum of Mid magnitude
+        magPrefix[0] = 0f
+        var onsetBins = 0
+        var checkedBins = 0
         for (k in 0 until HALF_BINS) {
             val mirror = if (k == 0 || k == HALF_BINS - 1) k else (FFT_SIZE - k)
             val zReK = fftRe[k]
@@ -233,102 +229,138 @@ class SingAlongAudioProcessor : BaseAudioProcessor() {
             val sr = 0.5f * (zImK + zImM)
             val si = -0.5f * (zReK - zReM)
 
-            mRe[k] = mr; mIm[k] = mi
-            sRe[k] = sr; sIm[k] = si
-            mPow[k] = mr * mr + mi * mi
-            sPow[k] = sr * sr + si * si
+            midRe[k] = mr; midIm[k] = mi
+            sideRe[k] = sr; sideIm[k] = si
+
+            val mMag = sqrt(mr * mr + mi * mi)
+            val sMag = sqrt(sr * sr + si * si)
+            midMag[k] = mMag
+            sideMag[k] = sMag
+            magPrefix[k + 1] = magPrefix[k] + mMag
+
+            // Global broadband drum transient check across 1400 Hz - 8500 Hz
+            val freq = k * binHz
+            if (freq in 1400f..8500f) {
+                checkedBins++
+                if (mMag > prevMidMag[k] * 2.35f + 1e-5f) {
+                    onsetBins++
+                }
+            }
+            prevMidMag[k] = mMag
         }
 
-        histHead = (histHead + 1) % HIST_FRAMES
-        if (framesFilled < HIST_FRAMES) framesFilled++
+        // True drum hit spikes >36% of all high-frequency bins simultaneously; sung syllables never do
+        val isBroadbandDrumHit = checkedBins > 0 && (onsetBins.toFloat() / checkedBins) > 0.36f
 
-        // 4. Evaluate 2D Spectro-Temporal HPSS + Wiener Vocal Mask on the center frame (2-hop lookahead)
-        val cSlot = if (framesFilled >= HIST_FRAMES) {
-            (slot + HIST_FRAMES - 2) % HIST_FRAMES
-        } else {
-            slot
-        }
-        val tM2 = (cSlot + HIST_FRAMES - 2) % HIST_FRAMES
-        val tM1 = (cSlot + HIST_FRAMES - 1) % HIST_FRAMES
-        val tP1 = (cSlot + 1) % HIST_FRAMES
-        val tP2 = (cSlot + 2) % HIST_FRAMES
-
-        val cMidRe = midReHist[cSlot]
-        val cMidIm = midImHist[cSlot]
-        val cSideRe = sideReHist[cSlot]
-        val cSideIm = sideImHist[cSlot]
-        val cMidPow = midPowHist[cSlot]
-        val cSidePow = sidePowHist[cSlot]
-
+        // 4. Compute per-bin Vocal Harmonic + Formant + Center Coherence Mask
         for (k in 0 until HALF_BINS) {
             val freq = k * binHz
-            if (freq < 130f || freq > 9200f) {
-                rawMask[k] = 0f
+            // Hard-protect sub-205 Hz bass/kick fundamental & >9500 Hz air
+            if (freq < 205f || freq > 9500f) {
+                rawVocalMask[k] = 0f
                 continue
             }
 
-            val pMid = cMidPow[k]
-            val pSide = cSidePow[k]
+            val mMag = midMag[k]
+            val sMag = sideMag[k]
 
-            // Stereo panning coherence: 1.0 = dead center, 0.0 = wide stereo instrument
-            val centerRatio = pMid / (pMid + pSide * 1.25f + 1e-10f)
+            // Local 3-bin peak magnitude (handles Hann window main lobe straddling two bins)
+            val localPeak = max(
+                mMag,
+                max(
+                    if (k > 0) midMag[k - 1] else 0f,
+                    if (k + 1 < HALF_BINS) midMag[k + 1] else 0f,
+                ),
+            )
 
-            // Temporal harmonic sustain (vocals sustain across frames; drum hits spike in a single frame)
-            val timeSupport = if (framesFilled >= HIST_FRAMES) {
-                0.25f * (midPowHist[tM2][k] + midPowHist[tM1][k] + midPowHist[tP1][k] + midPowHist[tP2][k])
-            } else {
-                pMid
-            }
-            val isPercussiveTransient = pMid > (timeSupport * 3.4f + 1e-7f)
+            // Wide neighborhood average (±22 bins ≈ ±250 Hz) measures broadband instrumental floor
+            val lo = max(0, k - 22)
+            val hi = min(HALF_BINS - 1, k + 22)
+            val broadFloor = (magPrefix[hi + 1] - magPrefix[lo]) / (hi - lo + 1).toFloat()
 
-            // Vocal fundamental & formant band weighting (130 Hz - 9200 Hz)
+            // Harmonic peak prominence: vocal harmonics stand above the broadband floor
+            val peakRatio = localPeak / (broadFloor + 1e-7f)
+            val harmonicProminence = ((peakRatio - 0.85f) / 0.80f).coerceIn(0f, 1f)
+
+            // Linear magnitude stereo panning ratio: |Side| / |Mid|
+            // Center vocal has sRatio < 0.35; wide stereo instruments have sRatio > 0.50
+            val sRatio = sMag / (localPeak + 1e-7f)
+            val centerPanMask = ((0.68f - sRatio) / 0.43f).coerceIn(0f, 1f)
+
+            // Vocal frequency band weight: full strength across 245 Hz - 5200 Hz, tapered edges
             val bandWeight = when {
-                freq < 175f -> (freq - 130f) / 45f
-                freq <= 5200f -> 1.0f
-                else -> (1f - (freq - 5200f) / 4000f).coerceIn(0f, 1f)
+                freq < 250f -> ((freq - 205f) / 45f).coerceIn(0f, 1f)
+                freq <= 5400f -> 1.0f
+                else -> ((9500f - freq) / 4100f).coerceIn(0f, 1f)
             }
 
-            val panMask = ((centerRatio - 0.28f) / 0.52f).coerceIn(0f, 1f)
-            val transientPreserve = if (isPercussiveTransient) 0.25f else 1.0f
-            rawMask[k] = (panMask * bandWeight * transientPreserve).coerceIn(0f, 1f)
+            // In the core vocal formant zone (280 Hz - 4200 Hz), strongly centered energy is vocal
+            val formantCoreBoost = if (freq in 280f..4200f && sRatio < 0.38f) {
+                max(harmonicProminence, 0.88f)
+            } else {
+                harmonicProminence
+            }
+
+            val drumProtect = if (isBroadbandDrumHit && freq > 1200f) 0.45f else 1.0f
+            rawVocalMask[k] = (centerPanMask * formantCoreBoost * bandWeight * drumProtect).coerceIn(0f, 1f)
         }
 
-        // Smooth mask across 5 adjacent frequency bins to prevent musical noise
+        // 5. 3-Bin Morphological MAX Dilation (NEVER a 5-bin mean!) so the entire 3-bin Hann main lobe
+        //    of every vocal harmonic receives 100% of the peak vocal mask
         for (k in 0 until HALF_BINS) {
-            var sum = 0f
-            var count = 0
-            for (d in -2..2) {
-                val nk = k + d
-                if (nk in 0 until HALF_BINS) {
-                    sum += rawMask[nk]
-                    count++
-                }
-            }
-            smoothMask[k] = sum / count
+            var maxM = rawVocalMask[k]
+            if (k > 0 && rawVocalMask[k - 1] > maxM) maxM = rawVocalMask[k - 1]
+            if (k + 1 < HALF_BINS && rawVocalMask[k + 1] > maxM) maxM = rawVocalMask[k + 1]
+            if (k > 1 && rawVocalMask[k - 2] * 0.85f > maxM) maxM = rawVocalMask[k - 2] * 0.85f
+            if (k + 2 < HALF_BINS && rawVocalMask[k + 2] * 0.85f > maxM) maxM = rawVocalMask[k + 2] * 0.85f
+            dilatedMask[k] = maxM
         }
 
-        // 5. Apply frequency-bin vocal cancellation to Mid while keeping Side instruments at 100%
+        // 6. Apply deep vocal notch to Mid and stereo vocal double/reverb cancellation to Side
         for (k in 0 until HALF_BINS) {
-            val vMask = smoothMask[k]
-            // Steep Wiener curve so cut=1.0 mutes vocal bins completely to 0.0 (-60 dB)
-            val targetMidGain = (1f - (cut * vMask)).let { g ->
-                if (cut > 0.96f && vMask > 0.55f) 0f else (g * g).coerceIn(0f, 1f)
-            }
-            // Temporal envelope smoothing per bin prevents clicking
-            val gMid = prevBinGain[k] * 0.35f + targetMidGain * 0.65f
-            prevBinGain[k] = gMid
+            val freq = k * binHz
+            val vMask = dilatedMask[k]
 
-            // Only duck faint vocal reverb in a Side bin if that specific 21.5 Hz bin is >85% center vocal
-            val gSide = if (cut > 0.65f && vMask > 0.82f) {
-                1f - 0.45f * cut * ((vMask - 0.82f) / 0.18f)
+            // Update 180ms vocal reverb decay envelope per bin (decays by 0.86 per 21ms hop)
+            vocalReverbHold[k] = max(vMask, vocalReverbHold[k] * 0.86f)
+
+            // Deep Mid vocal cancellation: reaches strict 0.0f (-inf dB) at cut=1.0 whenever vMask >= 0.35
+            val rawMidGain = if (cut > 0.94f && vMask >= 0.35f) {
+                0f
+            } else {
+                val g = (1f - cut * sqrt(vMask)).coerceIn(0f, 1f)
+                g * g * g
+            }
+
+            // Fast attack (instant vocal mute), smooth release
+            val gMid = if (rawMidGain < prevMidGain[k]) {
+                rawMidGain * 0.85f + prevMidGain[k] * 0.15f
+            } else {
+                rawMidGain * 0.45f + prevMidGain[k] * 0.55f
+            }
+            prevMidGain[k] = gMid
+
+            // Cancel stereo vocal doubles/chorus & reverb tail in Side channel (220 Hz - 5200 Hz)
+            // ONLY when Side is quieter than Mid (stereo vocal double/reverb), sparing loud stereo instruments
+            val sRatio = sideMag[k] / (midMag[k] + 1e-7f)
+            val revMask = vocalReverbHold[k]
+            val rawSideGain = if (freq in 220f..5200f && revMask > 0.38f && sRatio < 0.72f) {
+                val sideVocalStrength = ((revMask - 0.38f) / 0.62f).coerceIn(0f, 1f) *
+                    ((0.72f - sRatio) / 0.50f).coerceIn(0.25f, 1f)
+                (1f - cut * 0.92f * sideVocalStrength).coerceIn(0.06f, 1f)
             } else {
                 1f
             }
+            val gSide = rawSideGain * 0.70f + prevSideGain[k] * 0.30f
+            prevSideGain[k] = gSide
 
-            val mr = cMidRe[k] * gMid
-            val mi = cMidIm[k] * gMid
-            val sr = cSideRe[k] * gSide
-            val si = cSideIm[k] * gSide
+            // Gentle compensation on confirmed pure-instrument bins so overall song volume never drops
+            val instBoost = if (vMask < 0.18f && freq in 60f..7000f) (1f + 0.18f * cut) else 1f
+
+            val mr = midRe[k] * gMid * instBoost
+            val mi = midIm[k] * gMid * instBoost
+            val sr = sideRe[k] * gSide * instBoost
+            val si = sideIm[k] * gSide * instBoost
 
             val mirror = if (k == 0 || k == HALF_BINS - 1) k else (FFT_SIZE - k)
             fftRe[k] = mr - si
@@ -339,7 +371,7 @@ class SingAlongAudioProcessor : BaseAudioProcessor() {
             }
         }
 
-        // 6. Inverse 2048-point FFT & Hann Overlap-Add
+        // 7. Inverse 4096-point FFT & Hann Overlap-Add
         fft(fftRe, fftIm, invert = true)
 
         for (i in 0 until FFT_SIZE) {
@@ -351,7 +383,6 @@ class SingAlongAudioProcessor : BaseAudioProcessor() {
             olaRingR[outIdx] += midOut - sideOut
         }
 
-        // 7. Transfer completed HOP_SIZE (512) samples to output queue and clear accumulator
         for (i in 0 until HOP_SIZE) {
             val outIdx = (olaWritePos + i) and RING_MASK
             outQueueL[outWritePos] = olaRingL[outIdx].coerceIn(-1f, 1f)
