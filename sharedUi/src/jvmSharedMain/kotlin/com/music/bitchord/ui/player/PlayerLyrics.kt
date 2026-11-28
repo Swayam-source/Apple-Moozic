@@ -1538,12 +1538,14 @@ internal fun SingAlongMicControl(
 ) {
     val active by PlayerSettings.vocalReductionEnabled.collectAsStateWithLifecycle()
     val reduction by PlayerSettings.vocalReductionLevel.collectAsStateWithLifecycle()
-    val vocalVolume = if (active) (1f - reduction).coerceIn(0f, 1f) else 1f
+    // Always derived directly from reduction so the bar never jumps to 100% when toggling
+    val vocalVolume = (1f - reduction).coerceIn(0f, 1f)
     var sliderOpen by remember { mutableStateOf(false) }
+    var dragTick by remember { mutableIntStateOf(0) }
     val chrome = LocalPlayerChrome.current
     val haptics = rememberHaptics()
 
-    LaunchedEffect(sliderOpen, reduction) {
+    LaunchedEffect(sliderOpen, dragTick) {
         if (sliderOpen) {
             delay(4500L)
             sliderOpen = false
@@ -1551,8 +1553,15 @@ internal fun SingAlongMicControl(
     }
 
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        androidx.compose.animation.AnimatedVisibility(visible = sliderOpen && enabled) {
+        androidx.compose.animation.AnimatedVisibility(visible = active && sliderOpen && enabled) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    text = "${(vocalVolume * 100).roundToInt()}%",
+                    color = Color.White.copy(alpha = 0.92f),
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(bottom = 4.dp),
+                )
                 Box(
                     modifier = Modifier
                         .width(34.dp)
@@ -1568,10 +1577,13 @@ internal fun SingAlongMicControl(
                                     if (change.pressed) {
                                         change.consume()
                                         val h = this.size.height.toFloat().coerceAtLeast(1f)
-                                        val ratio = 1f - (change.position.y / h).coerceIn(0f, 1f)
+                                        val ratio = (1f - (change.position.y / h)).coerceIn(0f, 1f)
                                         val newCut = (1f - ratio).coerceIn(0f, 1f)
                                         PlayerSettings.setVocalReductionLevel(newCut)
-                                        PlayerSettings.setVocalReductionEnabled(newCut > 0.02f)
+                                        if (!PlayerSettings.vocalReductionEnabled.value) {
+                                            PlayerSettings.setVocalReductionEnabled(true)
+                                        }
+                                        dragTick++
                                     }
                                 }
                             }
@@ -1582,7 +1594,7 @@ internal fun SingAlongMicControl(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height((118f * vocalVolume).dp)
-                            .background(Color.White.copy(alpha = 0.90f)),
+                            .background(Color.White.copy(alpha = 0.92f)),
                     )
                 }
                 Spacer(Modifier.height(8.dp))
@@ -1611,15 +1623,21 @@ internal fun SingAlongMicControl(
                     onClick = {
                         haptics.play(Haptic.Select)
                         if (!active) {
-                            val targetCut = if (reduction < 0.15f) 0.92f else reduction
-                            PlayerSettings.setVocalReductionLevel(targetCut)
+                            // Turn on Sing-Along without overwriting your saved slider level unless it was left at 100% vocal
+                            if (reduction < 0.05f) {
+                                PlayerSettings.setVocalReductionLevel(0.95f)
+                            }
                             PlayerSettings.setVocalReductionEnabled(true)
                             sliderOpen = true
+                            dragTick++
                         } else if (!sliderOpen) {
+                            // Re-open slider at current level without changing volume
                             sliderOpen = true
+                            dragTick++
                         } else {
-                            PlayerSettings.setVocalReductionEnabled(false)
+                            // Turn off Sing-Along while keeping reduction level saved for next time
                             sliderOpen = false
+                            PlayerSettings.setVocalReductionEnabled(false)
                         }
                     },
                 ),
