@@ -1484,6 +1484,129 @@ private fun ContentDrawScope.sweepTo(
  * takes the icon's place rather than sitting beside it.
  */
 @Composable
+
+private val SingMicVector: androidx.compose.ui.graphics.vector.ImageVector by lazy {
+    androidx.compose.ui.graphics.vector.ImageVector.Builder(
+        name = "SingMic",
+        defaultWidth = 24.dp,
+        defaultHeight = 24.dp,
+        viewportWidth = 24f,
+        viewportHeight = 24f,
+    ).apply {
+        addPath(
+            pathData = androidx.compose.ui.graphics.vector.PathParser().parsePathString(
+                "M12,14c1.66,0 3,-1.34 3,-3V5c0,-1.66 -1.34,-3 -3,-3S9,3.34 9,5v6C9,12.66 10.34,14 12,14zM17.3,11c0,3 -2.54,5.1 -5.3,5.1S6.7,14 6.7,11H5c0,3.41 2.72,6.23 6,6.72V21h2v-3.28c3.28,-0.49 6,-3.31 6,-6.72H17.3z"
+            ).toNodes(),
+            fill = androidx.compose.ui.graphics.SolidColor(Color.White),
+        )
+    }.build()
+}
+
+@Composable
+internal fun SingAlongMicControl(
+    enabled: Boolean,
+) {
+    val active by PlayerSettings.vocalReductionEnabled.collectAsStateWithLifecycle()
+    val reduction by PlayerSettings.vocalReductionLevel.collectAsStateWithLifecycle()
+    val vocalVolume = (1f - reduction).coerceIn(0.05f, 1f)
+    var sliderOpen by remember { mutableStateOf(false) }
+    val chrome = LocalPlayerChrome.current
+    val haptics = rememberHaptics()
+
+    LaunchedEffect(active) {
+        if (!active) sliderOpen = false
+    }
+    LaunchedEffect(sliderOpen, reduction) {
+        if (sliderOpen) {
+            delay(3500L)
+            sliderOpen = false
+        }
+    }
+
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        androidx.compose.animation.AnimatedVisibility(visible = active && sliderOpen && enabled) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Box(
+                    modifier = Modifier
+                        .width(34.dp)
+                        .height(108.dp)
+                        .clip(RoundedCornerShape(17.dp))
+                        .additiveChrome(chrome)
+                        .background(Color.White.copy(alpha = 0.20f))
+                        .pointerInput(Unit) {
+                            awaitPointerEventScope {
+                                while (true) {
+                                    val event = awaitPointerEvent()
+                                    val change = event.changes.firstOrNull() ?: continue
+                                    if (change.pressed) {
+                                        change.consume()
+                                        val h = size.height.toFloat().coerceAtLeast(1f)
+                                        val ratio = 1f - (change.position.y / h).coerceIn(0f, 1f)
+                                        val newCut = (1f - ratio).coerceIn(0.05f, 0.95f)
+                                        PlayerSettings.setVocalReductionLevel(newCut)
+                                    }
+                                }
+                            }
+                        },
+                    contentAlignment = Alignment.BottomCenter,
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height((108f * vocalVolume).dp)
+                            .background(Color.White.copy(alpha = 0.88f)),
+                    )
+                }
+                Spacer(Modifier.height(8.dp))
+            }
+        }
+
+        val tint = when {
+            !enabled -> chromeWhite(0.42f)
+            active -> Color(0xFF0C0B10)
+            else -> chromeWhite(0.78f)
+        }
+        val discAlpha by animateFloatAsState(
+            targetValue = if (active) 0.92f else 0.18f,
+            label = "singMicDisc",
+        )
+        Box(
+            modifier = Modifier
+                .size(34.dp)
+                .clip(CircleShape)
+                .additiveChrome(chrome && !active)
+                .background(Color.White.copy(alpha = discAlpha))
+                .clickable(
+                    enabled = enabled,
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                    onClick = {
+                        haptics.play(Haptic.Select)
+                        if (!active) {
+                            if (reduction < 0.15f) PlayerSettings.setVocalReductionLevel(0.85f)
+                            PlayerSettings.setVocalReductionEnabled(true)
+                            sliderOpen = true
+                        } else if (!sliderOpen) {
+                            sliderOpen = true
+                        } else {
+                            PlayerSettings.setVocalReductionEnabled(false)
+                            sliderOpen = false
+                        }
+                    },
+                ),
+            contentAlignment = Alignment.Center,
+        ) {
+            Icon(
+                imageVector = SingMicVector,
+                contentDescription = "Sing Along Vocal Reducer",
+                tint = tint,
+                modifier = Modifier.size(19.dp),
+            )
+        }
+    }
+}
+
+@Composable
 internal fun TranslationToggleButton(
     state: LyricsTranslationUiState,
     showingTranslation: Boolean,

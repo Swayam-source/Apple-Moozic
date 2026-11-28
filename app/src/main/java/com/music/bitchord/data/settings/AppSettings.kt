@@ -573,6 +573,9 @@ object AppSettings {
      * carry their lyrics with it rather than leaving them on the English they
      * happened to be reading the day the setting was written.
      */
+        val vocalReductionLevel = MutableStateFlow(0f)
+    val vocalReductionEnabled = MutableStateFlow(false)
+
     val translationLanguage = MutableStateFlow("")
 
     /**
@@ -1142,6 +1145,8 @@ object AppSettings {
         lyricsBlur.value = prefs.getBoolean(KEY_LYRICS_BLUR, true)
         lyricsOffsetMs.value = prefs.getInt(KEY_LYRICS_OFFSET_MS, 0)
             .coerceIn(MIN_LYRICS_OFFSET_MS, MAX_LYRICS_OFFSET_MS)
+                vocalReductionLevel.value = prefs.getFloat("vocal_reduction_level", 0f)
+        vocalReductionEnabled.value = prefs.getBoolean("vocal_reduction_enabled", false)
         translationLanguage.value = prefs.getString(KEY_TRANSLATION_LANGUAGE, "").orEmpty()
         if (highPerformanceMode.value) {
             reduceAnimation.value = false
@@ -1813,6 +1818,17 @@ object AppSettings {
      * way a fresh install finds them. [syncedLyrics] itself is left alone —
      * this is "start over on *which* lyrics", not "turn lyrics off".
      */
+    fun setVocalReductionEnabled(value: Boolean) {
+        vocalReductionEnabled.value = value
+        prefs.edit().putBoolean("vocal_reduction_enabled", value).apply()
+    }
+
+    fun setVocalReductionLevel(value: Float) {
+        val clamped = value.coerceIn(0f, 1f)
+        vocalReductionLevel.value = clamped
+        prefs.edit().putFloat("vocal_reduction_level", clamped).apply()
+    }
+
     fun resetLyricsSourceSettings() {
         setLyricsSources(LyricsSource.offered.toSet())
         setLyricsSourceOrder(LyricsSource.offered)

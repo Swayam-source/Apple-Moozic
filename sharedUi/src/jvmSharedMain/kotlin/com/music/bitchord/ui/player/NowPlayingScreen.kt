@@ -4381,11 +4381,16 @@ fun NowPlayingScreen(
                                         onClick = lyricsTranslation.toggleRomanization,
                                     )
                                 }
-                                Box(
+                                Column(
                                     modifier = Modifier
                                         .align(Alignment.BottomEnd)
                                         .graphicsLayer { alpha = translateFade },
+                                    horizontalAlignment = Alignment.CenterHorizontally,
                                 ) {
+                                    SingAlongMicControl(
+                                        enabled = translateShown && !lyrics.isNullOrEmpty(),
+                                    )
+                                    Spacer(Modifier.height(10.dp))
                                     TranslationToggleButton(
                                         state = lyricsTranslation.translationState,
                                         showingTranslation = lyricsTranslation.showingTranslation,

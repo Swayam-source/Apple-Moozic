@@ -318,6 +318,10 @@ interface PlayerSettingsSource {
     val spotifyCanvasAutoHide: StateFlow<Boolean>
     val syncedLyrics: StateFlow<Boolean>
     val translationLanguage: StateFlow<String>
+    val vocalReductionEnabled: StateFlow<Boolean> get() = defaultVocalReductionEnabled
+    val vocalReductionLevel: StateFlow<Float> get() = defaultVocalReductionLevel
+    fun setVocalReductionEnabled(value: Boolean) {}
+    fun setVocalReductionLevel(value: Float) {}
     val versionAlignmentInProgress: StateFlow<Boolean>
 
     fun setLastPlayerScreen(value: LastPlayerScreen)
@@ -330,6 +334,8 @@ interface PlayerSettingsSource {
 internal val PlayerSettings: PlayerSettingsSource
     get() = PlayerPlatform.host.settings
 
+private val defaultVocalReductionEnabled: StateFlow<Boolean> = MutableStateFlow(false)
+private val defaultVocalReductionLevel: StateFlow<Float> = MutableStateFlow(0.85f)
 private val defaultAutoMixArtwork: StateFlow<AutoMixArtworkPreferences> = MutableStateFlow(AutoMixArtworkPreferences())
 
 /** The lyric offset sheet's range, in milliseconds either way. */

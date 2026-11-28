@@ -40,6 +40,7 @@ object WebCastServer {
         val positionMs: Long = 0L,
         val durationMs: Long = 0L,
         val isPlaying: Boolean = false,
+        val castActive: Boolean = false,
         val lyrics: List<LyricEntry> = emptyList(),
     )
 
@@ -133,7 +134,7 @@ object WebCastServer {
                 val out = BufferedOutputStream(s.getOutputStream())
                 when (path) {
                     "/", "/index.html" -> serveReceiverHtml(out)
-                    "/api/state" -> serveStateJson(out)
+                    "/api/state" -> serveStateJson(out, s.inetAddress?.hostAddress.orEmpty())
                     "/api/artwork" -> serveLocalArtwork(out)
                     "/api/control" -> {
                         val params = query.split("&").mapNotNull {
@@ -165,7 +166,10 @@ object WebCastServer {
         out.write(html)
     }
 
-    private fun serveStateJson(out: BufferedOutputStream) {
+    private fun serveStateJson(out: BufferedOutputStream, clientIp: String = "") {
+        val myIp = localWifiIp()
+        val isSameDevice = clientIp == "127.0.0.1" || clientIp == "::1" ||
+            clientIp == "0:0:0:0:0:0:0:1" || (myIp != null && clientIp == myIp)
         lastClientPingMs = SystemClock.elapsedRealtime()
         val cur = _state.value
         if (cur.running && !cur.clientConnected) _state.value = cur.copy(clientConnected = true)
@@ -181,7 +185,7 @@ object WebCastServer {
         val json = JSONObject()
             .put("trackId", snap.trackId).put("title", snap.title).put("artist", snap.artist)
             .put("artworkUrl", artUrl).put("audioUrl", snap.audioUrl).put("positionMs", snap.positionMs)
-            .put("durationMs", snap.durationMs).put("isPlaying", snap.isPlaying)
+            .put("durationMs", snap.durationMs).put("isPlaying", snap.isPlaying).put("castActive", snap.castActive).put("isSameDevice", isSameDevice)
             .put("lyrics", lyricsArr).toString().toByteArray(StandardCharsets.UTF_8)
         writeHeaders(out, "200 OK", "application/json; charset=utf-8", json.size.toLong())
         out.write(json)
@@ -215,6 +219,35 @@ object WebCastServer {
         val ctx = appContext ?: return
         val uri = localStreams[streamId] ?: run { writeHeaders(out, "404 Not Found", "text/plain", 0L); return }
         val mime = resolveMimeType(ctx, uri)
+        if (uri.scheme == "http" || uri.scheme == "https") {
+            val reqBuilder = okhttp3.Request.Builder().url(uri.toString())
+            if (!rangeHeader.isNullOrBlank()) reqBuilder.header("Range", rangeHeader)
+            com.music.bitchord.data.Http.client.newCall(reqBuilder.build()).execute().use { res ->
+                val status = when {
+                    res.code == 206 -> "206 Partial Content"
+                    res.isSuccessful -> "200 OK"
+                    else -> "${res.code} Error"
+                }
+                val cType = res.header("Content-Type") ?: mime
+                val cLen = res.body?.contentLength() ?: -1L
+                val cRange = res.header("Content-Range")?.let { "Content-Range: $it\r\n" }.orEmpty()
+                val lenHdr = if (cLen >= 0L) "Content-Length: $cLen\r\n" else ""
+                val hdr = "HTTP/1.1 $status\r\nContent-Type: $cType\r\n" + lenHdr + cRange +
+                    "Accept-Ranges: bytes\r\nCache-Control: no-store\r\nAccess-Control-Allow-Origin: *\r\nConnection: close\r\n\r\n"
+                out.write(hdr.toByteArray(StandardCharsets.UTF_8))
+                if (method != "HEAD") {
+                    res.body?.byteStream()?.use { input ->
+                        val buf = ByteArray(65_536)
+                        while (true) {
+                            val r = input.read(buf)
+                            if (r <= 0) break
+                            out.write(buf, 0, r)
+                        }
+                    }
+                }
+            }
+            return
+        }
         if (uri.scheme == "file" && uri.path != null) {
             val file = File(uri.path!!)
             if (!file.exists() || !file.isFile || file.length() <= 0L) {
