@@ -103,6 +103,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -1483,8 +1484,6 @@ private fun ContentDrawScope.sweepTo(
  * because it has a fourth state the others do not: a request in flight, which
  * takes the icon's place rather than sitting beside it.
  */
-@Composable
-
 private val SingMicVector: androidx.compose.ui.graphics.vector.ImageVector by lazy {
     androidx.compose.ui.graphics.vector.ImageVector.Builder(
         name = "SingMic",
@@ -1540,7 +1539,7 @@ internal fun SingAlongMicControl(
                                     val change = event.changes.firstOrNull() ?: continue
                                     if (change.pressed) {
                                         change.consume()
-                                        val h = size.height.toFloat().coerceAtLeast(1f)
+                                        val h = this.size.height.toFloat().coerceAtLeast(1f)
                                         val ratio = 1f - (change.position.y / h).coerceIn(0f, 1f)
                                         val newCut = (1f - ratio).coerceIn(0.05f, 0.95f)
                                         PlayerSettings.setVocalReductionLevel(newCut)
