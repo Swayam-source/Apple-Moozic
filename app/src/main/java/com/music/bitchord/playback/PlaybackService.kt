@@ -7740,7 +7740,7 @@ class PlaybackService : MediaLibraryService() {
             // them for the same reason: it belongs to the listener and
             // the whole session, while the transition filter belongs to
             // one handoff and has to have the last word on it.
-            val dspChain = DspChain(spatial, equalizer, transition, loudness, SingAlongAudioProcessor())
+            val dspChain = DspChain(spatial, equalizer, transition, loudness), SingAlongAudioProcessor()
             val precision = PrecisionAudioSink(
                 delegate = defaultSink,
                 dspChain = dspChain,
