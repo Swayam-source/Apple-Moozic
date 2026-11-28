@@ -7717,8 +7717,7 @@ class PlaybackService : MediaLibraryService() {
                 .setEnableAudioTrackPlaybackParams(
                     enableAudioTrackPlaybackParams || enableFloatOutput,
                 )
-                .setAudioProcessorChain(
-                    DefaultAudioSink.DefaultAudioProcessorChain(
+                .setAudioProcessorChain(SingAlongProcessorChain(DefaultAudioSink.DefaultAudioProcessorChain(
                         emptyArray<AudioProcessor>(),
                         SilenceSkippingAudioProcessor(
                             MIN_SILENCE_US,
@@ -7728,8 +7727,7 @@ class PlaybackService : MediaLibraryService() {
                             SilenceSkippingAudioProcessor.DEFAULT_SILENCE_THRESHOLD_LEVEL,
                         ),
                         SonicAudioProcessor(),
-                    ),
-                )
+                    ),))
                 .build()
 
             // Transition filtering last of the three: widening is a
