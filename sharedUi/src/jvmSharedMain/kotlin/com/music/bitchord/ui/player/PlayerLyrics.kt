@@ -1486,17 +1486,48 @@ private fun ContentDrawScope.sweepTo(
  */
 private val SingMicVector: androidx.compose.ui.graphics.vector.ImageVector by lazy {
     androidx.compose.ui.graphics.vector.ImageVector.Builder(
-        name = "SingMic",
+        name = "AppleMusicSingMic",
         defaultWidth = 24.dp,
         defaultHeight = 24.dp,
         viewportWidth = 24f,
         viewportHeight = 24f,
     ).apply {
+        val white = androidx.compose.ui.graphics.SolidColor(Color.White)
+        // 1. Diagonal 45-degree microphone capsule head (top-right dome)
         addPath(
             pathData = androidx.compose.ui.graphics.vector.PathParser().parsePathString(
-                "M12,14c1.66,0 3,-1.34 3,-3V5c0,-1.66 -1.34,-3 -3,-3S9,3.34 9,5v6C9,12.66 10.34,14 12,14zM17.3,11c0,3 -2.54,5.1 -5.3,5.1S6.7,14 6.7,11H5c0,3.41 2.72,6.23 6,6.72V21h2v-3.28c3.28,-0.49 6,-3.31 6,-6.72H17.3z"
+                "M15.1,4.7 C16.6,3.2 19.0,3.2 20.5,4.7 C22.0,6.2 22.0,8.6 20.5,10.1 L19.3,11.3 L13.9,5.9 Z"
             ).toNodes(),
-            fill = androidx.compose.ui.graphics.SolidColor(Color.White),
+            fill = white,
+        )
+        // 2. Diagonal tapered microphone handle body + bottom cord tail
+        addPath(
+            pathData = androidx.compose.ui.graphics.vector.PathParser().parsePathString(
+                "M12.7,7.1 L18.1,12.5 L8.6,20.2 C7.8,20.8 6.7,20.7 6.0,20.0 L5.2,19.2 C4.5,18.5 4.4,17.4 5.0,16.6 Z " +
+                "M4.9,18.9 L3.2,20.6 L4.6,22.0 L6.3,20.3 Z"
+            ).toNodes(),
+            fill = white,
+        )
+        // 3. Top-left 4-point Apple Music Sing sparkle
+        addPath(
+            pathData = androidx.compose.ui.graphics.vector.PathParser().parsePathString(
+                "M6.5,4.5 L7.35,7.15 L10.0,8.0 L7.35,8.85 L6.5,11.5 L5.65,8.85 L3.0,8.0 L5.65,7.15 Z"
+            ).toNodes(),
+            fill = white,
+        )
+        // 4. Bottom-right 4-point Apple Music Sing sparkle
+        addPath(
+            pathData = androidx.compose.ui.graphics.vector.PathParser().parsePathString(
+                "M18.5,13.0 L19.4,15.6 L22.0,16.5 L19.4,17.4 L18.5,20.0 L17.6,17.4 L15.0,16.5 L17.6,15.6 Z"
+            ).toNodes(),
+            fill = white,
+        )
+        // 5. Small lower-middle 4-point sparkle
+        addPath(
+            pathData = androidx.compose.ui.graphics.vector.PathParser().parsePathString(
+                "M12.5,17.2 L13.05,18.95 L14.8,19.5 L13.05,20.05 L12.5,21.8 L11.95,20.05 L10.2,19.5 L11.95,18.95 Z"
+            ).toNodes(),
+            fill = white,
         )
     }.build()
 }
@@ -1507,31 +1538,28 @@ internal fun SingAlongMicControl(
 ) {
     val active by PlayerSettings.vocalReductionEnabled.collectAsStateWithLifecycle()
     val reduction by PlayerSettings.vocalReductionLevel.collectAsStateWithLifecycle()
-    val vocalVolume = (1f - reduction).coerceIn(0.05f, 1f)
+    val vocalVolume = if (active) (1f - reduction).coerceIn(0f, 1f) else 1f
     var sliderOpen by remember { mutableStateOf(false) }
     val chrome = LocalPlayerChrome.current
     val haptics = rememberHaptics()
 
-    LaunchedEffect(active) {
-        if (!active) sliderOpen = false
-    }
     LaunchedEffect(sliderOpen, reduction) {
         if (sliderOpen) {
-            delay(3500L)
+            delay(4500L)
             sliderOpen = false
         }
     }
 
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        androidx.compose.animation.AnimatedVisibility(visible = active && sliderOpen && enabled) {
+        androidx.compose.animation.AnimatedVisibility(visible = sliderOpen && enabled) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Box(
                     modifier = Modifier
                         .width(34.dp)
-                        .height(108.dp)
-                        .clip(RoundedCornerShape(17.dp))
+                        .height(118.dp)
+                        .clip(RoundedCornerShape(12.dp))
                         .additiveChrome(chrome)
-                        .background(Color.White.copy(alpha = 0.20f))
+                        .background(Color.White.copy(alpha = 0.22f))
                         .pointerInput(Unit) {
                             awaitPointerEventScope {
                                 while (true) {
@@ -1541,8 +1569,9 @@ internal fun SingAlongMicControl(
                                         change.consume()
                                         val h = this.size.height.toFloat().coerceAtLeast(1f)
                                         val ratio = 1f - (change.position.y / h).coerceIn(0f, 1f)
-                                        val newCut = (1f - ratio).coerceIn(0.05f, 0.95f)
+                                        val newCut = (1f - ratio).coerceIn(0f, 1f)
                                         PlayerSettings.setVocalReductionLevel(newCut)
+                                        PlayerSettings.setVocalReductionEnabled(newCut > 0.02f)
                                     }
                                 }
                             }
@@ -1552,8 +1581,8 @@ internal fun SingAlongMicControl(
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height((108f * vocalVolume).dp)
-                            .background(Color.White.copy(alpha = 0.88f)),
+                            .height((118f * vocalVolume).dp)
+                            .background(Color.White.copy(alpha = 0.90f)),
                     )
                 }
                 Spacer(Modifier.height(8.dp))
@@ -1563,16 +1592,16 @@ internal fun SingAlongMicControl(
         val tint = when {
             !enabled -> chromeWhite(0.42f)
             active -> Color(0xFF0C0B10)
-            else -> chromeWhite(0.78f)
+            else -> Color.White.copy(alpha = 0.92f)
         }
         val discAlpha by animateFloatAsState(
-            targetValue = if (active) 0.92f else 0.18f,
+            targetValue = if (active) 0.92f else 0.22f,
             label = "singMicDisc",
         )
         Box(
             modifier = Modifier
                 .size(34.dp)
-                .clip(CircleShape)
+                .clip(RoundedCornerShape(9.dp))
                 .additiveChrome(chrome && !active)
                 .background(Color.White.copy(alpha = discAlpha))
                 .clickable(
@@ -1582,7 +1611,8 @@ internal fun SingAlongMicControl(
                     onClick = {
                         haptics.play(Haptic.Select)
                         if (!active) {
-                            if (reduction < 0.15f) PlayerSettings.setVocalReductionLevel(0.85f)
+                            val targetCut = if (reduction < 0.15f) 0.92f else reduction
+                            PlayerSettings.setVocalReductionLevel(targetCut)
                             PlayerSettings.setVocalReductionEnabled(true)
                             sliderOpen = true
                         } else if (!sliderOpen) {
@@ -1597,9 +1627,9 @@ internal fun SingAlongMicControl(
         ) {
             Icon(
                 imageVector = SingMicVector,
-                contentDescription = "Sing Along Vocal Reducer",
+                contentDescription = "Control the Vocals",
                 tint = tint,
-                modifier = Modifier.size(19.dp),
+                modifier = Modifier.size(20.dp),
             )
         }
     }
